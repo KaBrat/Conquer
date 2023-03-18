@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public class MenuUI : MonoBehaviour
 {
@@ -7,12 +8,19 @@ public class MenuUI : MonoBehaviour
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
 
+        var buttonStart = root.Q<Button>("Start");
         var buttonQuit = root.Q<Button>("Quit");
 
-        buttonQuit.clicked += () => Quit();
+        buttonStart.clicked += () => StartClicked();
+        buttonQuit.clicked += () => QuitClicked();
     }
 
-    private void Quit()
+    private void StartClicked()
+    {
+        SceneManager.LoadScene(1);
+    }
+
+    private void QuitClicked()
     {
         Application.Quit();
     }
