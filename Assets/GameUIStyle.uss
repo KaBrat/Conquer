@@ -1,0 +1,13 @@
+.button {
+    background-color: rgba(166, 90, 43, 255);
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    font-size: 14px;
+}
+
+.button:hover {
+    transition-duration: 0.3s;
+    background-color: rgba(207, 93, 93, 255);
+}
