@@ -9,11 +9,17 @@ public class bitmapLoader : MonoBehaviour
     private static int mapDimension = 80;
     private Vector3 size = new Vector3(mapDimension, mapDimension, 0);
 
-    // Update is called once per frame
     void Update()
     {
-        // if (Input.anyKeyDown)
-        // {
+        if (Input.anyKeyDown)
+        {
+            var pixel = this.GetRGBA();
+            Debug.Log("RGBA:" + pixel);
+        }
+    }
+
+    private Color GetRGBA()
+    {
         var screenPosition = Input.mousePosition;
         screenPosition.z = Camera.main.nearClipPlane + 1;
         var worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
@@ -22,7 +28,6 @@ public class bitmapLoader : MonoBehaviour
         int x = Mathf.FloorToInt(mapPosition.x / size.x * regionsMap.width);
         int y = Mathf.FloorToInt(mapPosition.y / size.y * regionsMap.height);
         var pixel = regionsMap.GetPixel(x, y);
-        Debug.Log("RGBA:" + pixel);
-        // }
+        return pixel;
     }
 }
