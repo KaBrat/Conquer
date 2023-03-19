@@ -7,8 +7,14 @@
             <ui:Button text="End Turn" display-tooltip-when-elided="true" name="EndTurn" />
         </ui:VisualElement>
         <ui:VisualElement style="flex-grow: 0;">
-            <ui:TextField picking-mode="Ignore" label="Current Player" value="filler text" text="filler text" name="Player" />
-            <ui:TextField picking-mode="Ignore" label="Round" value="filler text" text="filler text" name="Round" />
+            <ui:VisualElement style="align-items: flex-end; justify-content: center; flex-direction: row;">
+                <ui:Label text="Player" display-tooltip-when-elided="true" name="PlayerLabel" />
+                <ui:Label text="1" display-tooltip-when-elided="true" name="PlayerValue" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-direction: row;">
+                <ui:Label text="Round" display-tooltip-when-elided="true" name="RoundLabel" />
+                <ui:Label text="1" display-tooltip-when-elided="true" name="RoundValue" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
