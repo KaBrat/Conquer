@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement style="flex-grow: 0; justify-content: center;">
+            <ui:Button text="Menu" display-tooltip-when-elided="true" name="Menu" style="justify-content: center;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; align-items: flex-end; flex-direction: row; justify-content: center;">
+            <ui:Button text="End Turn" display-tooltip-when-elided="true" name="EndTurn" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 0;">
+            <ui:TextField picking-mode="Ignore" label="Current Player" value="filler text" text="filler text" name="Player" />
+            <ui:TextField picking-mode="Ignore" label="Round" value="filler text" text="filler text" name="Round" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

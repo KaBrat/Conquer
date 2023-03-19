@@ -1,9 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/GameUIStyle.uss?fileID=7433441132597879392&amp;guid=cb74d80625140a840ba5580bbf97612b&amp;type=3#GameUIStyle" />
-    <ui:VisualElement style="flex-direction: column-reverse; align-items: center; flex-grow: 1;">
-        <ui:VisualElement style="padding-bottom: 3%;">
-            <ui:Button text="Attack" display-tooltip-when-elided="true" name="AttackButton" class="button" />
-            <ui:Button text="EndTurn" display-tooltip-when-elided="true" name="EndTurnButton" class="button" />
-        </ui:VisualElement>
-    </ui:VisualElement>
-</ui:UXML>
