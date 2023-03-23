@@ -1,92 +1,39 @@
-using System.Runtime.CompilerServices;
-using System;
 using System.Globalization;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IEndTurn
 {
-    public class Player
-    {
-        public Player(int id)
-        {
-            this.id = id;
-        }
-        public int id;
-    }
-
-    public int Round = 0;
-    public int maxRounds = 3;
-    public Queue<Player> turn = new Queue<Player>();
+    public RoundsManager roundsManager;
+    public List<Player> players;
     public int numberOfPlayers = 2;
-    public List<Player> Players;
+    public int maxRounds = 3;
 
-    public Player currentPlayer;
-
-    // Start is called before the first frame update
     void Start()
     {
-        this.Players = createPlayers(numberOfPlayers);
-        StartNewRound();
+        this.players = Player.createPlayers(numberOfPlayers);
+        roundsManager = new RoundsManager(maxRounds);
+        roundsManager.NewRound(this.players);
     }
 
-    // Update is called once per frame
-    void Update()
+    public (Player prev, Player current) EndTurn()
     {
+        var prev = roundsManager.Turns.Peek().currentPlayer;
+        this.roundsManager.EndTurn();
 
-    }
-
-    private List<Player> createPlayers(int amount)
-    {
-        var players = new List<Player>();
-        for (int i = 1; i <= amount; i++)
+        var RoundEnded = this.roundsManager.Turns.Count == 0;
+        if (RoundEnded)
         {
-            players.Add(new Player(i));
-        }
-        return players;
-    }
-
-    public Player GetCurrentPlayer()
-    {
-        return this.currentPlayer;
-    }
-
-    public void EndTurn()
-    {
-        Player dequeuedPlayer;
-        var b = turn.TryDequeue(out dequeuedPlayer);
-        if (!b)
-        {
-            if (this.Round >= maxRounds)
+            if (roundsManager.currentRound == roundsManager.maxRounds)
             {
                 SceneManager.LoadScene(0);
-                return;
+                return (null, null);
             }
-            StartNewRound();
+            this.roundsManager.NewRound(this.players);
         }
-        Player newPlayer;
-        b = turn.TryPeek(out newPlayer);
-        if (!b)
-        {
-            if (this.Round >= maxRounds)
-            {
-                SceneManager.LoadScene(0);
-                return;
-            }
-            StartNewRound();
-        }
-        this.currentPlayer = turn.Peek();
-    }
 
-    public void StartNewRound()
-    {
-        this.Round++;
-        foreach (var player in Players)
-        {
-            turn.Enqueue(player);
-        }
-        this.currentPlayer = turn.Peek();
+        var current = roundsManager.Turns.Peek().currentPlayer;
+        return (prev, current);
     }
 }

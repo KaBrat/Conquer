@@ -6,9 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class InGameUI : MonoBehaviour
 {
-    public Label PlayerLabel;
-    public Label RoundLabel;
-
+    private Label PlayerLabel;
+    private Label RoundLabel;
     public GameManager gameManager;
     private void Awake()
     {
@@ -31,9 +30,11 @@ public class InGameUI : MonoBehaviour
 
     private void EndTurnClicked()
     {
-        gameManager.EndTurn();
-        var currentPlayer = gameManager.GetCurrentPlayer();
-        this.PlayerLabel.text = currentPlayer.id.ToString();
-        this.RoundLabel.text = gameManager.Round.ToString();
+        var (peviousPlayer, currentPlayer) = gameManager.EndTurn();
+        if (currentPlayer != null)
+        {
+            this.PlayerLabel.text = currentPlayer.id.ToString();
+        }
+        this.RoundLabel.text = gameManager.roundsManager.currentRound.ToString();
     }
 }
