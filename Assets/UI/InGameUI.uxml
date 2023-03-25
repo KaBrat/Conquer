@@ -1,12 +1,10 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
-        <ui:VisualElement style="flex-grow: 0; justify-content: center;">
+    <ui:VisualElement name="Top" style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="Left" style="flex-grow: 0; justify-content: center; flex-direction: column;">
             <ui:Button text="Menu" display-tooltip-when-elided="true" name="Menu" style="justify-content: center;" />
         </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 1; align-items: flex-end; flex-direction: row; justify-content: center;">
-            <ui:Button text="End Turn" display-tooltip-when-elided="true" name="EndTurn" />
-        </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 0;">
+        <ui:VisualElement name="Middle" style="flex-grow: 1;" />
+        <ui:VisualElement name="Right" style="flex-grow: 0;">
             <ui:VisualElement style="align-items: flex-end; justify-content: center; flex-direction: row;">
                 <ui:Label text="Player" display-tooltip-when-elided="true" name="PlayerLabel" />
                 <ui:Label text="1" display-tooltip-when-elided="true" name="PlayerValue" />
@@ -15,6 +13,14 @@
                 <ui:Label text="Round" display-tooltip-when-elided="true" name="RoundLabel" />
                 <ui:Label text="1" display-tooltip-when-elided="true" name="RoundValue" />
             </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="Bottom" style="flex-grow: 0; flex-direction: row; justify-content: flex-start;">
+        <ui:VisualElement name="Regions" style="flex-grow: 0.5; justify-content: center; align-items: center; max-width: 50%; max-height: 40px; min-width: 50%;">
+            <ui:Label display-tooltip-when-elided="true" name="RegionName" text="ProvinceName" style="justify-content: center;" />
+        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 0.5; align-items: center; flex-direction: row; justify-content: flex-start;">
+            <ui:Button text="End Turn" display-tooltip-when-elided="true" name="EndTurn" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

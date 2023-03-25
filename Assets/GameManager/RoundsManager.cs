@@ -2,17 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class RoundsManager
 {
     public int maxRounds;
+    public int currentRound = 0;
+    public Queue<Turn> Turns;
     public RoundsManager(int maxRounds)
     {
         this.maxRounds = maxRounds;
     }
-    public int currentRound = 0;
-    public Queue<Turn> Turns;
-
     public void NewRound(List<Player> players)
     {
         this.currentRound++;
@@ -22,7 +20,6 @@ public class RoundsManager
             this.Turns.Enqueue(new Turn(player));
         }
     }
-
     public void EndTurn()
     {
         this.Turns.Dequeue();

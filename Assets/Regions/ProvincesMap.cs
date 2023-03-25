@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+
+public class Province
+{
+    public string Name;
+    public Color Color;
+    public string Colorhex;
+}
 public class ProvincesMap : MonoBehaviour
 {
-    public class Province
-    {
-        public string Name;
-        public Color Color;
-        public string Colorhex;
-    }
-
     public Province[] provinces = new Province[]{
         new Province(){
             Name = "Eastwatch",
@@ -30,9 +30,11 @@ public class ProvincesMap : MonoBehaviour
     private static int mapDimension = 80;
     public HashSet<Color> provinceColors;
     private Vector3 size = new Vector3(mapDimension, mapDimension, 0);
+    public IProvinceDisplayer ProvinceDisplayer;
 
     void Start()
     {
+        ProvinceDisplayer = GameObject.FindObjectsOfType<InGameUI>().FirstOrDefault();
         var pixels = mapImage.GetPixels();
         provinceColors = new HashSet<Color>(pixels);
         provinceColors.Remove(Color.black);
@@ -51,10 +53,7 @@ public class ProvincesMap : MonoBehaviour
         if (Input.anyKeyDown)
         {
             var clickedProvince = GetProvince(Input.mousePosition);
-            if (clickedProvince != null)
-            {
-                Debug.Log("Province: " + clickedProvince.Name);
-            }
+            ProvinceDisplayer.DisplayProvince(clickedProvince);
         }
     }
 
