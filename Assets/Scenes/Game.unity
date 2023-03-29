@@ -396,8 +396,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b90777b3a086674b8418e6eb72f172b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfPlayers: 2
-  maxRounds: 3
+  ProvincesMap: {fileID: 322433458}
+  NumberOfPlayers: 2
+  MaxRounds: 3
 --- !u!4 &497392158
 Transform:
   m_ObjectHideFlags: 0

@@ -2,38 +2,51 @@ using System.Globalization;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Linq;
 
 public class GameManager : MonoBehaviour, IEndTurn
 {
-    public RoundsManager roundsManager;
-    public List<Player> players;
-    public int numberOfPlayers = 2;
-    public int maxRounds = 3;
+    public RoundsManager RoundsManager;
+    public ProvincesMap ProvincesMap;
+    public List<Player> Players;
+    public int NumberOfPlayers = 2;
+    public int MaxRounds = 3;
+
+    void SetPlayerStartingLocations()
+    {
+        var northguard = this.ProvincesMap.Provinces.FirstOrDefault(p => p.Name == "Northguard");
+        northguard.Owner = Players.FirstOrDefault(p => p.id == 1);
+        northguard.FootmenCount = 2;
+        var summershore = this.ProvincesMap.Provinces.FirstOrDefault(p => p.Name == "Summershore");
+        summershore.Owner = Players.FirstOrDefault(p => p.id == 2);
+        summershore.FootmenCount = 2;
+    }
 
     void Start()
     {
-        this.players = Player.createPlayers(numberOfPlayers);
-        roundsManager = new RoundsManager(maxRounds);
-        roundsManager.NewRound(this.players);
+        this.Players = Player.createPlayers(NumberOfPlayers);
+        this.SetPlayerStartingLocations();
+        this.RoundsManager = new RoundsManager(MaxRounds);
+        this.RoundsManager.NewRound(this.Players);
     }
 
     public (Player prev, Player current) EndTurn()
     {
-        var prev = roundsManager.Turns.Peek().currentPlayer;
-        this.roundsManager.EndTurn();
+        var prev = RoundsManager.Turns.Peek().currentPlayer;
+        this.RoundsManager.EndTurn();
 
-        var RoundEnded = this.roundsManager.Turns.Count == 0;
+        var RoundEnded = this.RoundsManager.Turns.Count == 0;
         if (RoundEnded)
         {
-            if (roundsManager.currentRound == roundsManager.maxRounds)
+            if (RoundsManager.currentRound == RoundsManager.maxRounds)
             {
                 SceneManager.LoadScene(0);
                 return (null, null);
             }
-            this.roundsManager.NewRound(this.players);
+            this.RoundsManager.NewRound(this.Players);
         }
 
-        var current = roundsManager.Turns.Peek().currentPlayer;
+        var current = RoundsManager.Turns.Peek().currentPlayer;
         return (prev, current);
     }
 }

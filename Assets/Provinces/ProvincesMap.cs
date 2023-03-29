@@ -3,15 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Province
-{
-    public string Name;
-    public Color Color;
-    public string Colorhex;
-}
 public class ProvincesMap : MonoBehaviour
 {
-    public Province[] provinces = new Province[]{
+    public List<Province> Provinces = new List<Province>(){
         new Province(){
             Name = "Eastwatch",
             Colorhex = "b5e61d"
@@ -22,7 +16,7 @@ public class ProvincesMap : MonoBehaviour
         },
         new Province(){
             Name = "Summershore",
-            Colorhex = "e86c2e"
+            Colorhex = "e86c2e",
         }
     };
 
@@ -41,7 +35,7 @@ public class ProvincesMap : MonoBehaviour
         provinceColors.Remove(Color.white);
         Debug.Log(provinceColors.Count);
 
-        foreach (var province in provinces)
+        foreach (var province in Provinces)
         {
             var match = provinceColors.First(p => String.Equals(ColorUtility.ToHtmlStringRGB(p), province.Colorhex, StringComparison.OrdinalIgnoreCase));
             province.Color = match;
@@ -73,6 +67,6 @@ public class ProvincesMap : MonoBehaviour
     public Province GetProvince(Vector3 mouseposition)
     {
         var color = GetRGBA();
-        return provinces.FirstOrDefault(p => String.Equals(ColorUtility.ToHtmlStringRGB(color), p.Colorhex, StringComparison.OrdinalIgnoreCase));
+        return Provinces.FirstOrDefault(p => String.Equals(ColorUtility.ToHtmlStringRGB(color), p.Colorhex, StringComparison.OrdinalIgnoreCase));
     }
 }
