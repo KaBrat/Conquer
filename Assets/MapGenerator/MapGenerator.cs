@@ -46,29 +46,11 @@ public class MapGenerator : MonoBehaviour
         {
             for (int x = 0; x < mapWidth; x++)
             {
+                float outerBoundarySmoothFactor = GetOuterBoundarySmoothFactor(mapWidth, mapHeight, outerXRange, outerYRange, y, x);
+
                 float sampleX = (float)x / mapWidth * noiseScale;
                 float sampleY = (float)y / mapHeight * noiseScale;
                 float noiseValue = Mathf.PerlinNoise(sampleX + offsetX, sampleY + offsetY);
-
-                bool isOuterXPixel = isOnOuterBoundaries(x, outerXRange, mapWidth);
-                bool isOuterYPixel = isOnOuterBoundaries(y, outerYRange, mapHeight);
-
-                float outerBoundarySmoothFactor = 1f;
-                if (isOuterXPixel && isOuterYPixel)
-                {
-                    outerBoundarySmoothFactor = CalculateDistanceToMaxInnerBoundary(x, outerXRange, mapWidth) >= CalculateDistanceToMaxInnerBoundary(y, outerYRange, mapHeight)
-                        ? CalculateOuterBoundarySmoothFactor(x, outerXRange, mapWidth)
-                        : CalculateOuterBoundarySmoothFactor(y, outerYRange, mapHeight);
-                }
-                else if (isOuterXPixel)
-                {
-                    outerBoundarySmoothFactor = CalculateOuterBoundarySmoothFactor(x, outerXRange, mapWidth);
-                }
-                else if (isOuterYPixel)
-                {
-                    outerBoundarySmoothFactor = CalculateOuterBoundarySmoothFactor(y, outerYRange, mapHeight);
-                }
-
                 noiseValue *= outerBoundarySmoothFactor;
                 pixels[y * mapWidth + x] = noiseValue >= threshold ? Color.green : Color.blue;
             }
@@ -82,36 +64,59 @@ public class MapGenerator : MonoBehaviour
         return pixels;
     }
 
-    private bool isOnOuterBoundaries(int pixelValue, int outerRange, int max)
+    private float GetOuterBoundarySmoothFactor(int mapWidth, int mapHeight, int outerXRange, int outerYRange, int y, int x)
     {
-        var isOuterPixel = false;
-        if (outerRange != 0)
+        bool isOuterXPixel = IsOnOuterBoundaries(x, outerXRange, mapWidth);
+        bool isOuterYPixel = IsOnOuterBoundaries(y, outerYRange, mapHeight);
+
+        if (isOuterXPixel && isOuterYPixel)
         {
-            isOuterPixel = pixelValue <= (1f / outerRange) * max || pixelValue >= max - (1f / outerRange) * max;
+            int xDistanceToMaxInner = CalculateDistanceToMaxInnerBoundary(x, outerXRange, mapWidth);
+            int yDistanceToMaxInner = CalculateDistanceToMaxInnerBoundary(y, outerYRange, mapHeight);
+
+            if (xDistanceToMaxInner >= yDistanceToMaxInner)
+            {
+                return CalculateOuterBoundarySmoothFactor(xDistanceToMaxInner, outerXRange, mapWidth);
+            }
+            else
+            {
+                return CalculateOuterBoundarySmoothFactor(yDistanceToMaxInner, outerYRange, mapHeight);
+            }
         }
-        return isOuterPixel;
+        else if (isOuterXPixel)
+        {
+            return CalculateOuterBoundarySmoothFactor(CalculateDistanceToMaxInnerBoundary(x, outerXRange, mapWidth), outerXRange, mapWidth);
+        }
+        else if (isOuterYPixel)
+        {
+            return CalculateOuterBoundarySmoothFactor(CalculateDistanceToMaxInnerBoundary(y, outerYRange, mapHeight), outerYRange, mapHeight);
+        }
+        else
+        {
+            return 1f;
+        }
+    }
+
+    private bool IsOnOuterBoundaries(int pixelValue, int outerRange, int max)
+    {
+        if (outerRange == 0)
+        {
+            return false;
+        }
+
+        return pixelValue <= (1f / outerRange) * max || pixelValue >= max - (1f / outerRange) * max;
     }
 
     private int CalculateDistanceToMaxInnerBoundary(int pixelValue, int outerRange, int max)
     {
-        var isPixelValueLowerThanMaxHalf = (pixelValue < max / 2);
-        int maxInner;
-        if (isPixelValueLowerThanMaxHalf)
-        {
-            maxInner = (int)(1f / outerRange * max);
-        }
-        else
-        {
-            maxInner = (int)(max - 1f / outerRange * max);
-        }
+        int maxInner = (int)(outerRange == 0 ? max / 2f : pixelValue < max / 2 ? 1f / outerRange * max : max - 1f / outerRange * max);
         return Mathf.Abs(pixelValue - maxInner);
     }
 
-    private float CalculateOuterBoundarySmoothFactor(int pixelValue, int outerRange, int max)
+    private float CalculateOuterBoundarySmoothFactor(int distanceToMaxInner, int outerRange, int max)
     {
-        var distance = CalculateDistanceToMaxInnerBoundary(pixelValue, outerRange, max);
         var maxDistance = (1f / outerRange) * max;
-        var relation = distance / maxDistance;
+        var relation = distanceToMaxInner / maxDistance;
         return 1f - relation;
     }
 
