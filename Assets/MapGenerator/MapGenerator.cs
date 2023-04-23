@@ -1,25 +1,24 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
 
-    public float noiseScale = 0.4f;
-    public float threshold = 0.3f;
-    public int erosionIterations = 0;
-    public float random = 20f;
-    public int smoothing = 2;
-    public int mapWidth = 500;
-    public int mapHeight = 300;
-    public int outerXRange = 10;
-    public int outerYRange = 10;
+    [Header("Map Generation Settings")]
+    [SerializeField, Range(0.1f, 1f)] private float noiseScale = 0.4f;
+    [SerializeField, Range(0f, 1f)] private float threshold = 0.3f;
+    [SerializeField, Range(0, 100)] private int erosionIterations = 0;
+    [SerializeField, Range(0f, 500f)] private float random = 20f;
+    [SerializeField, Range(1, 3)] private int smoothing = 2;
+    [SerializeField, Range(100, 3000)] private int mapWidth = 500;
+    [SerializeField, Range(100, 3000)] private int mapHeight = 300;
+    [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
+    [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
 
     public void GenerateMap()
     {
-        Color[] pixels = CalculatePixels(mapWidth, mapHeight, outerXRange, outerYRange, noiseScale, random, threshold, erosionIterations, smoothing);
+        Color[] pixels = CalculatePixels(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold, erosionIterations, smoothing);
 
         var landTexture = new Texture2D(mapWidth, mapHeight);
         landTexture.SetPixels(pixels);
@@ -48,8 +47,8 @@ public class MapGenerator : MonoBehaviour
                 float sampleY = (float)y / mapHeight * noiseScale;
                 float noiseValue = Mathf.PerlinNoise(sampleX + offsetX, sampleY + offsetY);
 
-                bool isOuterXPixel = isOuterPixel(x, outerXRange, mapWidth);
-                bool isOuterYPixel = isOuterPixel(y, outerYRange, mapHeight);
+                bool isOuterXPixel = isOnOuterBoundaries(x, outerXRange, mapWidth);
+                bool isOuterYPixel = isOnOuterBoundaries(y, outerYRange, mapHeight);
 
                 float outerBoundarySmoothFactor = 1f;
                 if (isOuterXPixel && isOuterYPixel)
@@ -80,7 +79,7 @@ public class MapGenerator : MonoBehaviour
         return pixels;
     }
 
-    private bool isOuterPixel(int pixelValue, int outerRange, int max)
+    private bool isOnOuterBoundaries(int pixelValue, int outerRange, int max)
     {
         var isOuterPixel = false;
         if (outerRange != 0)
