@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        Color[] pixels = CalculatePixels(mapWidth, mapHeight, outerXRange, outerYRange, noiseScale, random);
+        Color[] pixels = CalculatePixels(mapWidth, mapHeight, outerXRange, outerYRange, noiseScale, random, threshold, erosionIterations, smoothing);
 
         var landTexture = new Texture2D(mapWidth, mapHeight);
         landTexture.SetPixels(pixels);
@@ -33,53 +33,48 @@ public class MapGenerator : MonoBehaviour
         sr.sprite = sprite;
     }
 
-    private Color[] CalculatePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random)
+    private Color[] CalculatePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold, int erosionIterations, int smoothing)
     {
         var offsetX = UnityEngine.Random.Range(-random, random);
         var offsetY = UnityEngine.Random.Range(-random, random);
 
         Color[] pixels = new Color[mapWidth * mapHeight];
+
         for (int y = 0; y < mapHeight; y++)
         {
             for (int x = 0; x < mapWidth; x++)
             {
-
                 float sampleX = (float)x / mapWidth * noiseScale;
                 float sampleY = (float)y / mapHeight * noiseScale;
                 float noiseValue = Mathf.PerlinNoise(sampleX + offsetX, sampleY + offsetY);
 
-                var isOuterXPixel = isOuterPixel(x, outerXRange, mapWidth);
-                var isOuterYPixel = isOuterPixel(y, outerYRange, mapHeight);
+                bool isOuterXPixel = isOuterPixel(x, outerXRange, mapWidth);
+                bool isOuterYPixel = isOuterPixel(y, outerYRange, mapHeight);
 
                 float outerBoundarySmoothFactor = 1f;
-
-                switch (isOuterXPixel)
+                if (isOuterXPixel && isOuterYPixel)
                 {
-                    case true when isOuterYPixel:
-                        var xHasBiggerDistance = CalculateDistanceToMaxInnerBoundary(x, outerXRange, mapWidth) >= CalculateDistanceToMaxInnerBoundary(y, outerYRange, mapHeight);
-                        if (xHasBiggerDistance)
-                            outerBoundarySmoothFactor = this.CalculateOuterBoundarySmoothFactor(x, outerXRange, mapWidth);
-                        else
-                        {
-                            outerBoundarySmoothFactor = this.CalculateOuterBoundarySmoothFactor(y, outerYRange, mapHeight);
-                        }
-                        break;
-                    case true when !isOuterYPixel:
-                        outerBoundarySmoothFactor = this.CalculateOuterBoundarySmoothFactor(x, outerXRange, mapWidth);
-                        break;
-                    case false when isOuterYPixel:
-                        outerBoundarySmoothFactor = this.CalculateOuterBoundarySmoothFactor(y, outerYRange, mapHeight);
-                        break;
+                    outerBoundarySmoothFactor = CalculateDistanceToMaxInnerBoundary(x, outerXRange, mapWidth) >= CalculateDistanceToMaxInnerBoundary(y, outerYRange, mapHeight)
+                        ? CalculateOuterBoundarySmoothFactor(x, outerXRange, mapWidth)
+                        : CalculateOuterBoundarySmoothFactor(y, outerYRange, mapHeight);
                 }
-                noiseValue = noiseValue * outerBoundarySmoothFactor;
+                else if (isOuterXPixel)
+                {
+                    outerBoundarySmoothFactor = CalculateOuterBoundarySmoothFactor(x, outerXRange, mapWidth);
+                }
+                else if (isOuterYPixel)
+                {
+                    outerBoundarySmoothFactor = CalculateOuterBoundarySmoothFactor(y, outerYRange, mapHeight);
+                }
+
+                noiseValue *= outerBoundarySmoothFactor;
                 pixels[y * mapWidth + x] = noiseValue >= threshold ? Color.green : Color.blue;
             }
         }
 
-        // Erode the land texture
         for (int i = 0; i < erosionIterations; i++)
         {
-            pixels = Erode(pixels);
+            pixels = Erode(pixels, mapWidth, mapHeight);
         }
 
         return pixels;
@@ -119,7 +114,7 @@ public class MapGenerator : MonoBehaviour
     }
 
 
-    Color[] Erode(Color[] pixels)
+    Color[] Erode(Color[] pixels, int mapWidth, int mapHeight)
     {
         Color[] erodedPixels = new Color[pixels.Length];
         for (int y = 1; y < mapHeight - 1; y++)

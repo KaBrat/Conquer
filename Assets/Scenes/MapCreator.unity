@@ -160,7 +160,6 @@ MonoBehaviour:
   smoothing: 3
   mapWidth: 500
   mapHeight: 300
-  borderthickness: 0
   outerXRange: 10
   outerYRange: 10
 --- !u!4 &1405176770
