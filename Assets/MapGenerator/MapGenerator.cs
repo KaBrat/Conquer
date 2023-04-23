@@ -19,6 +19,22 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
+        Color[] pixels = CalculatePixels();
+
+        var landTexture = new Texture2D(mapWidth, mapHeight);
+        landTexture.SetPixels(pixels);
+        landTexture.Apply();
+
+        byte[] pngBytes = landTexture.EncodeToPNG();
+        File.WriteAllBytes(Application.dataPath + "/GeneratedMaps/LandMap.png", pngBytes);
+
+        var sr = this.GetComponent<SpriteRenderer>();
+        Sprite sprite = Sprite.Create(landTexture, new Rect(0, 0, landTexture.width, landTexture.height), Vector2.one * 0.5f);        //this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(Application.dataPath + "/GeneratedMaps/LandMap.png");
+        sr.sprite = sprite;
+    }
+
+    private Color[] CalculatePixels()
+    {
         var offsetX = UnityEngine.Random.Range(-random, random);
         var offsetY = UnityEngine.Random.Range(-random, random);
 
@@ -66,18 +82,8 @@ public class MapGenerator : MonoBehaviour
             pixels = Erode(pixels);
         }
 
-        var landTexture = new Texture2D(mapWidth, mapHeight);
-        landTexture.SetPixels(pixels);
-        landTexture.Apply();
-
-        byte[] pngBytes = landTexture.EncodeToPNG();
-        File.WriteAllBytes(Application.dataPath + "/GeneratedMaps/LandMap.png", pngBytes);
-
-        var sr = this.GetComponent<SpriteRenderer>();
-        Sprite sprite = Sprite.Create(landTexture, new Rect(0, 0, landTexture.width, landTexture.height), Vector2.one * 0.5f);        //this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(Application.dataPath + "/GeneratedMaps/LandMap.png");
-        sr.sprite = sprite;
+        return pixels;
     }
-
 
     private bool isOuterPixel(int pixelValue, int outerRange, int max)
     {
