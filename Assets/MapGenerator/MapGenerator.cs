@@ -10,12 +10,12 @@ public class MapGenerator : MonoBehaviour
     public float noiseScale = 0.4f;
     public float threshold = 0.3f;
     public int erosionIterations = 0;
-    public float random = 0f;
+    public float random = 20f;
     public int smoothing = 2;
     public int mapWidth = 500;
     public int mapHeight = 300;
-    public int outerXRange = 50;
-    public int outerYRange = 0;
+    public int outerXRange = 10;
+    public int outerYRange = 10;
 
     public void GenerateMap()
     {
