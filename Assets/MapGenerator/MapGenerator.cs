@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        Color[] pixels = CalculatePixels();
+        Color[] pixels = CalculatePixels(mapWidth, mapHeight, outerXRange, outerYRange, noiseScale, random);
 
         var landTexture = new Texture2D(mapWidth, mapHeight);
         landTexture.SetPixels(pixels);
@@ -33,7 +33,7 @@ public class MapGenerator : MonoBehaviour
         sr.sprite = sprite;
     }
 
-    private Color[] CalculatePixels()
+    private Color[] CalculatePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random)
     {
         var offsetX = UnityEngine.Random.Range(-random, random);
         var offsetY = UnityEngine.Random.Range(-random, random);
