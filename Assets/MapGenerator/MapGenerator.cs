@@ -40,23 +40,21 @@ public class MapGenerator : MonoBehaviour
         var offsetX = UnityEngine.Random.Range(-random, random);
         var offsetY = UnityEngine.Random.Range(-random, random);
 
-        Color[] pixels = new Color[mapWidth * mapHeight];
+        var pixels = new Color[mapWidth * mapHeight];
 
-        for (int y = 0; y < mapHeight; y++)
+        for (var y = 0; y < mapHeight; y++)
         {
-            for (int x = 0; x < mapWidth; x++)
+            for (var x = 0; x < mapWidth; x++)
             {
-                float outerBoundarySmoothFactor = GetOuterBoundarySmoothFactor(mapWidth, mapHeight, outerXRange, outerYRange, y, x);
-
-                float sampleX = (float)x / mapWidth * noiseScale;
-                float sampleY = (float)y / mapHeight * noiseScale;
-                float noiseValue = Mathf.PerlinNoise(sampleX + offsetX, sampleY + offsetY);
-                noiseValue *= outerBoundarySmoothFactor;
+                var outerBoundarySmoothFactor = GetOuterBoundarySmoothFactor(mapWidth, mapHeight, outerXRange, outerYRange, y, x);
+                var sampleX = x * noiseScale / mapWidth + offsetX;
+                var sampleY = y * noiseScale / mapHeight + offsetY;
+                var noiseValue = Mathf.PerlinNoise(sampleX, sampleY) * outerBoundarySmoothFactor;
                 pixels[y * mapWidth + x] = noiseValue >= threshold ? Color.green : Color.blue;
             }
         }
 
-        for (int i = 0; i < erosionIterations; i++)
+        for (var i = 0; i < erosionIterations; i++)
         {
             pixels = Erode(pixels, mapWidth, mapHeight);
         }
@@ -147,6 +145,3 @@ public class MapGenerator : MonoBehaviour
         return erodedPixels;
     }
 }
-
-
-
