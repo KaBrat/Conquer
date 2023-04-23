@@ -79,23 +79,14 @@ public class MapGenerator : MonoBehaviour
 
         if (isOuterXPixel && isOuterYPixel)
         {
-            if (xDistanceToMaxInner >= yDistanceToMaxInner)
-            {
-                return CalculateOuterBoundarySmoothFactor(xDistanceToMaxInner, outerXRange, mapWidth);
-            }
-            else
-            {
-                return CalculateOuterBoundarySmoothFactor(yDistanceToMaxInner, outerYRange, mapHeight);
-            }
+            return xDistanceToMaxInner >= yDistanceToMaxInner ?
+                CalculateOuterBoundarySmoothFactor(xDistanceToMaxInner, outerXRange, mapWidth) :
+                CalculateOuterBoundarySmoothFactor(yDistanceToMaxInner, outerYRange, mapHeight);
         }
-        else if (isOuterXPixel)
-        {
-            return CalculateOuterBoundarySmoothFactor(xDistanceToMaxInner, outerXRange, mapWidth);
-        }
-        else // isOuterYPixel is true
-        {
-            return CalculateOuterBoundarySmoothFactor(yDistanceToMaxInner, outerYRange, mapHeight);
-        }
+
+        return isOuterXPixel ?
+            CalculateOuterBoundarySmoothFactor(xDistanceToMaxInner, outerXRange, mapWidth) :
+            CalculateOuterBoundarySmoothFactor(yDistanceToMaxInner, outerYRange, mapHeight);
     }
 
     private bool IsOnOuterBoundaries(int pixelValue, int outerRange, int max)
