@@ -1,2 +1,7 @@
 How I Learned Procedural Generation
 https://www.youtube.com/watch?v=XpG3YqUkCTY
+
+Voronoi Diagrams
+
+Constructing Voronoi Diagrams
+https://www.youtube.com/watch?v=j2c3kumwoAk
