@@ -11,53 +11,14 @@ public class MapGenerator : MonoBehaviour
     public float threshold = 0.3f;
     public int erosionIterations = 0;
     public float random = 0f;
-
     public int smoothing = 2;
-
     public int mapWidth = 500;
     public int mapHeight = 300;
-
-    public int borderthickness = 0;
     public int outerXRange = 50;
     public int outerYRange = 0;
 
-    private bool isOuterPixel(int pixelValue, int outerRange, int max)
-    {
-        var isOuterPixel = false;
-        if (outerRange != 0)
-        {
-            isOuterPixel = pixelValue <= (1f / outerRange) * max || pixelValue >= max - (1f / outerRange) * max;
-        }
-        return isOuterPixel;
-    }
-
-    private int DistanceToMaxInnerBoundary(int pixelValue, int outerRange, int max)
-    {
-        var lowerBoundary = (pixelValue < max / 2);
-        int maxInner;
-        if (lowerBoundary)
-        {
-            maxInner = (int)(1f / outerRange * max);
-        }
-        else
-        {
-            maxInner = (int)(max - 1f / outerRange * max);
-        }
-        return Mathf.Abs(pixelValue - maxInner);
-    }
-
-    private float outerBoundarySmoothFactor(int pixelValue, int OuterRange, int max)
-    {
-        var distance = DistanceToMaxInnerBoundary(pixelValue, OuterRange, max);
-        var maxDistance = (1f / OuterRange) * max;
-        var relation = distance / maxDistance;
-        return 1f - relation;
-    }
-
     public void GenerateMap()
     {
-        var landTexture = new Texture2D(mapWidth, mapHeight);
-
         var offsetX = UnityEngine.Random.Range(-random, random);
         var offsetY = UnityEngine.Random.Range(-random, random);
 
@@ -79,19 +40,19 @@ public class MapGenerator : MonoBehaviour
                 switch (isOuterXPixel)
                 {
                     case true when isOuterYPixel:
-                        var xHasBiggerDistance = DistanceToMaxInnerBoundary(x, outerXRange, mapWidth) >= DistanceToMaxInnerBoundary(y, outerYRange, mapHeight);
+                        var xHasBiggerDistance = CalculateDistanceToMaxInnerBoundary(x, outerXRange, mapWidth) >= CalculateDistanceToMaxInnerBoundary(y, outerYRange, mapHeight);
                         if (xHasBiggerDistance)
-                            outerBoundarySmoothFactor = this.outerBoundarySmoothFactor(x, outerXRange, mapWidth);
+                            outerBoundarySmoothFactor = this.CalculateOuterBoundarySmoothFactor(x, outerXRange, mapWidth);
                         else
                         {
-                            outerBoundarySmoothFactor = this.outerBoundarySmoothFactor(y, outerYRange, mapHeight);
+                            outerBoundarySmoothFactor = this.CalculateOuterBoundarySmoothFactor(y, outerYRange, mapHeight);
                         }
                         break;
                     case true when !isOuterYPixel:
-                        outerBoundarySmoothFactor = this.outerBoundarySmoothFactor(x, outerXRange, mapWidth);
+                        outerBoundarySmoothFactor = this.CalculateOuterBoundarySmoothFactor(x, outerXRange, mapWidth);
                         break;
                     case false when isOuterYPixel:
-                        outerBoundarySmoothFactor = this.outerBoundarySmoothFactor(y, outerYRange, mapHeight);
+                        outerBoundarySmoothFactor = this.CalculateOuterBoundarySmoothFactor(y, outerYRange, mapHeight);
                         break;
                 }
                 noiseValue = noiseValue * outerBoundarySmoothFactor;
@@ -105,6 +66,7 @@ public class MapGenerator : MonoBehaviour
             pixels = Erode(pixels);
         }
 
+        var landTexture = new Texture2D(mapWidth, mapHeight);
         landTexture.SetPixels(pixels);
         landTexture.Apply();
 
@@ -115,6 +77,41 @@ public class MapGenerator : MonoBehaviour
         Sprite sprite = Sprite.Create(landTexture, new Rect(0, 0, landTexture.width, landTexture.height), Vector2.one * 0.5f);        //this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(Application.dataPath + "/GeneratedMaps/LandMap.png");
         sr.sprite = sprite;
     }
+
+
+    private bool isOuterPixel(int pixelValue, int outerRange, int max)
+    {
+        var isOuterPixel = false;
+        if (outerRange != 0)
+        {
+            isOuterPixel = pixelValue <= (1f / outerRange) * max || pixelValue >= max - (1f / outerRange) * max;
+        }
+        return isOuterPixel;
+    }
+
+    private int CalculateDistanceToMaxInnerBoundary(int pixelValue, int outerRange, int max)
+    {
+        var isPixelValueLowerThanMaxHalf = (pixelValue < max / 2);
+        int maxInner;
+        if (isPixelValueLowerThanMaxHalf)
+        {
+            maxInner = (int)(1f / outerRange * max);
+        }
+        else
+        {
+            maxInner = (int)(max - 1f / outerRange * max);
+        }
+        return Mathf.Abs(pixelValue - maxInner);
+    }
+
+    private float CalculateOuterBoundarySmoothFactor(int pixelValue, int outerRange, int max)
+    {
+        var distance = CalculateDistanceToMaxInnerBoundary(pixelValue, outerRange, max);
+        var maxDistance = (1f / outerRange) * max;
+        var relation = distance / maxDistance;
+        return 1f - relation;
+    }
+
 
     Color[] Erode(Color[] pixels)
     {
