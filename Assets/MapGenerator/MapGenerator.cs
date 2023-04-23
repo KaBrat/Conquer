@@ -18,21 +18,24 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        Color[] pixels = CalculatePixels(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold, erosionIterations, smoothing);
+        Color[] pixels = GeneratePixels(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold, erosionIterations, smoothing);
+        GenerateTexture(pixels);
+    }
 
+    private void GenerateTexture(Color[] pixels)
+    {
         var landTexture = new Texture2D(mapWidth, mapHeight);
         landTexture.SetPixels(pixels);
         landTexture.Apply();
 
+        var sprite = Sprite.Create(landTexture, new Rect(0, 0, landTexture.width, landTexture.height), Vector2.one * 0.5f);
+        GetComponent<SpriteRenderer>().sprite = sprite;
+
         byte[] pngBytes = landTexture.EncodeToPNG();
         File.WriteAllBytes(Application.dataPath + "/GeneratedMaps/LandMap.png", pngBytes);
-
-        var sr = this.GetComponent<SpriteRenderer>();
-        Sprite sprite = Sprite.Create(landTexture, new Rect(0, 0, landTexture.width, landTexture.height), Vector2.one * 0.5f);        //this.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>(Application.dataPath + "/GeneratedMaps/LandMap.png");
-        sr.sprite = sprite;
     }
 
-    private Color[] CalculatePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold, int erosionIterations, int smoothing)
+    private Color[] GeneratePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold, int erosionIterations, int smoothing)
     {
         var offsetX = UnityEngine.Random.Range(-random, random);
         var offsetY = UnityEngine.Random.Range(-random, random);
