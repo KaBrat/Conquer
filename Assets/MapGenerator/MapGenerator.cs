@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
@@ -58,6 +59,8 @@ public class MapGenerator : MonoBehaviour
         {
             pixels = Erode(pixels, mapWidth, mapHeight);
         }
+
+        //var regions = DivideIntoPoliticalRegions(pixels, mapWidth, mapHeight);
 
         return pixels;
     }
@@ -145,3 +148,134 @@ public class MapGenerator : MonoBehaviour
         return erodedPixels;
     }
 }
+
+/*
+    private List<List<Vector2>> DivideIntoPoliticalRegions(Color[] pixels, int mapWidth, int mapHeight)
+    {
+        List<List<Vector2>> politicalRegions = new List<List<Vector2>>();
+
+        bool[,] visited = new bool[mapWidth, mapHeight];
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                if (!visited[x, y] && pixels[y * mapWidth + x] == Color.green)
+                {
+                    List<Vector2> newRegion = new List<Vector2>();
+                    newRegion.Add(new Vector2(x, y));
+                    politicalRegions.Add(newRegion);
+
+                    Queue<Vector2> queue = new Queue<Vector2>();
+                    queue.Enqueue(new Vector2(x, y));
+
+                    while (queue.Count > 0)
+                    {
+                        Vector2 currentPixel = queue.Dequeue();
+
+                        int currentX = (int)currentPixel.x;
+                        int currentY = (int)currentPixel.y;
+
+                        visited[currentX, currentY] = true;
+
+                        for (int offsetY = -1; offsetY <= 1; offsetY++)
+                        {
+                            for (int offsetX = -1; offsetX <= 1; offsetX++)
+                            {
+                                int neighborX = currentX + offsetX;
+                                int neighborY = currentY + offsetY;
+
+                                if (neighborX >= 0 && neighborX < mapWidth && neighborY >= 0 && neighborY < mapHeight &&
+                                    !visited[neighborX, neighborY] && pixels[neighborY * mapWidth + neighborX] == Color.green)
+                                {
+                                    visited[neighborX, neighborY] = true;
+                                    queue.Enqueue(new Vector2(neighborX, neighborY));
+                                    politicalRegions[politicalRegions.Count - 1].Add(new Vector2(neighborX, neighborY));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return politicalRegions;
+    }
+
+    private Color[] ColorPoliticalRegions(Color[] pixels, int mapWidth, int mapHeight)
+    {
+        List<List<Vector2>> politicalRegions = DivideIntoPoliticalRegions(pixels, mapWidth, mapHeight);
+
+        Color[] newPixels = new Color[pixels.Length];
+
+        int regionIndex = 0;
+        foreach (List<Vector2> region in politicalRegions)
+        {
+            Color regionColor;
+            {
+                // Generate a random color for the region
+                regionColor = new Color(Random.value, Random.value, Random.value);
+            }
+
+            foreach (Vector2 pixel in region)
+            {
+                int x = (int)pixel.x;
+                int y = (int)pixel.y;
+                newPixels[y * mapWidth + x] = regionColor;
+            }
+
+            regionIndex++;
+        }
+
+        return newPixels;
+    }
+
+    private Dictionary<int, Color> ColorPoliticalRegions(Color[] pixels, int mapWidth, int mapHeight)
+    {
+        List<List<Vector2>> politicalRegions = DivideIntoPoliticalRegions(pixels, mapWidth, mapHeight);
+        Dictionary<int, Color> regionColors = new Dictionary<int, Color>();
+        Color[] colors = new Color[] { Color.blue, Color.red, Color.green, Color.yellow, Color.cyan, Color.magenta, Color.gray };
+
+        for (int i = 0; i < politicalRegions.Count; i++)
+        {
+            {
+                regionColors[i] = colors[i % colors.Length]; // use a different color for each region
+            }
+        }
+
+        foreach (List<Vector2> region in politicalRegions)
+        {
+            foreach (Vector2 pixel in region)
+            {
+                int x = (int)pixel.x;
+                int y = (int)pixel.y;
+                int index = y * mapWidth + x;
+                int regionIndex = GetRegionIndex(region, pixel);
+
+                if (regionIndex >= 0)
+                {
+                    pixels[index] = regionColors[regionIndex];
+                }
+            }
+        }
+
+        return regionColors;
+    }
+
+    private int GetRegionIndex(List<Vector2> region, Vector2 pixel)
+    {
+        for (int i = 0; i < region.Count; i++)
+        {
+            if (region[i] == pixel)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+
+}
+
+*/
