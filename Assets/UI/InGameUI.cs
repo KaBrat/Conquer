@@ -1,7 +1,3 @@
-using System.Net;
-using System.Globalization;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
@@ -15,6 +11,7 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
     private Label ProvinceFootmenLabel;
     private Label ProvinceFootmenValue;
     public GameManager gameManager;
+
     private void Awake()
     {
         var root = GetComponent<UIDocument>().rootVisualElement;
@@ -22,22 +19,17 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
         var buttonMenu = root.Q<Button>("Menu");
         var buttonEndTurn = root.Q<Button>("EndTurn");
 
-        buttonMenu.clicked += () => MenuClicked();
-        buttonEndTurn.clicked += () => EndTurnClicked();
+        buttonMenu.clicked += MenuClicked;
+        buttonEndTurn.clicked += EndTurnClicked;
 
-        this.PlayerLabel = root.Q<Label>("PlayerValue");
-        this.RoundLabel = root.Q<Label>("RoundValue");
-        this.ProvinceNameLabel = root.Q<Label>("ProvinceName");
-        this.ProvinceNameLabel.visible = false;
+        PlayerLabel = root.Q<Label>("PlayerValue");
+        RoundLabel = root.Q<Label>("RoundValue");
+        ProvinceNameLabel = root.Q<Label>("ProvinceName");
+        ProvinceOwnerLabel = root.Q<Label>("ProvinceOwner");
+        ProvinceFootmenLabel = root.Q<Label>("FootmenLabel");
+        ProvinceFootmenValue = root.Q<Label>("FootmenValue");
 
-        this.ProvinceOwnerLabel = root.Q<Label>("ProvinceOwner");
-        this.ProvinceOwnerLabel.visible = false;
-
-        this.ProvinceFootmenLabel = root.Q<Label>("FootmenLabel");
-        this.ProvinceFootmenLabel.visible = false;
-
-        this.ProvinceFootmenValue = root.Q<Label>("FootmenValue");
-        this.ProvinceFootmenValue.visible = false;
+        HideProvinceInfo();
     }
 
     private void MenuClicked()
@@ -47,39 +39,39 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
 
     private void EndTurnClicked()
     {
-        var (peviousPlayer, currentPlayer) = gameManager.EndTurn();
+        var (previousPlayer, currentPlayer) = gameManager.EndTurn();
         if (currentPlayer != null)
         {
-            this.PlayerLabel.text = currentPlayer.id.ToString();
+            PlayerLabel.text = currentPlayer.id.ToString();
         }
-        this.RoundLabel.text = gameManager.RoundsManager.currentRound.ToString();
+        RoundLabel.text = gameManager.RoundsManager.currentRound.ToString();
     }
 
     public void DisplayProvince(Province province)
     {
         if (province != null)
         {
-            this.ProvinceNameLabel.visible = true;
-            this.ProvinceNameLabel.text = province.Name;
+            ProvinceNameLabel.visible = true;
+            ProvinceNameLabel.text = province.Name;
 
-            this.ProvinceOwnerLabel.visible = true;
-            if (province.Owner != null)
-                this.ProvinceOwnerLabel.text = $"Player {province.Owner.id}";
-            else
-                this.ProvinceOwnerLabel.text = "none";
+            ProvinceOwnerLabel.visible = true;
+            ProvinceOwnerLabel.text = province.Owner != null ? $"Player {province.Owner.id}" : "none";
 
-            this.ProvinceFootmenLabel.visible = true;
-            this.ProvinceFootmenValue.visible = true;
-            this.ProvinceFootmenValue.text = province.FootmenCount.ToString();
+            ProvinceFootmenLabel.visible = true;
+            ProvinceFootmenValue.visible = true;
+            ProvinceFootmenValue.text = province.FootmenCount.ToString();
         }
-
         else
         {
-            this.ProvinceNameLabel.visible = false;
-            this.ProvinceOwnerLabel.visible = false;
-            this.ProvinceFootmenLabel.visible = false;
-            this.ProvinceFootmenValue.visible = false;
+            HideProvinceInfo();
         }
+    }
 
+    private void HideProvinceInfo()
+    {
+        ProvinceNameLabel.visible = false;
+        ProvinceOwnerLabel.visible = false;
+        ProvinceFootmenLabel.visible = false;
+        ProvinceFootmenValue.visible = false;
     }
 }
