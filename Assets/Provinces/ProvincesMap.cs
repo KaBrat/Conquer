@@ -6,18 +6,9 @@ using System.Linq;
 public class ProvincesMap : MonoBehaviour
 {
     public List<Province> Provinces = new List<Province>(){
-        new Province(){
-            Name = "Eastwatch",
-            Colorhex = "b5e61d"
-        },
-        new Province(){
-            Name = "Northguard",
-            Colorhex = "2ea7e8"
-        },
-        new Province(){
-            Name = "Summershore",
-            Colorhex = "e86c2e",
-        }
+        new Province("Eastwatch", "b5e61d"),
+        new Province("Northguard","2ea7e8"),
+        new Province("Summershore","e86c2e")
     };
 
     public Texture2D mapImage;
