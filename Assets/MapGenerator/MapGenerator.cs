@@ -25,6 +25,14 @@ public class MapGenerator : MonoBehaviour
 
     private Color[] GeneratePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold, int erosionIterations, int smoothing)
     {
+        var pixels = GenerateLandAndWater(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold, erosionIterations, smoothing);
+        pixels = GenerateStates(pixels);
+
+        return pixels;
+    }
+
+    private Color[] GenerateLandAndWater(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold, int erosionIterations, int smoothing)
+    {
         var offsetX = UnityEngine.Random.Range(-random, random);
         var offsetY = UnityEngine.Random.Range(-random, random);
 
@@ -47,10 +55,9 @@ public class MapGenerator : MonoBehaviour
             pixels = Erode(pixels, mapWidth, mapHeight);
         }
 
-        pixels = GenerateStates(pixels);
-
         return pixels;
     }
+
     private Color[] GenerateStates(Color[] pixels)
     {
         // Create a list of state colors
