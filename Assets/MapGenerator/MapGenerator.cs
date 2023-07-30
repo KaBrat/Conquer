@@ -54,13 +54,12 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        pixels = GenerateStates(pixels);
-
         for (var i = 0; i < erosionIterations; i++)
         {
             pixels = Erode(pixels, mapWidth, mapHeight);
         }
 
+        pixels = GenerateStates(pixels);
 
         return pixels;
     }
