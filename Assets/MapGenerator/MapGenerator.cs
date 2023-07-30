@@ -106,7 +106,8 @@ public class MapGenerator : MonoBehaviour
                 pixels[y * mapWidth + x] = nearestColor;
 
                 // If the nearest color was not found within a certain range, create a new state
-                if (nearestDistance > 60f)
+                var randomValue = UnityEngine.Random.Range(60, 150);
+                if (nearestDistance > randomValue)
                 {
                     Color randomColor = RandomColor();
                     stateColors.Add(randomColor);
