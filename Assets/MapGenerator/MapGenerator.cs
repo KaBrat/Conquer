@@ -54,12 +54,13 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
+        pixels = GenerateStates(pixels);
+
         for (var i = 0; i < erosionIterations; i++)
         {
             pixels = Erode(pixels, mapWidth, mapHeight);
         }
 
-        pixels = GenerateStates(pixels);
 
         return pixels;
     }
@@ -72,7 +73,7 @@ public class MapGenerator : MonoBehaviour
         Dictionary<Color, Vector2> stateCentroids = new Dictionary<Color, Vector2>();
 
         // Create a spatial grid to group nearby pixels
-        int gridSize = 50; // Adjust the grid size based on your map and performance requirements
+        int gridSize = 30; // Adjust the grid size based on your map and performance requirements
         int gridWidth = Mathf.CeilToInt(mapWidth / (float)gridSize);
         int gridHeight = Mathf.CeilToInt(mapHeight / (float)gridSize);
         Dictionary<Vector2Int, Color> spatialGrid = new Dictionary<Vector2Int, Color>();
@@ -111,7 +112,7 @@ public class MapGenerator : MonoBehaviour
                 pixels[y * mapWidth + x] = nearestColor;
 
                 // If the nearest color was not found within a certain range, create a new state
-                if (nearestDistance > 50f)
+                if (nearestDistance > 60f)
                 {
                     Color randomColor = RandomColor();
                     stateColors.Add(randomColor);
