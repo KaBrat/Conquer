@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-
     [Header("Map Generation Settings")]
     [SerializeField, Range(0.1f, 1f)] private float noiseScale = 0.4f;
     [SerializeField, Range(0f, 1f)] private float threshold = 0.3f;
@@ -60,8 +58,6 @@ public class MapGenerator : MonoBehaviour
             pixels = Erode(pixels, mapWidth, mapHeight);
         }
 
-        //var regions = DivideIntoPoliticalRegions(pixels, mapWidth, mapHeight);
-
         return pixels;
     }
 
@@ -71,9 +67,7 @@ public class MapGenerator : MonoBehaviour
         bool isOuterYPixel = IsOnOuterBoundaries(y, outerYRange, mapHeight);
 
         if (!isOuterXPixel && !isOuterYPixel)
-        {
             return 1f;
-        }
 
         int xDistanceToMaxInner = CalculateDistanceToMaxInnerBoundary(x, outerXRange, mapWidth);
         int yDistanceToMaxInner = CalculateDistanceToMaxInnerBoundary(y, outerYRange, mapHeight);
@@ -135,16 +129,11 @@ public class MapGenerator : MonoBehaviour
 
                 // Check if the current pixel is land surrounded by water, with a majority of water pixels
                 if (currentPixel == Color.green && waterPixelCount >= smoothing)
-                {
                     erodedPixels[y * mapWidth + x] = Color.blue;
-                }
                 else
-                {
                     erodedPixels[y * mapWidth + x] = currentPixel;
-                }
             }
         }
-
         return erodedPixels;
     }
 }
