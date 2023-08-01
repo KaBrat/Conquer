@@ -8,9 +8,7 @@ public class MapGenerator : MonoBehaviour
     [Header("Map Generation Settings")]
     [SerializeField, Range(0.1f, 1f)] private float noiseScale = 0.4f;
     [SerializeField, Range(0f, 1f)] private float threshold = 0.3f;
-    [SerializeField, Range(0, 100)] private int erosionIterations = 0;
     [SerializeField, Range(0f, 500f)] private float random = 20f;
-    [SerializeField, Range(1, 3)] private int smoothing = 2;
     [SerializeField, Range(100, 3000)] private int mapWidth = 500;
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
@@ -18,20 +16,20 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        Color[] pixels = GeneratePixels(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold, erosionIterations, smoothing);
+        Color[] pixels = GeneratePixels(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold);
         var map = TextureGenerator.SaveMap(pixels, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/LandMap.png");
         GetComponent<SpriteRenderer>().sprite = map;
     }
 
-    private Color[] GeneratePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold, int erosionIterations, int smoothing)
+    private Color[] GeneratePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold)
     {
-        var pixels = GenerateLandAndWater(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold, erosionIterations, smoothing);
+        var pixels = GenerateLandAndWater(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold);
         pixels = GenerateStates(pixels);
 
         return pixels;
     }
 
-    private Color[] GenerateLandAndWater(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold, int erosionIterations, int smoothing)
+    private Color[] GenerateLandAndWater(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold)
     {
         var offsetX = UnityEngine.Random.Range(-random, random);
         var offsetY = UnityEngine.Random.Range(-random, random);
@@ -48,11 +46,6 @@ public class MapGenerator : MonoBehaviour
                 var noiseValue = Mathf.PerlinNoise(sampleX, sampleY) * outerBoundarySmoothFactor;
                 pixels[y * mapWidth + x] = noiseValue >= threshold ? Color.green : Color.blue;
             }
-        }
-
-        for (var i = 0; i < erosionIterations; i++)
-        {
-            pixels = Erode(pixels, mapWidth, mapHeight);
         }
 
         return pixels;
@@ -191,40 +184,5 @@ public class MapGenerator : MonoBehaviour
         var maxDistance = (1f / outerRange) * max;
         var relation = distanceToMaxInner / maxDistance;
         return 1f - relation;
-    }
-
-
-    Color[] Erode(Color[] pixels, int mapWidth, int mapHeight)
-    {
-        Color[] erodedPixels = new Color[pixels.Length];
-        for (int y = 1; y < mapHeight - 1; y++)
-        {
-            for (int x = 1; x < mapWidth - 1; x++)
-            {
-                // Get the current pixel and its neighbors
-                Color currentPixel = pixels[y * mapWidth + x];
-                Color leftPixel = pixels[y * mapWidth + (x - 1)];
-                Color rightPixel = pixels[y * mapWidth + (x + 1)];
-                Color topPixel = pixels[(y - 1) * mapWidth + x];
-                Color bottomPixel = pixels[(y + 1) * mapWidth + x];
-
-                // Count the number of water pixels surrounding the current pixel
-                int waterPixelCount = 0;
-                if (leftPixel == Color.blue) waterPixelCount++;
-                if (rightPixel == Color.blue) waterPixelCount++;
-                if (topPixel == Color.blue) waterPixelCount++;
-                if (bottomPixel == Color.blue) waterPixelCount++;
-
-                if (waterPixelCount <= 1)
-                    erodedPixels[y * mapWidth + x] = Color.green;
-
-                // Check if the current pixel is land surrounded by water, with a majority of water pixels
-                if (currentPixel == Color.green && waterPixelCount >= smoothing)
-                    erodedPixels[y * mapWidth + x] = Color.blue;
-                else
-                    erodedPixels[y * mapWidth + x] = currentPixel;
-            }
-        }
-        return erodedPixels;
     }
 }
