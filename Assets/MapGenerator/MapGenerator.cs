@@ -23,7 +23,7 @@ public class MapGenerator : MonoBehaviour
 
     private Color[] GeneratePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold)
     {
-        var pixels = GenerateLandAndWater(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold);
+        var pixels = GenerateLandAndWater(mapWidth, mapHeight, outerXRange, outerYRange, noiseScale, random, threshold);
         pixels = GenerateStates(pixels);
 
         return pixels;
