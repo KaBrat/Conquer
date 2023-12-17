@@ -7,6 +7,7 @@ public class TextureGenerator
     {
         var landTexture = new Texture2D(mapWidth, mapHeight);
         landTexture.SetPixels(pixels);
+        landTexture.filterMode = FilterMode.Point;
         landTexture.Apply();
 
         var sprite = Sprite.Create(landTexture, new Rect(0, 0, landTexture.width, landTexture.height), Vector2.one * 0.5f);
