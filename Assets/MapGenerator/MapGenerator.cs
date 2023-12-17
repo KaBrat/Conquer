@@ -6,7 +6,9 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     [Header("Map Generation Settings")]
-    [SerializeField, Range(0.1f, 10f)] private float noiseScale = 4f; 
+    // Noisescale is like a "zoom" on the perlin noise
+    // high => far away, low => close
+    [SerializeField, Range(0.1f, 50f)] private float noiseScale = 4f; 
     [SerializeField, Range(0f, 1f)] private float threshold = 0.45f;
     [SerializeField, Range(0f, 500f)] private float random = 50f;
     [SerializeField, Range(100, 3000)] private int mapWidth = 500;
@@ -23,8 +25,8 @@ public class MapGenerator : MonoBehaviour
 
     private Color[] GeneratePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold)
     {
-        var pixels = GenerateLandAndWater(mapWidth, mapHeight, outerXRange, outerYRange, noiseScale, random, threshold);
-        pixels = GenerateStates(pixels);
+        var pixels = new LandAndWaterGenerator().GenerateLandAndWater(mapWidth, mapHeight, outerXRange, outerYRange, noiseScale, random, threshold);
+        //pixels = GenerateStates(pixels);
 
         return pixels;
     }

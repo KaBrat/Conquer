@@ -18,8 +18,21 @@ public class LandAndWaterGenerator
 
                 var outerBoundarySmoothFactor = GetOuterBoundarySmoothFactor(mapWidth, mapHeight, outerXRange, outerYRange, y, x);
                 var noiseValue = Mathf.PerlinNoise(sampleX, sampleY) * outerBoundarySmoothFactor;
-                
-                pixels[y * mapWidth + x] = noiseValue >= threshold ? Color.green : Color.blue;
+
+                var mountainThreshold = 0.75f;
+
+                if (noiseValue <= threshold)
+                {
+                    pixels[y * mapWidth + x] = Color.blue;
+                }
+                if (noiseValue >= threshold && noiseValue < mountainThreshold)
+                {
+                    pixels[y * mapWidth + x] = Color.green;
+                }
+                if (noiseValue >= mountainThreshold)
+                {
+                    pixels[y * mapWidth + x] = Color.gray;
+                }
             }
         }
 
