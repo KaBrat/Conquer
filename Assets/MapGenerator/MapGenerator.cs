@@ -6,9 +6,9 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     [Header("Map Generation Settings")]
-    [SerializeField, Range(0.1f, 1f)] private float noiseScale = 0.4f;
-    [SerializeField, Range(0f, 1f)] private float threshold = 0.3f;
-    [SerializeField, Range(0f, 500f)] private float random = 20f;
+    [SerializeField, Range(0.1f, 10f)] private float noiseScale = 4f; 
+    [SerializeField, Range(0f, 1f)] private float threshold = 0.45f;
+    [SerializeField, Range(0f, 500f)] private float random = 50f;
     [SerializeField, Range(100, 3000)] private int mapWidth = 500;
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
