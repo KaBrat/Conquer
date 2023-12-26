@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>FloodSpill</id>
+    <version>1.0.4</version>
+    <authors>Paweł Ślusarczyk</authors>
+    <owners>Paweł Ślusarczyk</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/azsdaja/FloodSpill-CSharp/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/azsdaja/FloodSpill-CSharp</projectUrl>
+    <iconUrl>https://github.com/azsdaja/FloodSpill-CSharp/blob/master/icon.png?raw=true</iconUrl>
+    <description>FloodSpill is a fast multi-purpose flood-fill algorithm for C#. It lets you run a flood in two-dimensional space, configure it with your own conditions and callbacks and choose between FIFO, LIFO or priority-based order for processing positions. Includes possibility of performing scanline-fill for better performance.</description>
+    <releaseNotes>First complete release.</releaseNotes>
+    <tags>flood-fill flood-filling flood fill filling floodfill scanline grid roguelike dijkstra</tags>
+    <repository type="Git" url="https://github.com/azsdaja/FloodSpill-CSharp" />
+    <dependencies>
+      <group targetFramework=".NETStandard1.6">
+        <dependency id="C5" version="2.5.3" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework3.5">
+        <dependency id="C5" version="2.5.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
