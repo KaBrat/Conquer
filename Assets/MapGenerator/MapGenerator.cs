@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Unity.Properties;
 using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
@@ -9,7 +10,10 @@ public class MapGenerator : MonoBehaviour
     // Noisescale is like a "zoom" on the perlin noise
     // high => far away, low => close
     [SerializeField, Range(0.1f, 50f)] private float noiseScale = 4f; 
-    [SerializeField, Range(0f, 1f)] private float threshold = 0.45f;
+    [SerializeField, Range(0f, 1f)] private float waterThreshold = 0.45f;
+    [SerializeField, Range(0f, 1f)] private float beachThreshold = 0.48f;
+    [SerializeField, Range(0f, 1f)] private float grassThreshold = 0.8f;
+    [SerializeField, Range(0f, 1f)] private float mountainThreshold = 0.9f;
     [SerializeField, Range(0f, 500f)] private float random = 50f;
     [SerializeField, Range(100, 3000)] private int mapWidth = 500;
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
@@ -18,37 +22,16 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        Color[] pixels = GeneratePixels(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold);
+        Color[] pixels = GeneratePixels(outerBoundaryXSize, outerBoundaryYSize);
         var map = TextureGenerator.SaveMap(pixels, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/LandMap.png");
         GetComponent<SpriteRenderer>().sprite = map;
     }
 
-    private Color[] GeneratePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold)
+    private Color[] GeneratePixels(int outerXRange, int outerYRange)
     {
-        var pixels = new LandAndWaterGenerator().GenerateLandAndWater(mapWidth, mapHeight, outerXRange, outerYRange, noiseScale, random, threshold);
+        var generator = new LandAndWaterGenerator(this.mapWidth,this.mapHeight,this.noiseScale,this.random, this.outerBoundaryXSize, this.outerBoundaryYSize);
+        var pixels = generator.GenerateLandAndWater(this.waterThreshold,this.beachThreshold,this.grassThreshold,this.mountainThreshold);
         //pixels = GenerateStates(pixels);
-
-        return pixels;
-    }
-
-    private Color[] GenerateLandAndWater(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold)
-    {
-        var offsetX = UnityEngine.Random.Range(-random, random);
-        var offsetY = UnityEngine.Random.Range(-random, random);
-
-        var pixels = new Color[mapWidth * mapHeight];
-
-        for (var y = 0; y < mapHeight; y++)
-        {
-            for (var x = 0; x < mapWidth; x++)
-            {
-                var outerBoundarySmoothFactor = GetOuterBoundarySmoothFactor(mapWidth, mapHeight, outerXRange, outerYRange, y, x);
-                var sampleX = x * noiseScale / mapWidth + offsetX;
-                var sampleY = y * noiseScale / mapHeight + offsetY;
-                var noiseValue = Mathf.PerlinNoise(sampleX, sampleY) * outerBoundarySmoothFactor;
-                pixels[y * mapWidth + x] = noiseValue >= threshold ? Color.green : Color.blue;
-            }
-        }
 
         return pixels;
     }

@@ -2,40 +2,86 @@ using UnityEngine;
 
 public class LandAndWaterGenerator
 {
-    public Color[] GenerateLandAndWater(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold)
+    public int mapWidth, mapHeight;
+    public float noiseScale;
+    public float random;
+    public int outerXRange, outerYRange;
+
+    public LandAndWaterGenerator(int mapWidth, int mapHeight, float noiseScale, float random, int outerXRange, int outerYRange)
     {
-        var offsetX = UnityEngine.Random.Range(-random, random);
-        var offsetY = UnityEngine.Random.Range(-random, random);
+        this.mapWidth = mapWidth;
+        this.mapHeight = mapHeight;
+        this.noiseScale = noiseScale;
+        this.random = random;
+        this.outerXRange = outerXRange;
+        this.outerYRange = outerYRange;
+    }
+    public float[,] GenerateNoiseMap()
+    {
+        var offsetX = UnityEngine.Random.Range(-this.random, this.random);
+        var offsetY = UnityEngine.Random.Range(-this.random, this.random);
 
-        var pixels = new Color[mapWidth * mapHeight];
-
-        for (var y = 0; y < mapHeight; y++)
+        var noiseMap = new float[this.mapWidth, this.mapHeight];
+        for (var x = 0; x < mapWidth; x++)
         {
-            for (var x = 0; x < mapWidth; x++)
+            for (var y = 0; y < mapHeight; y++)
             {
-                var sampleX = (((float)x/(float)mapWidth) * noiseScale) + offsetX;
-                var sampleY = (((float)y/(float)mapHeight) * noiseScale) + offsetY;
+                var sampleX = (((float)x / (float)mapWidth) * this.noiseScale) + offsetX;
+                var sampleY = (((float)y / (float)mapHeight) * this.noiseScale) + offsetY;
 
-                var outerBoundarySmoothFactor = GetOuterBoundarySmoothFactor(mapWidth, mapHeight, outerXRange, outerYRange, y, x);
+                var outerBoundarySmoothFactor = GetOuterBoundarySmoothFactor(this.mapWidth, this.mapHeight, this.outerXRange, this.outerYRange, y, x);
                 var noiseValue = Mathf.PerlinNoise(sampleX, sampleY) * outerBoundarySmoothFactor;
 
-                var mountainThreshold = 0.75f;
+                noiseMap[x, y] = noiseValue;
+            }
+        }
+        return noiseMap;
+    }
 
-                if (noiseValue <= threshold)
+    public Color[] GenerateLandAndWater(float waterThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
+    {
+        var pixels = new Color[mapWidth * mapHeight];
+
+        var noiseMap = this.GenerateNoiseMap();
+
+        for (var x = 0; x < mapWidth; x++)
+        {
+            for (var y = 0; y < mapHeight; y++)
+            {
+                ;
+                var noiseValue = noiseMap[x, y];
+
+                // sea
+                if (noiseValue <= waterThreshold)
                 {
                     pixels[y * mapWidth + x] = Color.blue;
                 }
-                if (noiseValue >= threshold && noiseValue < mountainThreshold)
+
+                // beach
+                if (noiseValue > waterThreshold && noiseValue <= beachThreshold)
+                {
+                    pixels[y * mapWidth + x] = Color.yellow;
+                }
+
+                // land
+                if (noiseValue > beachThreshold && noiseValue <= grassThreshold)
                 {
                     pixels[y * mapWidth + x] = Color.green;
                 }
-                if (noiseValue >= mountainThreshold)
+
+                // mountain
+                if (noiseValue > grassThreshold && noiseValue <= mountainThreshold)
                 {
                     pixels[y * mapWidth + x] = Color.gray;
                 }
+
+                // snow
+                if (noiseValue > mountainThreshold)
+                {
+                    pixels[y * mapWidth + x] = Color.white;
+                }
             }
         }
-
         return pixels;
     }
 

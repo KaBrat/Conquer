@@ -664,11 +664,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 0
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 2ba9c50b-3243-4013-b386-eefec8639dc5
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: Conquer
+  organizationId: maepster
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
