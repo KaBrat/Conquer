@@ -16,7 +16,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
-    [SerializeField, Range(0, 300)] private int Statesize = 50;
+    [SerializeField, Range(0, 300)] private int Statesize = 170;
 
     private Sprite terrain;
     private Sprite states;
