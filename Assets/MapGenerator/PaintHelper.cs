@@ -1,5 +1,6 @@
 using FloodSpill;
 using FloodSpill.Utilities;
+using System.Linq;
 using UnityEngine;
 
 public static class PaintHelper
@@ -20,11 +21,12 @@ public static class PaintHelper
         floodSpiller.SpillFlood(floodParameters, _positionMarkMatrix);
     }
 
-    public static void FloodPaint(Color[] image, int imageWidth, int imageHeight, Vector2 startPosition, Color replacedColor, Color targetColor, int size)
+    public static void FloodPaint(Color[] image, int imageWidth, int imageHeight, Vector2 startPosition, Color[] replacedColors, Color targetColor, int size)
     {
         Predicate<int, int> positionQualifier = (x, y) =>
         {
-            return GetColor(image, imageWidth, x, y) == replacedColor;
+            var positionColor = GetColor(image, imageWidth, x, y);
+            return replacedColors.Any(c => c.Equals(positionColor));
         };
 
         Predicate<int, int> neighbourStopCondition = (x, y) =>

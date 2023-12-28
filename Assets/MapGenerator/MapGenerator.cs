@@ -22,23 +22,38 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
 
+    private Sprite terrain;
+    private Sprite states;
+
     private Color[] Terrain;
 
     public void GenerateMap()
     {
-        Terrain = GeneratePixels();
-        var map = TextureGenerator.SaveMap(Terrain, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/LandMap.png");
-        GetComponent<SpriteRenderer>().sprite = map;
+        var (Terrain, States) = GeneratePixels();
+        this.terrain = TextureGenerator.SaveMap(Terrain, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
+        this.states = TextureGenerator.SaveMap(States, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
+        ShowTerrain();
     }
 
-    private Color[] GeneratePixels()
+    public void ShowTerrain()
+    {
+        GetComponent<SpriteRenderer>().sprite = this.terrain;
+    }
+
+    public void ShowStates()
+    {
+        GetComponent<SpriteRenderer>().sprite = this.states;
+    }
+
+    private (Color[] Terrain, Color[] States) GeneratePixels()
     {
         var generator = new LandAndWaterGenerator(this.mapWidth, this.mapHeight, this.noiseScale, this.random, this.outerBoundaryXSize, this.outerBoundaryYSize);
-        this.Terrain = generator.GenerateLandAndWater(this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
+        var noiseMap = generator.GenerateNoiseMap();
+        this.Terrain = generator.GenerateLandAndWater(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
         var states = GenerateStates(this.Terrain);
 
-        return this.Terrain;
+        return (this.Terrain, states);
     }
 
     private Color[] GenerateStates(Color[] Terrain)
@@ -70,7 +85,8 @@ public class MapGenerator : MonoBehaviour
             if (found)
             {
                 var size = UnityEngine.Random.Range(40, 120);
-                PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, Color.green, PaintHelper.GenerateRandomColor(), size);
+                var colorsToReplace = new Color[] { Color.green, Color.yellow };
+                PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, PaintHelper.GenerateRandomColor(), size);
             }
         }
 

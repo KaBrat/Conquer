@@ -1,5 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement style="flex-grow: 1; flex-direction: column-reverse;">
+    <ui:VisualElement style="flex-grow: 1; align-items: flex-start; justify-content: center;">
+        <ui:VisualElement name="VisualElement" style="flex-grow: 0; flex-direction: column; align-items: flex-start; justify-content: center;">
+            <ui:VisualElement style="flex-grow: 0;">
+                <ui:Button text="Terrain" display-tooltip-when-elided="true" name="Terrain" style="flex-shrink: 1;" />
+            </ui:VisualElement>
+            <ui:VisualElement style="flex-grow: 0; flex-shrink: 1; flex-basis: auto;">
+                <ui:Button text="States" display-tooltip-when-elided="true" name="States" style="flex-shrink: 1; width: auto;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="VisualElement" style="flex-grow: 0; flex-direction: column-reverse;">
         <ui:VisualElement>
             <ui:Button text="New Map" display-tooltip-when-elided="true" name="NewMap" style="flex-shrink: 1;" />
         </ui:VisualElement>

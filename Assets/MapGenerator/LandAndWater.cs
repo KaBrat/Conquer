@@ -38,11 +38,9 @@ public class LandAndWaterGenerator
         return noiseMap;
     }
 
-    public Color[] GenerateLandAndWater(float waterThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
+    public Color[] GenerateLandAndWater(float[,] noiseMap, float waterThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
     {
         var pixels = new Color[mapWidth * mapHeight];
-
-        var noiseMap = this.GenerateNoiseMap();
 
         for (var x = 0; x < mapWidth; x++)
         {

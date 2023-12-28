@@ -12,12 +12,11 @@ public class MGUIScript : MonoBehaviour
         var root = GetComponent<UIDocument>().rootVisualElement;
 
         var buttonNewMap = root.Q<Button>("NewMap");
+        var buttonTerrain = root.Q<Button>("Terrain");
+        var buttonStates = root.Q<Button>("States");
 
-        buttonNewMap.clicked += () => NewMapClicked();
-    }
-
-    private void NewMapClicked()
-    {
-        mapGenerator.GenerateMap();
+        buttonNewMap.clicked += () => this.mapGenerator.GenerateMap();
+        buttonTerrain.clicked += () => this.mapGenerator.ShowTerrain();
+        buttonStates.clicked += () => this.mapGenerator.ShowStates();
     }
 }
