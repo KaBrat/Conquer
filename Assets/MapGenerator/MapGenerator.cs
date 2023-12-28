@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
@@ -27,13 +26,20 @@ public class MapGenerator : MonoBehaviour
 
     private Color[] Terrain;
 
-    private List<Color> TerrainColors = new List<Color>() { Color.green, Color.blue, Color.white, Color.gray, Color.yellow };
+    private List<Color> ColorsUsedInTerrain = new List<Color>() { Color.green, Color.blue, Color.white, Color.gray, Color.yellow };
 
     public void GenerateMap()
     {
         var (Terrain, States) = GeneratePixels();
-        this.terrain = TextureGenerator.SaveMap(Terrain, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
-        this.states = TextureGenerator.SaveMap(States, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/States.png");
+
+        var terrainTexture = ImageHelper.CreateTexture2D(Terrain, this.mapWidth, this.mapHeight);
+        ImageHelper.SaveMap(terrainTexture, Application.dataPath + "/GeneratedMaps/Terrain.png");
+        this.terrain = ImageHelper.CreateSprite(terrainTexture);
+
+        var statesTexture = ImageHelper.CreateTexture2D(States, this.mapWidth, this.mapHeight);
+        ImageHelper.SaveMap(statesTexture, Application.dataPath + "/GeneratedMaps/States.png");
+        this.states = ImageHelper.CreateSprite(statesTexture);
+
         ShowTerrain();
     }
 
@@ -108,7 +114,7 @@ public class MapGenerator : MonoBehaviour
             randomColor = new Color(Random.value, Random.value, Random.value);
 
             // Check if the color is already in the list
-        } while (ColorListContainsColor(colorList, randomColor) || ColorListContainsColor(this.TerrainColors, randomColor));
+        } while (ColorListContainsColor(colorList, randomColor) || ColorListContainsColor(this.ColorsUsedInTerrain, randomColor));
 
         // Add the new color to the list if needed
         colorList.Add(randomColor);
