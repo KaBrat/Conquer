@@ -1,10 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using Unity.Properties;
 using UnityEngine;
-using FloodSpill;
-using FloodSpill.Utilities;
 
 public class MapGenerator : MonoBehaviour
 {
