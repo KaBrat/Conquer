@@ -21,9 +21,6 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
     [SerializeField, Range(0, 300)] private int Statesize = 170;
 
-    private Sprite terrain;
-    private Sprite states;
-
     private Color[] Terrain;
 
     private List<Color> ColorsUsedInTerrain = new List<Color>() { Color.green, Color.blue, Color.white, Color.gray, Color.yellow };
@@ -34,23 +31,23 @@ public class MapGenerator : MonoBehaviour
 
         var terrainTexture = ImageHelper.CreateTexture2D(Terrain, this.mapWidth, this.mapHeight);
         ImageHelper.SaveMap(terrainTexture, Application.dataPath + "/GeneratedMaps/Terrain.png");
-        this.terrain = ImageHelper.CreateSprite(terrainTexture);
 
         var statesTexture = ImageHelper.CreateTexture2D(States, this.mapWidth, this.mapHeight);
         ImageHelper.SaveMap(statesTexture, Application.dataPath + "/GeneratedMaps/States.png");
-        this.states = ImageHelper.CreateSprite(statesTexture);
 
         ShowTerrain();
     }
 
     public void ShowTerrain()
     {
-        GetComponent<SpriteRenderer>().sprite = this.terrain;
+        var sprite = ImageHelper.LoadImageFromDisk(this.mapWidth, this.mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
+        GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
     public void ShowStates()
     {
-        GetComponent<SpriteRenderer>().sprite = this.states;
+        var sprite = ImageHelper.LoadImageFromDisk(this.mapWidth, this.mapHeight, Application.dataPath + "/GeneratedMaps/States.png");
+        GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
     private (Color[] Terrain, Color[] States) GeneratePixels()
