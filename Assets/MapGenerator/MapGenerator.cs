@@ -26,15 +26,25 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        Terrain = GeneratePixels(outerBoundaryXSize, outerBoundaryYSize);
+        Terrain = GeneratePixels();
         var map = TextureGenerator.SaveMap(Terrain, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/LandMap.png");
         GetComponent<SpriteRenderer>().sprite = map;
     }
 
-    private Color[] GeneratePixels(int outerXRange, int outerYRange)
+    private Color[] GeneratePixels()
     {
         var generator = new LandAndWaterGenerator(this.mapWidth, this.mapHeight, this.noiseScale, this.random, this.outerBoundaryXSize, this.outerBoundaryYSize);
         this.Terrain = generator.GenerateLandAndWater(this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
+
+        var states = GenerateStates(this.Terrain);
+
+        return this.Terrain;
+    }
+
+    private Color[] GenerateStates(Color[] Terrain)
+    {
+        var states = new Color[Terrain.Length];
+        Array.Copy(Terrain, states, Terrain.Length);
 
         var found = true;
         var startingPosition = new Vector2();
@@ -43,11 +53,11 @@ public class MapGenerator : MonoBehaviour
         {
             found = false;
 
-            for (var x = 0; x < mapWidth; x++)
+            for (var x = 0; x < this.mapWidth; x++)
             {
-                for (var y = 0; y < mapHeight; y++)
+                for (var y = 0; y < this.mapHeight; y++)
                 {
-                    var pixelColor = this.Terrain[y * mapWidth + x];
+                    var pixelColor = states[y * this.mapWidth + x];
                     if (pixelColor == Color.green)
                     {
                         found = true;
@@ -60,10 +70,10 @@ public class MapGenerator : MonoBehaviour
             if (found)
             {
                 var size = UnityEngine.Random.Range(40, 120);
-                PaintHelper.FloodPaint(Terrain, mapWidth, mapHeight, startingPosition, Color.green, PaintHelper.GenerateRandomColor(), size);
+                PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, Color.green, PaintHelper.GenerateRandomColor(), size);
             }
         }
 
-        return this.Terrain;
+        return states;
     }
 }
