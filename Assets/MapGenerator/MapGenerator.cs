@@ -1,150 +1,127 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
+using Color = UnityEngine.Color;
+using Random = UnityEngine.Random;
 
 public class MapGenerator : MonoBehaviour
 {
-
     [Header("Map Generation Settings")]
-    [SerializeField, Range(0.1f, 1f)] private float noiseScale = 0.4f;
-    [SerializeField, Range(0f, 1f)] private float threshold = 0.3f;
-    [SerializeField, Range(0, 100)] private int erosionIterations = 0;
-    [SerializeField, Range(0f, 500f)] private float random = 20f;
-    [SerializeField, Range(1, 3)] private int smoothing = 2;
+    // Noisescale is like a "zoom" on the perlin noise
+    // high => far away, low => close
+    [SerializeField, Range(0.1f, 50f)] private float noiseScale = 4f;
+    [SerializeField, Range(0f, 1f)] private float waterThreshold = 0.45f;
+    [SerializeField, Range(0f, 1f)] private float beachThreshold = 0.48f;
+    [SerializeField, Range(0f, 1f)] private float grassThreshold = 0.8f;
+    [SerializeField, Range(0f, 1f)] private float mountainThreshold = 0.9f;
+    [SerializeField, Range(0f, 500f)] private float random = 50f;
     [SerializeField, Range(100, 3000)] private int mapWidth = 500;
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
+    [SerializeField, Range(0, 300)] private int Statesize = 170;
+
+    private Color[] Terrain;
+
+    private List<Color> ColorsUsedInTerrain = new List<Color>() { Color.green, Color.blue, Color.white, Color.gray, Color.yellow };
 
     public void GenerateMap()
     {
-        Color[] pixels = GeneratePixels(mapWidth, mapHeight, outerBoundaryXSize, outerBoundaryYSize, noiseScale, random, threshold, erosionIterations, smoothing);
-        GenerateTexture(pixels);
+        var (Terrain, States) = GeneratePixels();
+
+        var terrainTexture = ImageHelper.CreateTexture2D(Terrain, this.mapWidth, this.mapHeight);
+        ImageHelper.SaveMap(terrainTexture, Application.dataPath + "/GeneratedMaps/Terrain.png");
+
+        var statesTexture = ImageHelper.CreateTexture2D(States, this.mapWidth, this.mapHeight);
+        ImageHelper.SaveMap(statesTexture, Application.dataPath + "/GeneratedMaps/States.png");
+
+        ShowTerrain();
     }
 
-    private void GenerateTexture(Color[] pixels)
+    public void ShowTerrain()
     {
-        var landTexture = new Texture2D(mapWidth, mapHeight);
-        landTexture.SetPixels(pixels);
-        landTexture.Apply();
-
-        var sprite = Sprite.Create(landTexture, new Rect(0, 0, landTexture.width, landTexture.height), Vector2.one * 0.5f);
+        var sprite = ImageHelper.LoadImageFromDisk(this.mapWidth, this.mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
         GetComponent<SpriteRenderer>().sprite = sprite;
-
-        byte[] pngBytes = landTexture.EncodeToPNG();
-        File.WriteAllBytes(Application.dataPath + "/GeneratedMaps/LandMap.png", pngBytes);
     }
 
-    private Color[] GeneratePixels(int mapWidth, int mapHeight, int outerXRange, int outerYRange, float noiseScale, float random, float threshold, int erosionIterations, int smoothing)
+    public void ShowStates()
     {
-        var offsetX = UnityEngine.Random.Range(-random, random);
-        var offsetY = UnityEngine.Random.Range(-random, random);
+        var sprite = ImageHelper.LoadImageFromDisk(this.mapWidth, this.mapHeight, Application.dataPath + "/GeneratedMaps/States.png");
+        GetComponent<SpriteRenderer>().sprite = sprite;
+    }
 
-        var pixels = new Color[mapWidth * mapHeight];
+    private (Color[] Terrain, Color[] States) GeneratePixels()
+    {
+        var generator = new TerrainGenerator(this.mapWidth, this.mapHeight, this.noiseScale, this.random, this.outerBoundaryXSize, this.outerBoundaryYSize);
+        var noiseMap = generator.GenerateNoiseMap();
+        this.Terrain = generator.GenerateTerrain(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
-        for (var y = 0; y < mapHeight; y++)
+        var states = GenerateStates(this.Terrain);
+
+        return (this.Terrain, states);
+    }
+
+    private Color[] GenerateStates(Color[] Terrain)
+    {
+        var states = new Color[Terrain.Length];
+        Array.Copy(Terrain, states, Terrain.Length);
+
+        var found = true;
+        var startingPosition = new Vector2();
+
+        var stateColors = new List<Color>();
+
+        while (found)
         {
-            for (var x = 0; x < mapWidth; x++)
+            found = false;
+
+            for (var x = 0; x < this.mapWidth; x++)
             {
-                var outerBoundarySmoothFactor = GetOuterBoundarySmoothFactor(mapWidth, mapHeight, outerXRange, outerYRange, y, x);
-                var sampleX = x * noiseScale / mapWidth + offsetX;
-                var sampleY = y * noiseScale / mapHeight + offsetY;
-                var noiseValue = Mathf.PerlinNoise(sampleX, sampleY) * outerBoundarySmoothFactor;
-                pixels[y * mapWidth + x] = noiseValue >= threshold ? Color.green : Color.blue;
+                for (var y = 0; y < this.mapHeight; y++)
+                {
+                    var pixelColor = states[y * this.mapWidth + x];
+                    if (pixelColor == Color.green)
+                    {
+                        found = true;
+                        startingPosition.x = x;
+                        startingPosition.y = y;
+                    }
+                }
+            }
+
+            if (found)
+            {
+                var size = UnityEngine.Random.Range(this.Statesize / 2, this.Statesize);
+                var colorsToReplace = new Color[] { Color.green, Color.yellow };
+                var stateColor = AddNewRandomColorToList(stateColors);
+                PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, stateColor, size);
             }
         }
 
-        for (var i = 0; i < erosionIterations; i++)
+        return states;
+    }
+
+    Color AddNewRandomColorToList(List<Color> colorList)
+    {
+        Color randomColor;
+
+        do
         {
-            pixels = Erode(pixels, mapWidth, mapHeight);
-        }
+            // Generate a random color
+            randomColor = new Color(Random.value, Random.value, Random.value);
 
-        //var regions = DivideIntoPoliticalRegions(pixels, mapWidth, mapHeight);
+            // Check if the color is already in the list
+        } while (ColorListContainsColor(colorList, randomColor) || ColorListContainsColor(this.ColorsUsedInTerrain, randomColor));
 
-        return pixels;
+        // Add the new color to the list if needed
+        colorList.Add(randomColor);
+
+        return randomColor;
     }
 
-    private float GetOuterBoundarySmoothFactor(int mapWidth, int mapHeight, int outerXRange, int outerYRange, int y, int x)
+    bool ColorListContainsColor(List<Color> colorList, Color color)
     {
-        bool isOuterXPixel = IsOnOuterBoundaries(x, outerXRange, mapWidth);
-        bool isOuterYPixel = IsOnOuterBoundaries(y, outerYRange, mapHeight);
-
-        if (!isOuterXPixel && !isOuterYPixel)
-        {
-            return 1f;
-        }
-
-        int xDistanceToMaxInner = CalculateDistanceToMaxInnerBoundary(x, outerXRange, mapWidth);
-        int yDistanceToMaxInner = CalculateDistanceToMaxInnerBoundary(y, outerYRange, mapHeight);
-
-        if (isOuterXPixel && isOuterYPixel)
-        {
-            return xDistanceToMaxInner >= yDistanceToMaxInner ?
-                CalculateOuterBoundarySmoothFactor(xDistanceToMaxInner, outerXRange, mapWidth) :
-                CalculateOuterBoundarySmoothFactor(yDistanceToMaxInner, outerYRange, mapHeight);
-        }
-
-        return isOuterXPixel ?
-            CalculateOuterBoundarySmoothFactor(xDistanceToMaxInner, outerXRange, mapWidth) :
-            CalculateOuterBoundarySmoothFactor(yDistanceToMaxInner, outerYRange, mapHeight);
-    }
-
-    private bool IsOnOuterBoundaries(int pixelValue, int outerRange, int max)
-    {
-        return outerRange != 0 && (pixelValue <= (1f / outerRange) * max || pixelValue >= max - (1f / outerRange) * max);
-    }
-
-    private int CalculateDistanceToMaxInnerBoundary(int pixelValue, int outerRange, int max)
-    {
-        int maxInner = outerRange == 0 ? max / 2 : pixelValue < max / 2 ? (int)(1f / outerRange * max) : (int)(max - 1f / outerRange * max);
-        return Mathf.Abs(pixelValue - maxInner);
-    }
-
-    private float CalculateOuterBoundarySmoothFactor(int distanceToMaxInner, int outerRange, int max)
-    {
-        var maxDistance = (1f / outerRange) * max;
-        var relation = distanceToMaxInner / maxDistance;
-        return 1f - relation;
-    }
-
-
-    Color[] Erode(Color[] pixels, int mapWidth, int mapHeight)
-    {
-        Color[] erodedPixels = new Color[pixels.Length];
-        for (int y = 1; y < mapHeight - 1; y++)
-        {
-            for (int x = 1; x < mapWidth - 1; x++)
-            {
-                // Get the current pixel and its neighbors
-                Color currentPixel = pixels[y * mapWidth + x];
-                Color leftPixel = pixels[y * mapWidth + (x - 1)];
-                Color rightPixel = pixels[y * mapWidth + (x + 1)];
-                Color topPixel = pixels[(y - 1) * mapWidth + x];
-                Color bottomPixel = pixels[(y + 1) * mapWidth + x];
-
-                // Count the number of water pixels surrounding the current pixel
-                int waterPixelCount = 0;
-                if (leftPixel == Color.blue) waterPixelCount++;
-                if (rightPixel == Color.blue) waterPixelCount++;
-                if (topPixel == Color.blue) waterPixelCount++;
-                if (bottomPixel == Color.blue) waterPixelCount++;
-
-                if (waterPixelCount <= 1)
-                    erodedPixels[y * mapWidth + x] = Color.green;
-
-                // Check if the current pixel is land surrounded by water, with a majority of water pixels
-                if (currentPixel == Color.green && waterPixelCount >= smoothing)
-                {
-                    erodedPixels[y * mapWidth + x] = Color.blue;
-                }
-                else
-                {
-                    erodedPixels[y * mapWidth + x] = currentPixel;
-                }
-            }
-        }
-
-        return erodedPixels;
+        // Check if the color is in the list (exact comparison)
+        return colorList.Contains(color);
     }
 }
