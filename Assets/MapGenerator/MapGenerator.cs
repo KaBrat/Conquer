@@ -21,7 +21,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
-    [SerializeField, Range(0, 200)] private int Statesize = 50;
+    [SerializeField, Range(0, 300)] private int Statesize = 50;
 
     private Sprite terrain;
     private Sprite states;
@@ -32,7 +32,7 @@ public class MapGenerator : MonoBehaviour
     {
         var (Terrain, States) = GeneratePixels();
         this.terrain = TextureGenerator.SaveMap(Terrain, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
-        this.states = TextureGenerator.SaveMap(States, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
+        this.states = TextureGenerator.SaveMap(States, mapWidth, mapHeight, Application.dataPath + "/GeneratedMaps/States.png");
         ShowTerrain();
     }
 
