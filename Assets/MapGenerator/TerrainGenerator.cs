@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class LandAndWaterGenerator
+public class TerrainGenerator
 {
     public int mapWidth, mapHeight;
     public float noiseScale;
     public float random;
     public int outerXRange, outerYRange;
 
-    public LandAndWaterGenerator(int mapWidth, int mapHeight, float noiseScale, float random, int outerXRange, int outerYRange)
+    public TerrainGenerator(int mapWidth, int mapHeight, float noiseScale, float random, int outerXRange, int outerYRange)
     {
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
@@ -38,7 +38,7 @@ public class LandAndWaterGenerator
         return noiseMap;
     }
 
-    public Color[] GenerateLandAndWater(float[,] noiseMap, float waterThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
+    public Color[] GenerateTerrain(float[,] noiseMap, float waterThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
     {
         var pixels = new Color[mapWidth * mapHeight];
 

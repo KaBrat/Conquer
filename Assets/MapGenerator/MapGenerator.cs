@@ -43,9 +43,9 @@ public class MapGenerator : MonoBehaviour
 
     private (Color[] Terrain, Color[] States) GeneratePixels()
     {
-        var generator = new LandAndWaterGenerator(this.mapWidth, this.mapHeight, this.noiseScale, this.random, this.outerBoundaryXSize, this.outerBoundaryYSize);
+        var generator = new TerrainGenerator(this.mapWidth, this.mapHeight, this.noiseScale, this.random, this.outerBoundaryXSize, this.outerBoundaryYSize);
         var noiseMap = generator.GenerateNoiseMap();
-        this.Terrain = generator.GenerateLandAndWater(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
+        this.Terrain = generator.GenerateTerrain(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
         var states = GenerateStates(this.Terrain);
 
