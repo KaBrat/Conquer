@@ -21,6 +21,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
+    [SerializeField, Range(0, 200)] private int Statesize = 50;
 
     private Sprite terrain;
     private Sprite states;
@@ -84,7 +85,7 @@ public class MapGenerator : MonoBehaviour
 
             if (found)
             {
-                var size = UnityEngine.Random.Range(40, 120);
+                var size = UnityEngine.Random.Range(this.Statesize / 2, this.Statesize);
                 var colorsToReplace = new Color[] { Color.green, Color.yellow };
                 PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, PaintHelper.GenerateRandomColor(), size);
             }
