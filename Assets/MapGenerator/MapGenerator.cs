@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
+using Color = UnityEngine.Color;
+using Random = UnityEngine.Random;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -22,6 +26,8 @@ public class MapGenerator : MonoBehaviour
     private Sprite states;
 
     private Color[] Terrain;
+
+    private List<Color> TerrainColors = new List<Color>() { Color.green, Color.blue, Color.white, Color.gray, Color.yellow };
 
     public void GenerateMap()
     {
@@ -60,6 +66,8 @@ public class MapGenerator : MonoBehaviour
         var found = true;
         var startingPosition = new Vector2();
 
+        var stateColors = new List<Color>();
+
         while (found)
         {
             found = false;
@@ -82,10 +90,35 @@ public class MapGenerator : MonoBehaviour
             {
                 var size = UnityEngine.Random.Range(this.Statesize / 2, this.Statesize);
                 var colorsToReplace = new Color[] { Color.green, Color.yellow };
-                PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, PaintHelper.GenerateRandomColor(), size);
+                var stateColor = AddNewRandomColorToList(stateColors);
+                PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, stateColor, size);
             }
         }
 
         return states;
+    }
+
+    Color AddNewRandomColorToList(List<Color> colorList)
+    {
+        Color randomColor;
+
+        do
+        {
+            // Generate a random color
+            randomColor = new Color(Random.value, Random.value, Random.value);
+
+            // Check if the color is already in the list
+        } while (ColorListContainsColor(colorList, randomColor) || ColorListContainsColor(this.TerrainColors, randomColor));
+
+        // Add the new color to the list if needed
+        colorList.Add(randomColor);
+
+        return randomColor;
+    }
+
+    bool ColorListContainsColor(List<Color> colorList, Color color)
+    {
+        // Check if the color is in the list (exact comparison)
+        return colorList.Contains(color);
     }
 }
