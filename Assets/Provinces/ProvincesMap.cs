@@ -10,12 +10,14 @@ public class ProvincesMap : MonoBehaviour
     public List<Province> Provinces;
     public Texture2D mapImage;
     public HashSet<Color> provinceColors = new HashSet<Color>();
+    public SpriteRenderer spriteRenderer;
 
     public IProvinceDisplayer ProvinceDisplayer;
 
     void Start()
     {
         mainCamera = Camera.main;
+        spriteRenderer = GetComponent<SpriteRenderer>();
         //ColorUtility.TryParseHtmlString("#" + "2ea7e8", out Color lightBlue);
         //ColorUtility.TryParseHtmlString("#" + "b5e61d", out Color lightGreen);
         //ColorUtility.TryParseHtmlString("#" + "e86c2e", out Color orange);
@@ -29,7 +31,7 @@ public class ProvincesMap : MonoBehaviour
         var pixels = this.mapImage.GetPixels();
 
         Provinces = new List<Province>();
-        var terrainColors = new HashSet<Color>() { Color.blue, Color.gray, Color.white};
+        var terrainColors = new HashSet<Color>() { Color.blue, Color.gray, Color.white };
 
         for (var x = 0; x < this.mapImage.width; x++)
         {
@@ -71,17 +73,18 @@ public class ProvincesMap : MonoBehaviour
     }
 
     public float cameraMoveSpeed = 5f;
-
     void MoveCamera()
     {
         // Move the camera based on key input
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 moveDirection = new Vector3(horizontalInput, verticalInput, 0f);
-        Vector3 moveAmount = moveDirection * cameraMoveSpeed * Time.deltaTime;
+        Vector3 newPosition = mainCamera.transform.position + new Vector3(horizontalInput, verticalInput, 0) * cameraMoveSpeed * Time.deltaTime;
 
-        mainCamera.transform.Translate(moveAmount);
+        newPosition.x = Mathf.Clamp(newPosition.x, -0.6f, 0.6f);
+        newPosition.y = Mathf.Clamp(newPosition.y, -0.6f, 0.6f);
+
+        mainCamera.transform.position = newPosition;
     }
 
     //public Province GetProvince(Vector3 mouseposition)
