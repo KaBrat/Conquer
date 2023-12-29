@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Burst.Intrinsics;
 using UnityEngine;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
@@ -111,17 +112,11 @@ public class MapGenerator : MonoBehaviour
             randomColor = new Color(Random.value, Random.value, Random.value);
 
             // Check if the color is already in the list
-        } while (ColorListContainsColor(colorList, randomColor) || ColorListContainsColor(this.ColorsUsedInTerrain, randomColor));
+        } while ( ColorHelper.ColorListContainsColor(colorList, randomColor) || ColorHelper.ColorListContainsColor(this.ColorsUsedInTerrain, randomColor));
 
         // Add the new color to the list if needed
         colorList.Add(randomColor);
 
         return randomColor;
-    }
-
-    bool ColorListContainsColor(List<Color> colorList, Color color)
-    {
-        // Check if the color is in the list (exact comparison)
-        return colorList.Contains(color);
     }
 }

@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour, IEndTurn
     void Start()
     {
         this.Players = Player.createPlayers(NumberOfPlayers);
-        this.SetPlayerStartingLocations();
+        //this.SetPlayerStartingLocations();
         this.RoundsManager = new RoundsManager(MaxRounds);
         this.RoundsManager.NewRound(this.Players);
     }
