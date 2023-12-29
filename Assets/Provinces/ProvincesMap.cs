@@ -57,51 +57,31 @@ public class ProvincesMap : MonoBehaviour
     private Camera mainCamera;
     void Update()
     {
-        if (Input.anyKeyDown)
+        if (Input.GetMouseButtonDown(0))
         {
-            Vector2 clickPosition = this.mainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-            RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
-
-            if (hit.collider != null)
-            {
-                // Check if the clicked object has a SpriteRenderer
-                SpriteRenderer spriteRenderer = hit.collider.GetComponent<SpriteRenderer>();
-
-                if (spriteRenderer != null)
-                {
-                    // Get the texture from the sprite
-                    Texture2D texture = spriteRenderer.sprite.texture;
-
-                    // Calculate UV coordinates manually
-                    Vector2 localPoint = hit.transform.InverseTransformPoint(hit.point);
-                    Vector2 uv = new Vector2(
-                        Mathf.InverseLerp(hit.collider.bounds.min.x, hit.collider.bounds.max.x, localPoint.x),
-                        Mathf.InverseLerp(hit.collider.bounds.min.y, hit.collider.bounds.max.y, localPoint.y)
-                    );
-
-                    // Convert UV coordinates to pixel coordinates
-                    int x = Mathf.RoundToInt(uv.x * texture.width);
-                    int y = Mathf.RoundToInt(uv.y * texture.height);
-
-                    // Get the color of the clicked pixel
-                    Color pixelColor = texture.GetPixel(x, y);
-
-                    // Extract RGB values
-                    int r = Mathf.RoundToInt(pixelColor.r * 255);
-                    int g = Mathf.RoundToInt(pixelColor.g * 255);
-                    int b = Mathf.RoundToInt(pixelColor.b * 255);
-
-                    // Print RGB values
-                    Debug.Log("Clicked on RGB: (" + r + ", " + g + ", " + b + ")");
-                }
-            }
+            ColorHelper.GetColor(mainCamera, Input.mousePosition);
 
             //var pixel = GetRGBA();
             //Debug.Log(pixel);
             //var clickedProvince = GetProvince(Input.mousePosition);
             //ProvinceDisplayer.DisplayProvince(clickedProvince);
         }
+
+        MoveCamera();
+    }
+
+    public float cameraMoveSpeed = 5f;
+
+    void MoveCamera()
+    {
+        // Move the camera based on key input
+        float horizontalInput = Input.GetAxis("Horizontal");
+        float verticalInput = Input.GetAxis("Vertical");
+
+        Vector3 moveDirection = new Vector3(horizontalInput, verticalInput, 0f);
+        Vector3 moveAmount = moveDirection * cameraMoveSpeed * Time.deltaTime;
+
+        mainCamera.transform.Translate(moveAmount);
     }
 
     //public Province GetProvince(Vector3 mouseposition)
