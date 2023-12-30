@@ -57,8 +57,6 @@ public class MapGenerator : MonoBehaviour
     {
         var sprite = ImageHelper.LoadImageFromDisk(this.mapWidth, this.mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
         GetComponent<SpriteRenderer>().sprite = sprite;
-        sprite.texture.filterMode = FilterMode.Point;
-        sprite.texture.Apply();
     }
 
     public void ShowStates()

@@ -9,10 +9,23 @@ public class ProvincesMap : MonoBehaviour
     
     public HashSet<Province> Provinces = new HashSet<Province>();
     
-    public Texture2D mapImage;
+    private Texture2D mapImage;
+
+    public void ShowTerrain()
+    {
+        var sprite = ImageHelper.LoadImageFromDisk(this.mapImage.width, this.mapImage.height, Application.dataPath + "/GeneratedMaps/Terrain.png");
+        this.GetComponent<SpriteRenderer>().sprite = sprite;
+    }
+
+    public void ShowProvinces()
+    {
+        var sprite = ImageHelper.LoadImageFromDisk(this.mapImage.width, this.mapImage.height, Application.dataPath + "/GeneratedMaps/States.png");
+        this.GetComponent<SpriteRenderer>().sprite = sprite;
+    }
 
     void Start()
     {
+        this.mapImage = GetComponent<SpriteRenderer>().sprite.texture;
         ProvinceDisplayer = GameObject.FindObjectsOfType<InGameUI>().FirstOrDefault();
         InitProvinces();
     }

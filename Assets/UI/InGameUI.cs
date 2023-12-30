@@ -19,8 +19,14 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
         var buttonMenu = root.Q<Button>("Menu");
         var buttonEndTurn = root.Q<Button>("EndTurn");
 
-        buttonMenu.clicked += MenuClicked;
+        var buttonTerrain = root.Q<Button>("Terrain");
+        var buttonProvinces = root.Q<Button>("Provinces");
+
+        buttonMenu.clicked += () => SceneManager.LoadScene(0);
         buttonEndTurn.clicked += EndTurnClicked;
+
+        buttonTerrain.clicked += gameManager.ProvincesMap.ShowTerrain;
+        buttonProvinces.clicked += gameManager.ProvincesMap.ShowProvinces;
 
         PlayerLabel = root.Q<Label>("PlayerValue");
         RoundLabel = root.Q<Label>("RoundValue");
@@ -30,11 +36,6 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
         ProvinceFootmenValue = root.Q<Label>("FootmenValue");
 
         HideProvinceInfo();
-    }
-
-    private void MenuClicked()
-    {
-        SceneManager.LoadScene(0);
     }
 
     private void EndTurnClicked()
