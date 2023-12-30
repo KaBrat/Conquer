@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class TerrainGenerator
@@ -38,9 +39,9 @@ public class TerrainGenerator
         return noiseMap;
     }
 
-    public Color[] GenerateTerrain(float[,] noiseMap, float waterThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
+    public Color32[] GenerateTerrain(float[,] noiseMap, float waterThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
     {
-        var pixels = new Color[mapWidth * mapHeight];
+        var pixels = new Color32[mapWidth * mapHeight];
 
         for (var x = 0; x < mapWidth; x++)
         {

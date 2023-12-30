@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
+using static UnityEditor.VersionControl.Asset;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
@@ -22,9 +24,22 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
     [SerializeField, Range(0, 300)] private int Statesize = 170;
 
-    private Color[] Terrain;
+    private List<Color32> ColorsUsedInTerrain = new List<Color32>() { Color.green, Color.blue, Color.white, Color.gray, Color.yellow };
 
-    private List<Color> ColorsUsedInTerrain = new List<Color>() { Color.green, Color.blue, Color.white, Color.gray, Color.yellow };
+    private Camera mainCamera;
+
+    void Start()
+    {
+        mainCamera = Camera.main;
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            var provinceColor = ColorHelper.GetColor(mainCamera, Input.mousePosition);
+        }
+    }
 
     public void GenerateMap()
     {
@@ -32,7 +47,6 @@ public class MapGenerator : MonoBehaviour
 
         var terrainTexture = ImageHelper.CreateTexture2D(Terrain, this.mapWidth, this.mapHeight);
         ImageHelper.SaveMap(terrainTexture, Application.dataPath + "/GeneratedMaps/Terrain.png");
-
         var statesTexture = ImageHelper.CreateTexture2D(States, this.mapWidth, this.mapHeight);
         ImageHelper.SaveMap(statesTexture, Application.dataPath + "/GeneratedMaps/States.png");
 
@@ -43,6 +57,8 @@ public class MapGenerator : MonoBehaviour
     {
         var sprite = ImageHelper.LoadImageFromDisk(this.mapWidth, this.mapHeight, Application.dataPath + "/GeneratedMaps/Terrain.png");
         GetComponent<SpriteRenderer>().sprite = sprite;
+        sprite.texture.filterMode = FilterMode.Point;
+        sprite.texture.Apply();
     }
 
     public void ShowStates()
@@ -51,26 +67,26 @@ public class MapGenerator : MonoBehaviour
         GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
-    private (Color[] Terrain, Color[] States) GeneratePixels()
+    private (Color32[] Terrain, Color32[] States) GeneratePixels()
     {
         var generator = new TerrainGenerator(this.mapWidth, this.mapHeight, this.noiseScale, this.random, this.outerBoundaryXSize, this.outerBoundaryYSize);
         var noiseMap = generator.GenerateNoiseMap();
-        this.Terrain = generator.GenerateTerrain(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
+        var terrain = generator.GenerateTerrain(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
-        var states = GenerateStates(this.Terrain);
+        var states = GenerateStates(terrain);
 
-        return (this.Terrain, states);
+        return (terrain, states);
     }
 
-    private Color[] GenerateStates(Color[] Terrain)
+    private Color32[] GenerateStates(Color32[] Terrain)
     {
-        var states = new Color[Terrain.Length];
+        var states = new Color32[Terrain.Length];
         Array.Copy(Terrain, states, Terrain.Length);
 
         var found = true;
         var startingPosition = new Vector2();
 
-        var stateColors = new List<Color>();
+        var stateColors = new List<Color32>();
 
         while (found)
         {
@@ -93,7 +109,7 @@ public class MapGenerator : MonoBehaviour
             if (found)
             {
                 var size = UnityEngine.Random.Range(this.Statesize / 2, this.Statesize);
-                var colorsToReplace = new Color[] { Color.green, Color.yellow };
+                var colorsToReplace = new Color32[] { Color.green, Color.yellow };
                 var stateColor = AddNewRandomColorToList(stateColors);
                 PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, stateColor, size);
             }
@@ -102,17 +118,22 @@ public class MapGenerator : MonoBehaviour
         return states;
     }
 
-    Color AddNewRandomColorToList(List<Color> colorList)
+    Color32 AddNewRandomColorToList(List<Color32> colorList)
     {
-        Color randomColor;
+        Color32 randomColor;
 
         do
         {
             // Generate a random color
-            randomColor = new Color(Random.value, Random.value, Random.value);
+            randomColor = new Color32(
+    (byte)Random.Range(0, 256),  // Random red component (0 to 255)
+    (byte)Random.Range(0, 256),  // Random green component (0 to 255)
+    (byte)Random.Range(0, 256),  // Random blue component (0 to 255)
+    255                           // Fully opaque alpha component (255)
+);
 
             // Check if the color is already in the list
-        } while ( ColorHelper.ColorListContainsColor(colorList, randomColor) || ColorHelper.ColorListContainsColor(this.ColorsUsedInTerrain, randomColor));
+        } while (ColorHelper.ColorListContainsColor(colorList, randomColor) || ColorHelper.ColorListContainsColor(this.ColorsUsedInTerrain, randomColor));
 
         // Add the new color to the list if needed
         colorList.Add(randomColor);

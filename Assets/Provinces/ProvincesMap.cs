@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEngine.EventSystems;
+using Vector3 = UnityEngine.Vector3;
 
 public class ProvincesMap : MonoBehaviour
 {
-    public List<Province> Provinces;
+    public HashSet<Province> Provinces = new HashSet<Province>();
     public Texture2D mapImage;
-    public HashSet<Color> provinceColors = new HashSet<Color>();
+    public HashSet<Color32> provinceColors = new HashSet<Color32>();
     public SpriteRenderer spriteRenderer;
 
     public IProvinceDisplayer ProvinceDisplayer;
@@ -30,30 +28,55 @@ public class ProvincesMap : MonoBehaviour
         ProvinceDisplayer = GameObject.FindObjectsOfType<InGameUI>().FirstOrDefault();
         var pixels = this.mapImage.GetPixels();
 
-        Provinces = new List<Province>();
-        var terrainColors = new HashSet<Color>() { Color.blue, Color.gray, Color.white };
+        var terrainColors = new HashSet<Color32>() { Color.blue, Color.gray, Color.white };
+
+        var provinceNames = new List<string>
+        {
+            "Eldrathia",
+            "Silverholm",
+            "Misthaven",
+            "Emberwold",
+            "Frostspire",
+            "Celestial Reach",
+            "Shadowmere",
+            "Stormwatch",
+            "Crimson Valley",
+            "Ironpeak",
+            "Whispering Woods",
+            "Serpent's Coil",
+            "Golden Plains",
+            "Moonshroud",
+            "Thunderhelm",
+            "Starfallen Reach",
+            "Azure Haven",
+            "Wyrmguard",
+            "Obsidian Marches",
+            "Sylvanheart"
+        };
 
         for (var x = 0; x < this.mapImage.width; x++)
         {
             for (var y = 0; y < this.mapImage.height; y++)
             {
                 var pixelColor = pixels[y * this.mapImage.width + x];
-                if (!terrainColors.Any(tc => tc.Equals(pixelColor)))
+                if (!terrainColors.Any(tc => tc == pixelColor))
                 {
-                    provinceColors.Add(pixelColor);
+                    if (!provinceColors.Contains(pixelColor))
+                    {
+                        provinceColors.Add(pixelColor);
+
+                        // Choose a random index
+                        var random = Random.Range(0, provinceNames.Count());
+
+                        // Get and remove the random fantasy province name
+                        string randomProvince = provinceNames[random];
+                        provinceNames.RemoveAt(random);
+
+                        this.Provinces.Add(new Province(randomProvince, pixelColor));
+                    }
                 }
             }
         }
-
-        //provinceColors = new HashSet<Color>(pixels);
-        //provinceColors.Remove(Color.black);
-        //provinceColors.Remove(Color.white);
-
-        //foreach (var province in Provinces)
-        //{
-        //    var match = provinceColors.First(pC => String.Equals(ColorUtility.ToHtmlStringRGB(pC), ColorUtility.ToHtmlStringRGB(province.Color), StringComparison.OrdinalIgnoreCase));
-        //    province.Color = match;
-        //}
     }
 
     private Camera mainCamera;
@@ -61,12 +84,11 @@ public class ProvincesMap : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            ColorHelper.GetColor(mainCamera, Input.mousePosition);
+            var provinceColor = ColorHelper.GetColor(mainCamera, Input.mousePosition);
+            var clickedProvince = Provinces.Where(p => p.Color == provinceColor).FirstOrDefault();
+            //Debug.Log(clickedProvince.Name);
 
-            //var pixel = GetRGBA();
-            //Debug.Log(pixel);
-            //var clickedProvince = GetProvince(Input.mousePosition);
-            //ProvinceDisplayer.DisplayProvince(clickedProvince);
+            this.ProvinceDisplayer.DisplayProvince(clickedProvince);
         }
     }
 

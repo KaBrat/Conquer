@@ -3,13 +3,13 @@ using UnityEngine;
 
 public static class ColorHelper
 {
-    public static bool ColorListContainsColor(List<Color> colorList, Color color)
+    public static bool ColorListContainsColor(List<Color32> colorList, Color32 color)
     {
         // Check if the color is in the list (exact comparison)
         return colorList.Contains(color);
     }
 
-    public static Color GetColor(Camera camera, Vector3 position)
+    public static Color32 GetColor(Camera camera, Vector3 position)
     {
         Vector2 clickPosition = camera.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
@@ -36,18 +36,18 @@ public static class ColorHelper
                 int y = Mathf.RoundToInt(uv.y * texture.height);
 
                 // Get the color of the clicked pixel
-                Color pixelColor = texture.GetPixel(x, y);
+                Color32 pixelColor = texture.GetPixel(x, y);
 
                 // Extract RGB values
-                int r = Mathf.RoundToInt(pixelColor.r * 255);
-                int g = Mathf.RoundToInt(pixelColor.g * 255);
-                int b = Mathf.RoundToInt(pixelColor.b * 255);
+                //int r = Mathf.RoundToInt(pixelColor.r * 255);
+                //int g = Mathf.RoundToInt(pixelColor.g * 255);
+                //int b = Mathf.RoundToInt(pixelColor.b * 255);
 
                 // Print RGB values
-                Debug.Log("Clicked on RGB: (" + r + ", " + g + ", " + b + ")");
+                Debug.Log("Clicked on RGB: (" + pixelColor.r + ", " + pixelColor.g + ", " + pixelColor.b + ")");
                 return pixelColor;
             }
         }
-        return new Color();
+        return new Color32();
     }
 }

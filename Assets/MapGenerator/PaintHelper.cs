@@ -5,14 +5,14 @@ using UnityEngine;
 
 public static class PaintHelper
 {
-    public static void BucketFillImage(Color[] image, int imageWidth, int imageHeight, int floodStartX, int floodStartY, Color replacedColor, Color targetColor)
+    public static void BucketFillImage(Color32[] image, int imageWidth, int imageHeight, int floodStartX, int floodStartY, Color32 replacedColor, Color32 targetColor)
     {
         var floodSpiller = new FloodSpiller();
         var floodParameters = new FloodParameters(floodStartX, floodStartY)
         {
             BoundsRestriction = new FloodBounds(imageWidth, imageHeight),
             NeighbourhoodType = NeighbourhoodType.Four,
-            Qualifier = (x, y) => GetColor(image, imageWidth, x, y) == replacedColor,
+            Qualifier = (x, y) => GetColor(image, imageWidth, x, y).Equals(replacedColor),
             NeighbourProcessor = (x, y, mark) => SetColor(image, imageWidth, x, y, targetColor),
             ProcessStartAsFirstNeighbour = true
         };
@@ -21,7 +21,7 @@ public static class PaintHelper
         floodSpiller.SpillFlood(floodParameters, _positionMarkMatrix);
     }
 
-    public static void FloodPaint(Color[] image, int imageWidth, int imageHeight, Vector2 startPosition, Color[] replacedColors, Color targetColor, int size)
+    public static void FloodPaint(Color32[] image, int imageWidth, int imageHeight, Vector2 startPosition, Color32[] replacedColors, Color32 targetColor, int size)
     {
         Predicate<int, int> positionQualifier = (x, y) =>
         {
@@ -57,26 +57,24 @@ public static class PaintHelper
         floodSpiller.SpillFlood(floodParameters, _positionMarkMatrix);
     }
 
-    private static void SetColor(Color[] image, int imageWidth, int x, int y, Color targetColor)
+    private static void SetColor(Color32[] image, int imageWidth, int x, int y, Color32 targetColor)
     {
         image[y * imageWidth + x] = targetColor;
     }
 
-    private static Color GetColor(Color[] image, int imageWidth, int x, int y)
+    private static Color32 GetColor(Color32[] image, int imageWidth, int x, int y)
     {
         return image[y * imageWidth + x];
     }
 
-    public static Color GenerateRandomColor()
+    public static Color32 GenerateRandomColor()
     {
-        // Generate random values for each color component
-        float red = Random.Range(0f, 1f);
-        float green = Random.Range(0f, 1f);
-        float blue = Random.Range(0f, 1f);
-        float alpha = Random.Range(0f, 1f); // Optional: include alpha for transparency
-
-        // Create and return the random color
-        return new Color(red, green, blue, alpha);
+        return new Color32(
+            (byte)Random.Range(0, 256),  // Random red component (0 to 255)
+            (byte)Random.Range(0, 256),  // Random green component (0 to 255)
+            (byte)Random.Range(0, 256),  // Random blue component (0 to 255)
+            255                           // Fully opaque alpha component (255)
+        );
     }
 }
 
