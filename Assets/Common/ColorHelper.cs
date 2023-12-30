@@ -1,10 +1,13 @@
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
-using UnityEngine.UI;
 
 public static class ColorHelper
 {
+    public static Color32 gray = new Color32(128, 128, 128, 255);
+    public static Color32 blue = new Color32(0, 128, 255, 255);
+
+    public static List<Color32> ColorsUsedInTerrain = new List<Color32>() {Color.black, Color.green, ColorHelper.blue, Color.white, ColorHelper.gray, Color.yellow };
+
     public static bool ColorListContainsColor(List<Color32> colorList, Color32 color)
     {
         // Check if the color is in the list (exact comparison)

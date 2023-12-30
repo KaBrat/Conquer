@@ -49,7 +49,7 @@ public class ProvincesMap : MonoBehaviour
     private void InitProvinces()
     {
         var pixels = this.mapImage.GetPixels();
-        var terrainColors = new HashSet<Color32>() { Color.blue, Color.gray, Color.white };
+        var terrainColors = new HashSet<Color32>() { ColorHelper.blue, Color.gray, Color.white };
 
         var provinceNames = new List<string>
         {

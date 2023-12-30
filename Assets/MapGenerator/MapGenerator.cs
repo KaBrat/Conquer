@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.Burst.Intrinsics;
 using UnityEngine;
-using static UnityEditor.VersionControl.Asset;
 using Color = UnityEngine.Color;
 using Random = UnityEngine.Random;
 
@@ -24,8 +21,6 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
     [SerializeField, Range(0, 300)] private int Statesize = 170;
 
-    private List<Color32> ColorsUsedInTerrain = new List<Color32>() { Color.green, Color.blue, Color.white, Color.gray, Color.yellow };
-
     private Camera mainCamera;
 
     void Start()
@@ -37,7 +32,11 @@ public class MapGenerator : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            var provinceColor = ColorHelper.GetColor(mainCamera, Input.mousePosition);
+            var clickedProvince = ColorHelper.GetColor(mainCamera, Input.mousePosition);
+            //Debug.Log(clickedProvince);
+            var isGray = clickedProvince.Equals(ColorHelper.gray);
+            Debug.Log(isGray);
+            Debug.Log(Color.gray);
         }
     }
 
@@ -73,8 +72,63 @@ public class MapGenerator : MonoBehaviour
 
         var states = GenerateStates(terrain);
 
+        AddStateBordersToTerrain(terrain, states);
+
         return (terrain, states);
     }
+
+    private void AddStateBordersToTerrain(Color32[] terrain, Color32[] states)
+    {
+        for (var x = 0; x < this.mapWidth; x++)
+        {
+            for (var y = 0; y < this.mapHeight; y++)
+            {
+                var pixelColor = states[y * mapWidth + x];
+
+                if (ColorHelper.ColorListContainsColor(ColorHelper.ColorsUsedInTerrain, pixelColor))
+                {
+                    continue;
+                }
+
+                var neighbours = GetNeighbours(y * mapWidth + x, this.mapWidth, this.mapHeight);
+                foreach (var neighbour in neighbours)
+                {
+                    var neighbourColor = states[neighbour];
+                    if (neighbourColor.Equals(ColorHelper.blue) || !pixelColor.Equals(neighbourColor) && (!ColorHelper.ColorListContainsColor(ColorHelper.ColorsUsedInTerrain, neighbourColor)))
+                    {
+                        terrain[y * mapWidth + x] = Color.black;
+                    }
+                }
+            }
+        }
+    }
+
+    public static List<int> GetNeighbours(int pixelIndex, int mapWidth, int mapHeight)
+    {
+        List<int> neighbours = new List<int>();
+
+        int x = pixelIndex % mapWidth;
+        int y = pixelIndex / mapWidth;
+
+        for (int i = -1; i <= 1; i++)
+        {
+            for (int j = -1; j <= 1; j++)
+            {
+                int neighborX = x + i;
+                int neighborY = y + j;
+
+                // Check if the neighbor is within bounds
+                if (neighborX >= 0 && neighborX < mapWidth && neighborY >= 0 && neighborY < mapHeight)
+                {
+                    int neighborIndex = neighborY * mapWidth + neighborX;
+                    neighbours.Add(neighborIndex);
+                }
+            }
+        }
+
+        return neighbours;
+    }
+
 
     private Color32[] GenerateStates(Color32[] Terrain)
     {
@@ -131,7 +185,7 @@ public class MapGenerator : MonoBehaviour
 );
 
             // Check if the color is already in the list
-        } while (ColorHelper.ColorListContainsColor(colorList, randomColor) || ColorHelper.ColorListContainsColor(this.ColorsUsedInTerrain, randomColor));
+        } while (ColorHelper.ColorListContainsColor(colorList, randomColor) || ColorHelper.ColorListContainsColor(ColorHelper.ColorsUsedInTerrain, randomColor));
 
         // Add the new color to the list if needed
         colorList.Add(randomColor);

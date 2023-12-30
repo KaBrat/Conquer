@@ -24,7 +24,7 @@
 //                continue;
 
 //            // Find the nearest state color using the spatial grid
-//            Color nearestColor = Color.blue;
+//            Color nearestColor = ColorHelper.blue;
 //            float nearestDistance = float.MaxValue;
 
 //            Vector2Int gridPosition = new Vector2Int(x / gridSize, y / gridSize);
