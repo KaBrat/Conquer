@@ -68,34 +68,8 @@ public class ProvincesMap : MonoBehaviour
             //var clickedProvince = GetProvince(Input.mousePosition);
             //ProvinceDisplayer.DisplayProvince(clickedProvince);
         }
-
-        MoveCamera();
     }
 
-    public float cameraMoveSpeed = 5f;
-    void MoveCamera()
-    {
-        // Move the camera based on key input
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-
-        Vector3 newPosition = mainCamera.transform.position + new Vector3(horizontalInput, verticalInput, 0) * cameraMoveSpeed * Time.deltaTime;
-
-        // Get the size of the sprite (image)
-        float imageSizeX = spriteRenderer.bounds.size.x / 2f;
-        float imageSizeY = spriteRenderer.bounds.size.y / 2f;
-
-        // Calculate the boundaries of the image
-        float maxX = imageSizeX - mainCamera.orthographicSize * mainCamera.aspect;
-        float minX = mainCamera.orthographicSize * mainCamera.aspect - imageSizeX;
-        float maxY = imageSizeY - mainCamera.orthographicSize;
-        float minY = mainCamera.orthographicSize - imageSizeY;
-
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, maxX);
-        newPosition.y = Mathf.Clamp(newPosition.y, minY, maxY);
-
-        mainCamera.transform.position = newPosition;
-    }
 
     //public Province GetProvince(Vector3 mouseposition)
     //{
