@@ -17,6 +17,6 @@ public class MGUIScript : MonoBehaviour
 
         buttonNewMap.clicked += () => this.mapGenerator.GenerateMap();
         buttonTerrain.clicked += () => this.mapGenerator.ShowTerrain();
-        buttonStates.clicked += () => this.mapGenerator.ShowStates();
+        buttonStates.clicked += () => this.mapGenerator.ShowProvinces();
     }
 }

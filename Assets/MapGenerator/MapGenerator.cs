@@ -42,12 +42,10 @@ public class MapGenerator : MonoBehaviour
 
     public void GenerateMap()
     {
-        var (Terrain, States) = GeneratePixels();
+        var (Terrain, Provinces) = GeneratePixels();
 
-        var terrainTexture = ImageHelper.CreateTexture2D(Terrain, this.mapWidth, this.mapHeight);
-        ImageHelper.SaveMap(terrainTexture, Application.dataPath + "/GeneratedMaps/Terrain.png");
-        var statesTexture = ImageHelper.CreateTexture2D(States, this.mapWidth, this.mapHeight);
-        ImageHelper.SaveMap(statesTexture, Application.dataPath + "/GeneratedMaps/States.png");
+        ImageHelper.SaveTerrainPixels(Terrain);
+        ImageHelper.SaveProvincesPixels(Provinces);
 
         ShowTerrain();
     }
@@ -58,7 +56,7 @@ public class MapGenerator : MonoBehaviour
         GetComponent<SpriteRenderer>().sprite = sprite;
     }
 
-    public void ShowStates()
+    public void ShowProvinces()
     {
         var sprite = ImageHelper.LoadImageFromDisk(this.mapWidth, this.mapHeight, Application.dataPath + "/GeneratedMaps/States.png");
         GetComponent<SpriteRenderer>().sprite = sprite;

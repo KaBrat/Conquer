@@ -1,10 +1,37 @@
 using System.IO;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class ImageHelper
 {
+    public static string TerrainMapPath = Application.dataPath + "/GeneratedMaps/Terrain.png";
+    public static string ProvincesMapPath = Application.dataPath + "/GeneratedMaps/Provinces.png";
+
+    public static Color32[] LoadTerrainPixels()
+    {
+        var sprite = LoadImageFromDisk(1, 1, TerrainMapPath);
+        return sprite.texture.GetPixels32();
+    }
+
+    public static void SaveTerrainPixels(Color32[] pixels)
+    {
+        var sprite = LoadImageFromDisk(1, 1, TerrainMapPath);
+        sprite.texture.SetPixels32(pixels);
+        SaveMap(sprite.texture, TerrainMapPath);
+    }
+
+    public static Color32[] LoadProvincesPixels()
+    {
+        var sprite = LoadImageFromDisk(1, 1, ProvincesMapPath);
+        return sprite.texture.GetPixels32();
+    }
+
+    public static void SaveProvincesPixels(Color32[] pixels)
+    {
+        var sprite = LoadImageFromDisk(1, 1, ProvincesMapPath);
+        sprite.texture.SetPixels32(pixels);
+        SaveMap(sprite.texture, ProvincesMapPath);
+    }
+
     public static void SaveMap(Texture2D texture, string path)
     {
         byte[] pngBytes = texture.EncodeToPNG();
