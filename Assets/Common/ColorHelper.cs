@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
+using UnityEngine.UI;
 
 public static class ColorHelper
 {
@@ -38,11 +40,6 @@ public static class ColorHelper
                 // Get the color of the clicked pixel
                 Color32 pixelColor = texture.GetPixel(x, y);
 
-                // Extract RGB values
-                //int r = Mathf.RoundToInt(pixelColor.r * 255);
-                //int g = Mathf.RoundToInt(pixelColor.g * 255);
-                //int b = Mathf.RoundToInt(pixelColor.b * 255);
-
                 // Print RGB values
                 Debug.Log("Clicked on RGB: (" + pixelColor.r + ", " + pixelColor.g + ", " + pixelColor.b + ")");
                 return pixelColor;
@@ -51,3 +48,16 @@ public static class ColorHelper
         return new Color32();
     }
 }
+
+//private Color GetRGBA()
+//{
+//    var screenPosition = Input.mousePosition;
+//    screenPosition.z = Camera.main.nearClipPlane + 1;
+//    var worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+//    var mapPosition = new Vector3(worldPosition.x * 100 + 0.5f * mapDimension, worldPosition.y * 100 + 0.5f * mapDimension, 0);
+
+//    int x = Mathf.FloorToInt(mapPosition.x / size.x * mapImage.width);
+//    int y = Mathf.FloorToInt(mapPosition.y / size.y * mapImage.height);
+//    var pixel = mapImage.GetPixel(x, y);
+//    return pixel;
+//}
