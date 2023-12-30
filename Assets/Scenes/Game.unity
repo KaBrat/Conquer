@@ -206,8 +206,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed7c0b41872daef44b84989691a81d45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mapImage: {fileID: 2800000, guid: a0b3d99aacb0cfc4cbf2d74b36e97d07, type: 3}
-  spriteRenderer: {fileID: 0}
 --- !u!4 &322433459
 Transform:
   m_ObjectHideFlags: 0

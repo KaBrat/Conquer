@@ -21,17 +21,19 @@
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="Bottom" style="flex-grow: 0; flex-direction: row; justify-content: flex-start; flex-wrap: nowrap;">
-        <ui:VisualElement name="Provinces" style="flex-grow: 1; justify-content: center; align-items: center; max-width: 50%; max-height: none; min-width: 50%;">
-            <ui:Label display-tooltip-when-elided="true" name="ProvinceName" text="ProvinceName" style="justify-content: center;" />
-            <ui:Label text="ProvinceOwner" display-tooltip-when-elided="true" name="ProvinceOwner" />
-            <ui:VisualElement style="flex-direction: row;">
-                <ui:Label text="Footmen" display-tooltip-when-elided="true" name="FootmenLabel" />
-                <ui:Label text="FootmenValue" display-tooltip-when-elided="true" name="FootmenValue" />
+    <ui:VisualElement name="Bottom" style="flex-grow: 0; flex-direction: row; justify-content: space-around; flex-wrap: nowrap;">
+        <ui:VisualElement name="LeftPanel" style="flex-grow: 1; justify-content: center; align-items: center; max-width: 50%; max-height: none; min-width: 50%;">
+            <ui:VisualElement name="ProvinceDescription" style="flex-grow: 1;">
+                <ui:Label display-tooltip-when-elided="true" name="ProvinceName" text="ProvinceName" style="justify-content: center;" />
+                <ui:Label text="ProvinceOwner" display-tooltip-when-elided="true" name="ProvinceOwner" />
+                <ui:VisualElement name="Units" style="flex-direction: row;">
+                    <ui:Label text="Footmen" display-tooltip-when-elided="true" name="FootmenLabel" />
+                    <ui:Label text="FootmenValue" display-tooltip-when-elided="true" name="FootmenValue" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement style="flex-grow: 0.5; align-items: center; flex-direction: row; justify-content: flex-start;">
-            <ui:Button text="End Turn" display-tooltip-when-elided="true" name="EndTurn" />
+        <ui:VisualElement name="RightPanel" style="flex-grow: 0; align-items: flex-end; flex-direction: column; justify-content: center; align-self: auto;">
+            <ui:Button text="End Turn" display-tooltip-when-elided="true" name="EndTurn" style="flex-direction: column;" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
