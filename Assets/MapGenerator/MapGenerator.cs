@@ -72,7 +72,7 @@ public class MapGenerator : MonoBehaviour
 
         var states = GenerateStates(terrain);
 
-        AddStateBordersToTerrain(terrain, states);
+        //AddStateBordersToTerrain(terrain, states);
 
         return (terrain, states);
     }
