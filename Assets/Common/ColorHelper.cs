@@ -8,8 +8,14 @@ public static class ColorHelper
     public static Color32 borderColor = new Color32(59, 57, 43, 200);
     public static Color32 selectedBorderColor = new Color32(184, 78, 37, 200);
 
-    public static List<Color32> ColorsUsedInTerrain = new List<Color32>() {Color.green, ColorHelper.blue, Color.white, ColorHelper.gray, Color.yellow };
-    public static List<Color32> TerrainObstacleColors = new List<Color32>() { ColorHelper.blue, ColorHelper.gray};
+    public static List<Color32> PlayerColors = new List<Color32>
+    {
+        new Color32(23, 0, 115, 255), // Darkish Sea Blue
+        new Color32(25, 79, 30, 255), // Dark Forest Green
+    };
+
+    public static List<Color32> ColorsUsedInTerrain = new List<Color32>() { Color.green, ColorHelper.blue, Color.white, ColorHelper.gray, Color.yellow };
+    public static List<Color32> TerrainObstacleColors = new List<Color32>() { ColorHelper.blue, ColorHelper.gray };
     public static bool ColorListContainsColor(List<Color32> colorList, Color32 color)
     {
         // Check if the color is in the list (exact comparison)

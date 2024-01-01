@@ -12,20 +12,20 @@ public class GameManager : MonoBehaviour, IEndTurn
     public int NumberOfPlayers = 2;
     public int MaxRounds = 3;
 
-    //void SetPlayerStartingLocations()
-    //{
-    //    var northguard = this.ProvincesMap.Provinces.FirstOrDefault(p => p.Name == "Northguard");
-    //    northguard.Owner = Players.FirstOrDefault(p => p.id == 1);
-    //    northguard.FootmenCount = 2;
-    //    var summershore = this.ProvincesMap.Provinces.FirstOrDefault(p => p.Name == "Summershore");
-    //    summershore.Owner = Players.FirstOrDefault(p => p.id == 2);
-    //    summershore.FootmenCount = 2;
-    //}
+    void SetPlayerStartingLocations()
+    {
+        foreach (var player in this.Players) 
+        {
+            var startingProvince = this.MapManager.ProvincesMap.Provinces.FirstOrDefault(p => p.Owner == null);
+            startingProvince.ChangeOwner(player, this.MapManager.TerrainSprite.texture);
+            startingProvince.FootmenCount = 2;
+        }
+    }
 
     void Start()
     {
         this.Players = Player.createPlayers(NumberOfPlayers);
-        //this.SetPlayerStartingLocations();
+        this.SetPlayerStartingLocations();
         this.RoundsManager = new RoundsManager(MaxRounds);
         this.RoundsManager.NewRound(this.Players);
     }

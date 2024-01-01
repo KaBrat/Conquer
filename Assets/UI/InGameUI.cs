@@ -65,6 +65,8 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
     private void ShowProvince(Province province)
     {
         this.ProvinceDescription.pickingMode = PickingMode.Position;
+        this.ProvinceDescription.visible = true;
+
 
         this.ProvinceNameLabel.visible = true;
         this.ProvinceNameLabel.text = province.Name;
@@ -83,6 +85,7 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
     private void HideProvinceInfo()
     {
         this.ProvinceDescription.pickingMode = PickingMode.Ignore;
+        this.ProvinceDescription.visible = false;
 
         this.ProvinceNameLabel.visible = false;
         this.ProvinceNameLabel.pickingMode = PickingMode.Ignore;

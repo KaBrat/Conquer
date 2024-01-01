@@ -1,5 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using UnityEngine;
 
 public class RoundsManager
 {
@@ -36,18 +39,21 @@ public class Turn
 
 public class Player
 {
-    public Player(int id)
+    public int id;
+    public Color32 Color;
+    public Player(int id, Color color)
     {
         this.id = id;
+        this.Color = color;
     }
-    public int id;
 
     public static List<Player> createPlayers(int amount)
     {
         var players = new List<Player>();
         for (int i = 1; i <= amount; i++)
         {
-            players.Add(new Player(i));
+            var notTakenColor = ColorHelper.PlayerColors.Where(c => !players.Any(p => p.Color.Equals(c))).ToList().FirstOrDefault();
+            players.Add(new Player(i, notTakenColor));
         }
         return players;
     }
