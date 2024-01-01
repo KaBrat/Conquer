@@ -7,13 +7,13 @@ public class MapManager : MonoBehaviour
 
     public ProvincesMap ProvincesMap;
 
-    public (int width, int height) mapSize;
+    public Vector2Int mapSize;
 
     void Start()
     {
         this.TerrainSprite = ImageHelper.LoadImageFromDisk(1, 1, ImageHelper.TerrainMapPath);
-        this.mapSize = (TerrainSprite.texture.width, TerrainSprite.texture.height);
-        this.ProvincesSprite = ImageHelper.LoadImageFromDisk(mapSize.width, mapSize.height, ImageHelper.ProvincesMapPath);
+        this.mapSize = new Vector2Int(TerrainSprite.texture.width, TerrainSprite.texture.height);
+        this.ProvincesSprite = ImageHelper.LoadImageFromDisk(mapSize.x, mapSize.y, ImageHelper.ProvincesMapPath);
     }
 
     void Update()
@@ -23,7 +23,6 @@ public class MapManager : MonoBehaviour
             var clickedProvince = ProvincesMap.GetProvince();
             this.ProvincesMap.ProvinceDisplayer.DisplayProvince(clickedProvince);
 
-            var texture = GetComponent<SpriteRenderer>().sprite.texture;
             if (clickedProvince == null)
             {
                 if (this.ProvincesMap.selectedProvince == null)
