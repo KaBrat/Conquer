@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MapManager : MonoBehaviour
+public class MapManager : MonoBehaviour, IPointerClickHandler
 {
     public ProvincesMap ProvincesMap;
 
@@ -16,40 +16,6 @@ public class MapManager : MonoBehaviour
         this.mapSize = new Vector2Int(TerrainSprite.texture.width, TerrainSprite.texture.height);
         this.ProvincesSprite = ImageHelper.LoadImageFromDisk(mapSize.x, mapSize.y, ImageHelper.ProvincesMapPath);
         this.ShowTerrain();
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                return;
-            }
-
-            var clickedProvince = ProvincesMap.GetProvince();
-            this.ProvincesMap.ProvinceDisplayer.DisplayProvince(clickedProvince);
-
-            if (clickedProvince == null)
-            {
-                if (this.ProvincesMap.selectedProvince == null)
-                {
-                    return;
-                }
-
-                this.ProvincesMap.selectedProvince.Deselect(this.TerrainSprite.texture, this.ProvincesSprite.texture);
-                this.ProvincesMap.selectedProvince = null;
-                return;
-            }
-
-            if (this.ProvincesMap.selectedProvince != null)
-            {
-                this.ProvincesMap.selectedProvince.Deselect(this.TerrainSprite.texture, this.ProvincesSprite.texture);
-            }
-
-            clickedProvince.Select(this.TerrainSprite.texture, this.ProvincesSprite.texture);
-            this.ProvincesMap.selectedProvince = clickedProvince;
-        }
     }
 
     public Color32[] GetTerrainPixels()
@@ -82,5 +48,31 @@ public class MapManager : MonoBehaviour
     public void ShowProvinces()
     {
         this.GetComponent<SpriteRenderer>().sprite = this.ProvincesSprite;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        var clickedProvince = ProvincesMap.GetProvince();
+        this.ProvincesMap.ProvinceDisplayer.DisplayProvince(clickedProvince);
+
+        if (clickedProvince == null)
+        {
+            if (this.ProvincesMap.selectedProvince == null)
+            {
+                return;
+            }
+
+            this.ProvincesMap.selectedProvince.Deselect(this.TerrainSprite.texture, this.ProvincesSprite.texture);
+            this.ProvincesMap.selectedProvince = null;
+            return;
+        }
+
+        if (this.ProvincesMap.selectedProvince != null)
+        {
+            this.ProvincesMap.selectedProvince.Deselect(this.TerrainSprite.texture, this.ProvincesSprite.texture);
+        }
+
+        clickedProvince.Select(this.TerrainSprite.texture, this.ProvincesSprite.texture);
+        this.ProvincesMap.selectedProvince = clickedProvince;
     }
 }
