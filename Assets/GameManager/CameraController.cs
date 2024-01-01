@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        _spriteRenderer = GameObject.FindObjectsOfType<ProvincesMap>().FirstOrDefault().GetComponent<Renderer>();
+        _spriteRenderer = GameObject.FindObjectsOfType<MapManager>().FirstOrDefault().GetComponent<Renderer>();
     }
 
     void Update()

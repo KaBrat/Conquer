@@ -4,7 +4,7 @@ using UnityEngine;
 public class ImageHelper
 {
     public static string TerrainMapPath = Application.dataPath + "/GeneratedMaps/Terrain.png";
-    public static string ProvincesMapPath = Application.dataPath + "/GeneratedMaps/Provinces.png";
+    public static string ProvincesMapPath = Application.dataPath + "/GeneratedMaps/States.png";
 
     public static Color32[] LoadTerrainPixels()
     {
@@ -16,6 +16,7 @@ public class ImageHelper
     {
         var sprite = LoadImageFromDisk(1, 1, TerrainMapPath);
         sprite.texture.SetPixels32(pixels);
+        sprite.texture.Apply();
         SaveMap(sprite.texture, TerrainMapPath);
     }
 
@@ -29,6 +30,7 @@ public class ImageHelper
     {
         var sprite = LoadImageFromDisk(1, 1, ProvincesMapPath);
         sprite.texture.SetPixels32(pixels);
+        sprite.texture.Apply();
         SaveMap(sprite.texture, ProvincesMapPath);
     }
 

@@ -8,7 +8,7 @@ public class Province
     public Player Owner { get; set; }
     public int FootmenCount { get; set; }
     public Color32 Color { get; internal set; }
-    public List<MapPixel> BorderPixels { get; set; }
+    public List<ColorWithPosition> BorderPixels { get; set; }
 
     public Province(string name, Player owner, int footmenCount, Color32 color)
     {
@@ -24,21 +24,37 @@ public class Province
         Color = color;
     }
 
-    public Color32[] Deselect(Color32[] map, Vector2 mapDimension)
+    public void Deselect(Texture2D terrain, Texture2D provinces)
     {
+        var terrainPixels = terrain.GetPixels32();
+        var provincesPixels = provinces.GetPixels32();
+
         foreach (var borderPixel in this.BorderPixels)
         {
-            map[(int)borderPixel.Position.y * (int)mapDimension.x + (int)borderPixel.Position.x] = this.Color;
+            terrainPixels[(int)borderPixel.Position.y * terrain.width + (int)borderPixel.Position.x] = ColorHelper.borderColor;
+            provincesPixels[(int)borderPixel.Position.y * provinces.width + (int)borderPixel.Position.x] = borderPixel.Color;
         }
-        return map;
+        terrain.SetPixels32(terrainPixels);
+        terrain.Apply();
+
+        provinces.SetPixels32(provincesPixels);
+        provinces.Apply();
     }
 
-    public Color32[] Select(Color32[] map, Vector2 mapDimension)
+    public void Select(Texture2D terrain, Texture2D provinces)
     {
+        var terrainPixels = terrain.GetPixels32();
+        var provincesPixels = provinces.GetPixels32();
+
         foreach (var borderPixel in this.BorderPixels)
         {
-            map[(int)borderPixel.Position.y * (int)mapDimension.x + (int)borderPixel.Position.x] = borderPixel.Color;
+            terrainPixels[(int)borderPixel.Position.y * terrain.width + (int)borderPixel.Position.x] = ColorHelper.selectedBorderColor;
+            provincesPixels[(int)borderPixel.Position.y * provinces.width + (int)borderPixel.Position.x] = ColorHelper.selectedBorderColor;
         }
-        return map;
+        terrain.SetPixels32(terrainPixels);
+        terrain.Apply();
+
+        provinces.SetPixels32(provincesPixels);
+        provinces.Apply();
     }
 }

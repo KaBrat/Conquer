@@ -25,8 +25,8 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
         buttonMenu.clicked += () => SceneManager.LoadScene(0);
         buttonEndTurn.clicked += EndTurnClicked;
 
-        buttonTerrain.clicked += gameManager.ProvincesMap.ShowTerrain;
-        buttonProvinces.clicked += gameManager.ProvincesMap.ShowProvinces;
+        buttonTerrain.clicked += gameManager.MapManager.ShowTerrain;
+        buttonProvinces.clicked += gameManager.MapManager.ShowProvinces;
 
         PlayerLabel = root.Q<Label>("PlayerValue");
         RoundLabel = root.Q<Label>("RoundValue");

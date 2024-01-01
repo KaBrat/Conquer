@@ -123,7 +123,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &322433456
+--- !u!1 &84312708
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,24 +131,24 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 322433459}
-  - component: {fileID: 322433458}
-  - component: {fileID: 322433457}
-  - component: {fileID: 322433460}
+  - component: {fileID: 84312711}
+  - component: {fileID: 84312710}
+  - component: {fileID: 84312709}
+  - component: {fileID: 84312712}
   m_Layer: 0
-  m_Name: Provinces
+  m_Name: MapManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!212 &322433457
+--- !u!212 &84312709
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 322433456}
+  m_GameObject: {fileID: 84312708}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -183,51 +183,54 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: a0b3d99aacb0cfc4cbf2d74b36e97d07, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 138d224b71b951a4c9729645e0b3b67a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 10, y: 10}
+  m_Size: {x: 5, y: 3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &322433458
+--- !u!114 &84312710
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 322433456}
+  m_GameObject: {fileID: 84312708}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ed7c0b41872daef44b84989691a81d45, type: 3}
+  m_Script: {fileID: 11500000, guid: 348bd83ccf2f2c8458786590f8c71ab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!4 &322433459
+  TerrainSprite: {fileID: 0}
+  ProvincesSprite: {fileID: 0}
+  ProvincesMap: {fileID: 322433458}
+--- !u!4 &84312711
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 322433456}
+  m_GameObject: {fileID: 84312708}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &322433460
+--- !u!61 &84312712
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 322433456}
+  m_GameObject: {fileID: 84312708}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -258,7 +261,7 @@ BoxCollider2D:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
     oldSize: {x: 5, y: 3}
-    newSize: {x: 10, y: 10}
+    newSize: {x: 5, y: 3}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -266,6 +269,51 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 5, y: 3}
   m_EdgeRadius: 0
+--- !u!1 &322433456
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 322433459}
+  - component: {fileID: 322433458}
+  m_Layer: 0
+  m_Name: Provinces
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &322433458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322433456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed7c0b41872daef44b84989691a81d45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MapManager: {fileID: 84312710}
+--- !u!4 &322433459
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 322433456}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &408397784
 GameObject:
   m_ObjectHideFlags: 0
@@ -463,7 +511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b90777b3a086674b8418e6eb72f172b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ProvincesMap: {fileID: 322433458}
+  MapManager: {fileID: 84312710}
   NumberOfPlayers: 2
   MaxRounds: 3
 --- !u!4 &497392158
@@ -582,5 +630,6 @@ SceneRoots:
   - {fileID: 959054394}
   - {fileID: 408397786}
   - {fileID: 467010871}
-  - {fileID: 322433459}
   - {fileID: 497392158}
+  - {fileID: 84312711}
+  - {fileID: 322433459}

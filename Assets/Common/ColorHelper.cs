@@ -5,16 +5,18 @@ public static class ColorHelper
 {
     public static Color32 gray = new Color32(128, 128, 128, 255);
     public static Color32 blue = new Color32(0, 128, 255, 255);
+    public static Color32 borderColor = new Color32(59, 57, 43, 200);
+    public static Color32 selectedBorderColor = new Color32(184, 78, 37, 200);
 
-    public static List<Color32> ColorsUsedInTerrain = new List<Color32>() {Color.black, Color.green, ColorHelper.blue, Color.white, ColorHelper.gray, Color.yellow };
-
+    public static List<Color32> ColorsUsedInTerrain = new List<Color32>() {Color.green, ColorHelper.blue, Color.white, ColorHelper.gray, Color.yellow };
+    public static List<Color32> TerrainObstacleColors = new List<Color32>() { ColorHelper.blue, ColorHelper.gray};
     public static bool ColorListContainsColor(List<Color32> colorList, Color32 color)
     {
         // Check if the color is in the list (exact comparison)
         return colorList.Contains(color);
     }
 
-    public static Color32 GetColor(Camera camera, Vector3 position)
+    public static Color32 GetColor(Camera camera)
     {
         Vector2 clickPosition = camera.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
@@ -28,6 +30,8 @@ public static class ColorHelper
             {
                 // Get the texture from the sprite
                 Texture2D texture = spriteRenderer.sprite.texture;
+
+                texture = ImageHelper.LoadImageFromDisk(texture.width, texture.height, ImageHelper.ProvincesMapPath).texture;
 
                 // Calculate UV coordinates manually
                 Vector2 localPoint = hit.transform.InverseTransformPoint(hit.point);
@@ -49,6 +53,37 @@ public static class ColorHelper
             }
         }
         return new Color32();
+    }
+
+    static int GetIndex(int x, int y, int mapWidth)
+    {
+        return y * mapWidth + x;
+    }
+
+    public static List<ColorWithPosition> ExtractColorsWithPositions(Color32[] image, int mapWidth, int mapHeight, System.Func<Color32, bool> criteria)
+    {
+        var colorsWithPositions = new List<ColorWithPosition>();
+
+        for (int y = 0; y < mapHeight; y++)
+        {
+            for (int x = 0; x < mapWidth; x++)
+            {
+                int index = GetIndex(x, y, mapWidth);
+                var currentColor = image[index];
+
+                if (criteria(currentColor))
+                {
+                    colorsWithPositions.Add(new ColorWithPosition(currentColor, new Vector2Int(x, y)));
+                }
+            }
+        }
+
+        return colorsWithPositions;
+    }
+
+    public static bool AreColorsEqualIgnoringAlpha(Color32 color1, Color32 color2)
+    {
+        return color1.r == color2.r && color1.g == color2.g && color1.b == color2.b;
     }
 }
 

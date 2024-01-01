@@ -6,21 +6,21 @@ using System.Linq;
 
 public class GameManager : MonoBehaviour, IEndTurn
 {
+    public MapManager MapManager;
     public RoundsManager RoundsManager;
-    public ProvincesMap ProvincesMap;
     public List<Player> Players;
     public int NumberOfPlayers = 2;
     public int MaxRounds = 3;
 
-    void SetPlayerStartingLocations()
-    {
-        var northguard = this.ProvincesMap.Provinces.FirstOrDefault(p => p.Name == "Northguard");
-        northguard.Owner = Players.FirstOrDefault(p => p.id == 1);
-        northguard.FootmenCount = 2;
-        var summershore = this.ProvincesMap.Provinces.FirstOrDefault(p => p.Name == "Summershore");
-        summershore.Owner = Players.FirstOrDefault(p => p.id == 2);
-        summershore.FootmenCount = 2;
-    }
+    //void SetPlayerStartingLocations()
+    //{
+    //    var northguard = this.ProvincesMap.Provinces.FirstOrDefault(p => p.Name == "Northguard");
+    //    northguard.Owner = Players.FirstOrDefault(p => p.id == 1);
+    //    northguard.FootmenCount = 2;
+    //    var summershore = this.ProvincesMap.Provinces.FirstOrDefault(p => p.Name == "Summershore");
+    //    summershore.Owner = Players.FirstOrDefault(p => p.id == 2);
+    //    summershore.FootmenCount = 2;
+    //}
 
     void Start()
     {
