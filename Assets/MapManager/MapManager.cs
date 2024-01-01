@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MapManager : MonoBehaviour
 {
+    public ProvincesMap ProvincesMap;
+
     public Sprite TerrainSprite;
     public Sprite ProvincesSprite;
-
-    public ProvincesMap ProvincesMap;
 
     public Vector2Int mapSize;
 
@@ -14,12 +15,18 @@ public class MapManager : MonoBehaviour
         this.TerrainSprite = ImageHelper.LoadImageFromDisk(1, 1, ImageHelper.TerrainMapPath);
         this.mapSize = new Vector2Int(TerrainSprite.texture.width, TerrainSprite.texture.height);
         this.ProvincesSprite = ImageHelper.LoadImageFromDisk(mapSize.x, mapSize.y, ImageHelper.ProvincesMapPath);
+        this.ShowTerrain();
     }
 
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             var clickedProvince = ProvincesMap.GetProvince();
             this.ProvincesMap.ProvinceDisplayer.DisplayProvince(clickedProvince);
 

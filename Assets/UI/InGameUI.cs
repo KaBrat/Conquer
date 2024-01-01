@@ -6,6 +6,7 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
 {
     private Label PlayerLabel;
     private Label RoundLabel;
+    private VisualElement ProvinceDescription;
     private Label ProvinceNameLabel;
     private Label ProvinceOwnerLabel;
     private Label ProvinceFootmenLabel;
@@ -28,12 +29,13 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
         buttonTerrain.clicked += gameManager.MapManager.ShowTerrain;
         buttonProvinces.clicked += gameManager.MapManager.ShowProvinces;
 
-        PlayerLabel = root.Q<Label>("PlayerValue");
-        RoundLabel = root.Q<Label>("RoundValue");
-        ProvinceNameLabel = root.Q<Label>("ProvinceName");
-        ProvinceOwnerLabel = root.Q<Label>("ProvinceOwner");
-        ProvinceFootmenLabel = root.Q<Label>("FootmenLabel");
-        ProvinceFootmenValue = root.Q<Label>("FootmenValue");
+        this.PlayerLabel = root.Q<Label>("PlayerValue");
+        this.RoundLabel = root.Q<Label>("RoundValue");
+        this.ProvinceDescription = root.Q("ProvinceDescription");
+        this.ProvinceNameLabel = root.Q<Label>("ProvinceName");
+        this.ProvinceOwnerLabel = root.Q<Label>("ProvinceOwner");
+        this.ProvinceFootmenLabel = root.Q<Label>("FootmenLabel");
+        this.ProvinceFootmenValue = root.Q<Label>("FootmenValue");
 
         HideProvinceInfo();
     }
@@ -52,27 +54,43 @@ public class InGameUI : MonoBehaviour, IProvinceDisplayer
     {
         if (province != null)
         {
-            ProvinceNameLabel.visible = true;
-            ProvinceNameLabel.text = province.Name;
-
-            ProvinceOwnerLabel.visible = true;
-            ProvinceOwnerLabel.text = province.Owner != null ? $"Player {province.Owner.id}" : "none";
-
-            ProvinceFootmenLabel.visible = true;
-            ProvinceFootmenValue.visible = true;
-            ProvinceFootmenValue.text = province.FootmenCount.ToString();
+            this.ShowProvince(province);
         }
         else
         {
-            HideProvinceInfo();
+            this.HideProvinceInfo();
         }
+    }
+
+    private void ShowProvince(Province province)
+    {
+        this.ProvinceDescription.pickingMode = PickingMode.Position;
+
+        this.ProvinceNameLabel.visible = true;
+        this.ProvinceNameLabel.text = province.Name;
+        this.ProvinceNameLabel.pickingMode = PickingMode.Position;
+
+        this.ProvinceOwnerLabel.visible = true;
+        this.ProvinceOwnerLabel.text = province.Owner != null ? $"Player {province.Owner.id}" : "none";
+        this.ProvinceOwnerLabel.pickingMode = PickingMode.Position;
+
+        ProvinceFootmenLabel.visible = true;
+        this.ProvinceFootmenValue.visible = true;
+        this.ProvinceFootmenValue.text = province.FootmenCount.ToString();
+        this.ProvinceFootmenValue.pickingMode = PickingMode.Position;
     }
 
     private void HideProvinceInfo()
     {
-        ProvinceNameLabel.visible = false;
-        ProvinceOwnerLabel.visible = false;
-        ProvinceFootmenLabel.visible = false;
-        ProvinceFootmenValue.visible = false;
+        this.ProvinceDescription.pickingMode = PickingMode.Ignore;
+
+        this.ProvinceNameLabel.visible = false;
+        this.ProvinceNameLabel.pickingMode = PickingMode.Ignore;
+        this.ProvinceOwnerLabel.visible = false;
+        this.ProvinceOwnerLabel.pickingMode = PickingMode.Ignore;
+        this.ProvinceFootmenLabel.visible = false;
+        this.ProvinceFootmenLabel.pickingMode = PickingMode.Ignore;
+        this.ProvinceFootmenValue.visible = false;
+        this.ProvinceFootmenValue.pickingMode = PickingMode.Ignore;
     }
 }

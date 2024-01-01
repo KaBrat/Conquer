@@ -1,16 +1,16 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <ui:VisualElement name="Top" style="flex-grow: 0; flex-direction: column; flex-shrink: 1; justify-content: flex-start; align-items: flex-start; align-self: center;">
-        <ui:VisualElement name="Middle" style="flex-grow: 1; align-items: flex-start;">
+    <ui:VisualElement name="Top" picking-mode="Ignore" style="flex-grow: 0; flex-direction: column; flex-shrink: 1; justify-content: flex-start; align-items: flex-start; align-self: center;">
+        <ui:VisualElement name="Middle" picking-mode="Ignore" style="flex-grow: 1; align-items: flex-start;">
             <ui:Button text="Menu" display-tooltip-when-elided="true" name="Menu" style="justify-content: center; flex-direction: column;" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="Middle" style="flex-grow: 1; flex-direction: row;">
-        <ui:VisualElement name="Left" style="flex-grow: 0; justify-content: center; flex-direction: column;">
+    <ui:VisualElement name="Middle" picking-mode="Ignore" style="flex-grow: 1; flex-direction: row;">
+        <ui:VisualElement name="Left" picking-mode="Ignore" style="flex-grow: 0; justify-content: center; flex-direction: column;">
             <ui:Button text="Terrain" display-tooltip-when-elided="true" name="Terrain" style="justify-content: center;" />
             <ui:Button text="Provinces" display-tooltip-when-elided="true" name="Provinces" style="justify-content: center;" />
         </ui:VisualElement>
-        <ui:VisualElement name="Middle" style="flex-grow: 1;" />
-        <ui:VisualElement name="Right" style="flex-grow: 0;">
+        <ui:VisualElement name="Middle" picking-mode="Ignore" style="flex-grow: 1;" />
+        <ui:VisualElement name="Right" picking-mode="Ignore" style="flex-grow: 0;">
             <ui:VisualElement style="align-items: flex-end; justify-content: center; flex-direction: row;">
                 <ui:Label text="Player" display-tooltip-when-elided="true" name="PlayerLabel" />
                 <ui:Label text="1" display-tooltip-when-elided="true" name="PlayerValue" />
@@ -21,18 +21,18 @@
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="Bottom" style="flex-grow: 0; flex-direction: row; justify-content: space-around; flex-wrap: nowrap;">
-        <ui:VisualElement name="LeftPanel" style="flex-grow: 1; justify-content: center; align-items: center; max-width: 50%; max-height: none; min-width: 50%;">
+    <ui:VisualElement name="Bottom" picking-mode="Ignore" style="flex-grow: 0; flex-direction: row; justify-content: space-around; flex-wrap: nowrap;">
+        <ui:VisualElement name="LeftPanel" picking-mode="Ignore" style="flex-grow: 1; justify-content: center; align-items: center; max-width: 50%; max-height: none; min-width: 50%;">
             <ui:VisualElement name="ProvinceDescription" style="flex-grow: 1;">
-                <ui:Label display-tooltip-when-elided="true" name="ProvinceName" text="ProvinceName" style="justify-content: center;" />
-                <ui:Label text="ProvinceOwner" display-tooltip-when-elided="true" name="ProvinceOwner" />
+                <ui:Label display-tooltip-when-elided="true" name="ProvinceName" text="ProvinceName" picking-mode="Ignore" style="justify-content: center;" />
+                <ui:Label text="ProvinceOwner" display-tooltip-when-elided="true" name="ProvinceOwner" picking-mode="Ignore" />
                 <ui:VisualElement name="Units" style="flex-direction: row;">
-                    <ui:Label text="Footmen" display-tooltip-when-elided="true" name="FootmenLabel" />
-                    <ui:Label text="FootmenValue" display-tooltip-when-elided="true" name="FootmenValue" />
+                    <ui:Label text="Footmen" display-tooltip-when-elided="true" name="FootmenLabel" picking-mode="Ignore" />
+                    <ui:Label text="FootmenValue" display-tooltip-when-elided="true" name="FootmenValue" picking-mode="Ignore" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="RightPanel" style="flex-grow: 0; align-items: flex-end; flex-direction: column; justify-content: center; align-self: auto;">
+        <ui:VisualElement name="RightPanel" picking-mode="Ignore" style="flex-grow: 0; align-items: flex-end; flex-direction: column; justify-content: center; align-self: auto;">
             <ui:Button text="End Turn" display-tooltip-when-elided="true" name="EndTurn" style="flex-direction: column;" />
         </ui:VisualElement>
     </ui:VisualElement>
