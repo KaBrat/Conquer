@@ -53,25 +53,25 @@ public class TerrainGenerator
                 // sea
                 if (noiseValue <= waterThreshold)
                 {
-                    pixels[y * mapWidth + x] = ColorHelper.blue;
+                    pixels[y * mapWidth + x] = ColorHelper.deepSeaBlue;
                 }
 
                 // beach
                 if (noiseValue > waterThreshold && noiseValue <= beachThreshold)
                 {
-                    pixels[y * mapWidth + x] = Color.yellow;
+                    pixels[y * mapWidth + x] = ColorHelper.sandYellow;
                 }
 
                 // land
                 if (noiseValue > beachThreshold && noiseValue <= grassThreshold)
                 {
-                    pixels[y * mapWidth + x] = Color.green;
+                    pixels[y * mapWidth + x] = ColorHelper.grassGreen;
                 }
 
                 // mountain
                 if (noiseValue > grassThreshold && noiseValue <= mountainThreshold)
                 {
-                    pixels[y * mapWidth + x] = ColorHelper.gray;
+                    pixels[y * mapWidth + x] = ColorHelper.mountainGray;
                 }
 
                 // snow

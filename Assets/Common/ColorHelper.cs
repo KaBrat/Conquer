@@ -1,10 +1,15 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class ColorHelper
 {
-    public static Color32 gray = new Color32(128, 128, 128, 255);
-    public static Color32 blue = new Color32(0, 128, 255, 255);
+    public static Color32 mountainGray = new Color32(169, 169, 169, 255);
+    public static Color32 deepSeaBlue = new Color32(0, 128, 255, 255);
+    public static Color32 shallowSeaBlue = new Color32(119, 183, 247, 255);
+    public static Color32 sandYellow = new Color32(240, 230, 140, 255);
+    public static Color32 snowWhite = new Color32(255, 255, 255, 255);
+    public static Color32 grassGreen = Color.green; //new Color32(0, 128, 0, 255);
 
     public static int borderAlpha = 200;
     public static Color32 borderColor = new Color32(59, 57, 43, 200);
@@ -16,9 +21,13 @@ public static class ColorHelper
         new Color32(25, 79, 30, 255), // Dark Forest Green
     };
 
-    public static List<Color32> ColorsUsedInTerrain = new List<Color32>() { Color.green, ColorHelper.blue, Color.white, ColorHelper.gray, Color.yellow };
-    public static List<Color32> UnselectableTerrainColors = new List<Color32>() { ColorHelper.blue, ColorHelper.gray, Color.white };
-    public static List<Color32> TerrainObstacleColors = new List<Color32>() { ColorHelper.blue, ColorHelper.gray };
+    public static List<Color32> SeaColors = new List<Color32>() { ColorHelper.deepSeaBlue, ColorHelper.shallowSeaBlue };
+    public static List<Color32> MountainColors = new List<Color32>() { ColorHelper.mountainGray, ColorHelper.snowWhite };
+    public static List<Color32> LandColors = new List<Color32>() { ColorHelper.grassGreen, ColorHelper.sandYellow };
+
+    public static List<Color32> ColorsUsedInTerrain = new List<Color32>(ColorHelper.LandColors.Concat(ColorHelper.SeaColors).Concat(ColorHelper.MountainColors));
+    public static List<Color32> UnselectableTerrainColors = new List<Color32>(ColorHelper.MountainColors.Concat(ColorHelper.SeaColors));
+    public static List<Color32> TerrainObstacleColors = new List<Color32>(ColorHelper.MountainColors.Concat(ColorHelper.SeaColors));
     public static bool ColorListContainsColor(List<Color32> colorList, Color32 color)
     {
         // Check if the color is in the list (exact comparison)

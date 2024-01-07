@@ -29,7 +29,7 @@ public class ProvincesGenerator
                 for (var y = 0; y < mapSize.y; y++)
                 {
                     var pixelColor = provinces[y * mapSize.x + x];
-                    if (pixelColor == Color.green || pixelColor == Color.yellow)
+                    if (pixelColor.Equals(ColorHelper.grassGreen) || pixelColor.Equals(ColorHelper.sandYellow))
                     {
                         found = true;
                         startingPosition.x = x;
@@ -41,7 +41,7 @@ public class ProvincesGenerator
             if (found)
             {
                 var size = UnityEngine.Random.Range(provincesMaxSize / 2, provincesMaxSize);
-                var colorsToReplace = new Color32[] { Color.green, Color.yellow };
+                var colorsToReplace = ColorHelper.LandColors.ToArray();
                 var stateColor = ColorHelper.AddNewRandomColorToList(provinceColors);
                 PaintHelper.FloodPaint(provinces, mapSize.x, mapSize.y, startingPosition, colorsToReplace, stateColor, size);
             }
