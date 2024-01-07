@@ -19,7 +19,7 @@ public class ProvincesMap : MonoBehaviour
 
     private void InitProvinces()
     {
-        var provincePixels = this.MapManager.GetProvincesPixels();
+        var provincePixels = this.MapManager.ProvincesSprite.texture.GetPixels32();
         var terrainColors = new HashSet<Color32>() { ColorHelper.blue, ColorHelper.gray, Color.white };
 
         var provinceNames = new List<string>

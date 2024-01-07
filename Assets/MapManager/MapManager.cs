@@ -20,6 +20,11 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
 
     void Update()
     {
+        Hover();
+    }
+
+    private void Hover()
+    {
         var hoveredProvince = ProvincesMap.GetProvince();
 
         if (hoveredProvince == null)
@@ -48,23 +53,6 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
     public Color32[] GetTerrainPixels()
     {
         return this.TerrainSprite.texture.GetPixels32();
-    }
-
-    public void SetTerrainPixels(Color32[] pixels)
-    {
-        this.TerrainSprite.texture.SetPixels32(pixels);
-        this.TerrainSprite.texture.Apply();
-    }
-
-    public Color32[] GetProvincesPixels()
-    {
-        return this.ProvincesSprite.texture.GetPixels32();
-    }
-
-    public void SetProvincesPixels(Color32[] pixels)
-    {
-        this.ProvincesSprite.texture.SetPixels32(pixels);
-        this.ProvincesSprite.texture.Apply();
     }
 
     public void ShowTerrain()
