@@ -20,9 +20,42 @@ public class ProvincesMap : MonoBehaviour
     private void InitProvinces()
     {
         var provincePixels = this.MapManager.ProvincesSprite.texture.GetPixels32();
-        var terrainColors = new HashSet<Color32>() { ColorHelper.blue, ColorHelper.gray, Color.white };
 
-        var provinceNames = new List<string>
+        var provinceNames = GetRandomProvinceNames();
+        var provinceColors = new HashSet<Color32>();
+        var borderPixels = ColorHelper.ExtractColorsWithPositions(provincePixels, this.MapManager.mapSize.x, this.MapManager.mapSize.y, (color) => color.a == ColorHelper.borderAlpha);
+
+        for (var x = 0; x < this.MapManager.mapSize.x; x++)
+        {
+            for (var y = 0; y < this.MapManager.mapSize.y; y++)
+            {
+                var pixelColor = provincePixels[y * this.MapManager.mapSize.x + x];
+
+                var pixelIsUnselectableTerrain = ColorHelper.UnselectableTerrainColors.Any(tc => tc.Equals(pixelColor));
+                if (pixelIsUnselectableTerrain)
+                    continue;
+
+                var pixelIsBorder = pixelColor.a == ColorHelper.borderAlpha;
+                if (pixelIsBorder)
+                    continue;
+
+                var provinceAlreadyAdded = provinceColors.Contains(pixelColor);
+                if (provinceAlreadyAdded)
+                    continue;
+
+                provinceColors.Add(pixelColor);
+                var randomProvinceName = GetRandomProvinceName(provinceNames);
+                var province = new Province(randomProvinceName, pixelColor);
+                province.BorderPixels = borderPixels.Where(bp => ColorHelper.AreColorsEqualIgnoringAlpha(bp.Color, pixelColor)).ToList();
+                this.Provinces.Add(province);
+            }
+        }
+
+    }
+
+    private List<string> GetRandomProvinceNames ()
+    {
+        return new List<string>
         {
             "Eldrathia",
             "Silverholm",
@@ -45,40 +78,18 @@ public class ProvincesMap : MonoBehaviour
             "Obsidian Marches",
             "Sylvanheart"
         };
+    }
 
-        var provinceColors = new HashSet<Color32>();
-        var borderPixels = ColorHelper.ExtractColorsWithPositions(provincePixels, this.MapManager.mapSize.x, this.MapManager.mapSize.y, (color) => color.a == 200);
+    private string GetRandomProvinceName(List<string> provinceNames)
+    {
+        // Choose a random index
+        var random = Random.Range(0, provinceNames.Count());
 
-        for (var x = 0; x < this.MapManager.mapSize.x; x++)
-        {
-            for (var y = 0; y < this.MapManager.mapSize.y; y++)
-            {
-                var pixelColor = provincePixels[y * this.MapManager.mapSize.x + x];
-                if (pixelColor.a == 200)
-                {
-                    continue;
-                }
-                if (!terrainColors.Any(tc => tc.Equals(pixelColor)))
-                {
-                    if (!provinceColors.Contains(pixelColor))
-                    {
-                        provinceColors.Add(pixelColor);
+        // Get and remove the random fantasy province name
+        var randomProvince = provinceNames[random];
+        provinceNames.RemoveAt(random);
 
-                        // Choose a random index
-                        var random = Random.Range(0, provinceNames.Count());
-
-                        // Get and remove the random fantasy province name
-                        string randomProvince = provinceNames[random];
-                        provinceNames.RemoveAt(random);
-
-                        var province = new Province(randomProvince, pixelColor);
-                        province.BorderPixels = borderPixels.Where(bp => ColorHelper.AreColorsEqualIgnoringAlpha(bp.Color, pixelColor)).ToList();
-                        this.Provinces.Add(province);
-
-                    }
-                }
-            }
-        }
+        return randomProvince;
     }
 
     public Province GetProvince()
