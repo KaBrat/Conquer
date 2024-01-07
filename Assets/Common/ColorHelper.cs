@@ -12,7 +12,7 @@ public static class ColorHelper
     public static Color32 grassGreen = Color.green; //new Color32(0, 128, 0, 255);
 
     public static byte borderAlpha = 200;
-    public static byte highlightedAlpha = 200;
+    public static byte highlightedAlpha = 180;
     public static Color32 borderColor = new Color32(59, 57, 43, 200);
     public static Color32 selectedBorderColor = new Color32(184, 78, 37, 200);
 
@@ -64,7 +64,7 @@ public static class ColorHelper
         Color32 pixelColor = map.GetPixel(x, y);
 
         // Print RGB values
-        Debug.Log("Mouse over RGB: (" + pixelColor.r + ", " + pixelColor.g + ", " + pixelColor.b + ")");
+        //Debug.Log("Mouse over RGB: (" + pixelColor.r + ", " + pixelColor.g + ", " + pixelColor.b + ")");
         return pixelColor;
     }
 

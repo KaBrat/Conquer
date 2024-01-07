@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class ProvincesManager : MonoBehaviour
+public class ProvincesManager
 {
     public MapManager MapManager;
     public IProvinceDisplayer ProvinceDisplayer;
@@ -11,9 +11,14 @@ public class ProvincesManager : MonoBehaviour
     public Province selectedProvince;
     public Province hoveredProvince;
 
+    public ProvincesManager(MapManager mapManager)
+    {
+        this.MapManager = mapManager;
+    }
+
     void Start()
     {
-        ProvinceDisplayer = GameObject.FindObjectsOfType<InGameUI>().FirstOrDefault();
+        
     }
 
     public void LoadAndSetProvincesByPixelColor()

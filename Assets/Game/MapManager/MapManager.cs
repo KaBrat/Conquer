@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -7,12 +8,14 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
 
     public Map TerrainMap;
     public Map ProvinceMap;
+    public IProvinceDisplayer ProvinceDisplayer;
     public Vector2Int mapSize;
-    //public Sprite TerrainSprite;
-    //public Sprite ProvincesSprite;
 
     void Start()
     {
+        this.ProvincesManager = new ProvincesManager(this);
+        this.ProvinceDisplayer = GameObject.FindObjectsOfType<InGameUI>().FirstOrDefault();
+
         var TerrainSprite = ImageHelper.LoadImageFromDisk(1, 1, ImageHelper.TerrainMapPath);
         this.mapSize = new Vector2Int(TerrainSprite.texture.width, TerrainSprite.texture.height);
         this.TerrainMap = new Map(TerrainSprite);
@@ -68,14 +71,12 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         var clickedProvince = ProvincesManager.GetProvince();
-        this.ProvincesManager.ProvinceDisplayer.DisplayProvince(clickedProvince);
+        this.ProvinceDisplayer.DisplayProvince(clickedProvince);
 
         if (clickedProvince == null)
         {
             if (this.ProvincesManager.selectedProvince == null)
-            {
                 return;
-            }
 
             this.ProvincesManager.selectedProvince.Deselect(this.TerrainMap, this.ProvinceMap);
             this.ProvincesManager.selectedProvince = null;
@@ -83,9 +84,7 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
         }
 
         if (this.ProvincesManager.selectedProvince != null)
-        {
             this.ProvincesManager.selectedProvince.Deselect(this.TerrainMap, this.ProvinceMap);
-        }
 
         clickedProvince.Select(this.TerrainMap, this.ProvinceMap);
         this.ProvincesManager.selectedProvince = clickedProvince;
