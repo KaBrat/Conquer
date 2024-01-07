@@ -15,7 +15,9 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
         this.TerrainSprite = ImageHelper.LoadImageFromDisk(1, 1, ImageHelper.TerrainMapPath);
         this.mapSize = new Vector2Int(TerrainSprite.texture.width, TerrainSprite.texture.height);
         this.ProvincesSprite = ImageHelper.LoadImageFromDisk(mapSize.x, mapSize.y, ImageHelper.ProvincesMapPath);
+        this.GetComponent<BoxCollider2D>().size = ProvincesSprite.bounds.size;
         this.ShowTerrain();
+        this.ProvincesMap.InitProvinces();
     }
 
     void FixedUpdate()
@@ -46,11 +48,6 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
         if (!hoveredProvince.highLighted)
             hoveredProvince.HighlightTerrain(this.TerrainSprite.texture, this.ProvincesSprite.texture);
         this.ProvincesMap.hoveredProvince = hoveredProvince;
-    }
-
-    public Color32[] GetTerrainPixels()
-    {
-        return this.TerrainSprite.texture.GetPixels32();
     }
 
     public void ShowTerrain()

@@ -15,10 +15,9 @@ public class ProvincesMap : MonoBehaviour
     void Start()
     {
         ProvinceDisplayer = GameObject.FindObjectsOfType<InGameUI>().FirstOrDefault();
-        InitProvinces();
     }
 
-    private void InitProvinces()
+    public void InitProvinces()
     {
         var provincePixels = this.MapManager.ProvincesSprite.texture.GetPixels32();
 
