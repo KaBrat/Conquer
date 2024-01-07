@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 public class MapManager : MonoBehaviour, IPointerClickHandler
 {
-    public ProvincesMap ProvincesMap;
+    public ProvincesManager ProvincesManager;
 
     public Map TerrainMap;
     public Map ProvinceMap;
@@ -22,7 +22,7 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
 
         this.GetComponent<BoxCollider2D>().size = ProvincesSprite.bounds.size;
         this.ShowTerrain();
-        this.ProvincesMap.InitProvinces();
+        this.ProvincesManager.LoadAndSetProvincesByPixelColor();
     }
 
     void FixedUpdate()
@@ -32,27 +32,27 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
 
     private void Hover()
     {
-        var hoveredProvince = this.ProvincesMap.GetProvince();
+        var hoveredProvince = this.ProvincesManager.GetProvince();
 
         if (hoveredProvince == null)
         {
-            if (this.ProvincesMap.hoveredProvince == null)
+            if (this.ProvincesManager.hoveredProvince == null)
                 return;
 
-            if (this.ProvincesMap.hoveredProvince != ProvincesMap.selectedProvince)
-                this.ProvincesMap.hoveredProvince.UnHighlightTerrain(this.TerrainMap, this.ProvinceMap);
-            this.ProvincesMap.hoveredProvince = null;
+            if (this.ProvincesManager.hoveredProvince != ProvincesManager.selectedProvince)
+                this.ProvincesManager.hoveredProvince.UnHighlightTerrain(this.TerrainMap, this.ProvinceMap);
+            this.ProvincesManager.hoveredProvince = null;
             return;
         }
 
-        if (this.ProvincesMap.hoveredProvince != null)
+        if (this.ProvincesManager.hoveredProvince != null)
         {
-            if (this.ProvincesMap.hoveredProvince != ProvincesMap.selectedProvince)
-                this.ProvincesMap.hoveredProvince.UnHighlightTerrain(this.TerrainMap, this.ProvinceMap);
+            if (this.ProvincesManager.hoveredProvince != ProvincesManager.selectedProvince)
+                this.ProvincesManager.hoveredProvince.UnHighlightTerrain(this.TerrainMap, this.ProvinceMap);
         }
         if (!hoveredProvince.highLighted)
             hoveredProvince.HighlightTerrain(this.TerrainMap, this.ProvinceMap);
-        this.ProvincesMap.hoveredProvince = hoveredProvince;
+        this.ProvincesManager.hoveredProvince = hoveredProvince;
     }
 
     public void ShowTerrain()
@@ -67,27 +67,27 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        var clickedProvince = ProvincesMap.GetProvince();
-        this.ProvincesMap.ProvinceDisplayer.DisplayProvince(clickedProvince);
+        var clickedProvince = ProvincesManager.GetProvince();
+        this.ProvincesManager.ProvinceDisplayer.DisplayProvince(clickedProvince);
 
         if (clickedProvince == null)
         {
-            if (this.ProvincesMap.selectedProvince == null)
+            if (this.ProvincesManager.selectedProvince == null)
             {
                 return;
             }
 
-            this.ProvincesMap.selectedProvince.Deselect(this.TerrainMap, this.ProvinceMap);
-            this.ProvincesMap.selectedProvince = null;
+            this.ProvincesManager.selectedProvince.Deselect(this.TerrainMap, this.ProvinceMap);
+            this.ProvincesManager.selectedProvince = null;
             return;
         }
 
-        if (this.ProvincesMap.selectedProvince != null)
+        if (this.ProvincesManager.selectedProvince != null)
         {
-            this.ProvincesMap.selectedProvince.Deselect(this.TerrainMap, this.ProvinceMap);
+            this.ProvincesManager.selectedProvince.Deselect(this.TerrainMap, this.ProvinceMap);
         }
 
         clickedProvince.Select(this.TerrainMap, this.ProvinceMap);
-        this.ProvincesMap.selectedProvince = clickedProvince;
+        this.ProvincesManager.selectedProvince = clickedProvince;
     }
 }

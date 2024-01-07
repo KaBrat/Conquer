@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
-using Unity.VisualScripting;
 
-public class ProvincesMap : MonoBehaviour
+public class ProvincesManager : MonoBehaviour
 {
     public MapManager MapManager;
     public IProvinceDisplayer ProvinceDisplayer;
@@ -17,7 +16,7 @@ public class ProvincesMap : MonoBehaviour
         ProvinceDisplayer = GameObject.FindObjectsOfType<InGameUI>().FirstOrDefault();
     }
 
-    public void InitProvinces()
+    public void LoadAndSetProvincesByPixelColor()
     {
         var provinceNames = ProvinceNames.GetRandomProvinceNames();
         var provinceAndBorderPixelsDict = GetProvinceAndBorderPixelsDict();

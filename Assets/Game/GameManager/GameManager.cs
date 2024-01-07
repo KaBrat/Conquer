@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour, IEndTurn
     {
         foreach (var player in this.Players) 
         {
-            var startingProvince = this.MapManager.ProvincesMap.Provinces.FirstOrDefault(p => p.Owner == null);
+            var startingProvince = this.MapManager.ProvincesManager.Provinces.FirstOrDefault(p => p.Owner == null);
             startingProvince.ChangeOwnerOnMap(player, this.MapManager.TerrainMap);
             startingProvince.FootmenCount = 2;
         }
