@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Color = UnityEngine.Color;
-using Random = UnityEngine.Random;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -20,8 +18,6 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
     [SerializeField, Range(0, 300)] private int ProvincesMaxSize = 170;
-
-    private List<Color32> provinceColors = new List<Color32>();
 
     public void GenerateMap()
     {
@@ -51,73 +47,10 @@ public class MapGenerator : MonoBehaviour
         var noiseMap = generator.GenerateNoiseMap();
         var terrain = generator.GenerateTerrain(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
-        var provinces = GenerateProvinces(terrain);
+        var generatedProvinces = new ProvincesGenerator().GenerateProvinces(terrain, new Vector2Int(this.mapWidth, this.mapHeight), this.ProvincesMaxSize);
 
-        new BorderGenerator(this.mapWidth, this.mapHeight).AddStateBordersToTerrain(terrain, provinces, this.provinceColors);
+        new BorderGenerator(this.mapWidth, this.mapHeight).AddStateBordersToTerrain(terrain, generatedProvinces.provinces, generatedProvinces.provinceColors);
 
-        return (terrain, provinces);
-    }
-
-    private Color32[] GenerateProvinces(Color32[] Terrain)
-    {
-        var provinces = new Color32[Terrain.Length];
-        Array.Copy(Terrain, provinces, Terrain.Length);
-
-        var found = true;
-        var startingPosition = new Vector2();
-
-        this.provinceColors = new List<Color32>();
-
-        while (found)
-        {
-            found = false;
-
-            for (var x = 0; x < this.mapWidth; x++)
-            {
-                for (var y = 0; y < this.mapHeight; y++)
-                {
-                    var pixelColor = provinces[y * this.mapWidth + x];
-                    if (pixelColor == Color.green || pixelColor == Color.yellow)
-                    {
-                        found = true;
-                        startingPosition.x = x;
-                        startingPosition.y = y;
-                    }
-                }
-            }
-
-            if (found)
-            {
-                var size = UnityEngine.Random.Range(this.ProvincesMaxSize / 2, this.ProvincesMaxSize);
-                var colorsToReplace = new Color32[] { Color.green, Color.yellow };
-                var stateColor = AddNewRandomColorToList(provinceColors);
-                PaintHelper.FloodPaint(provinces, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, stateColor, size);
-            }
-        }
-
-        return provinces;
-    }
-
-    Color32 AddNewRandomColorToList(List<Color32> colorList)
-    {
-        Color32 randomColor;
-
-        do
-        {
-            // Generate a random color
-            randomColor = new Color32(
-    (byte)Random.Range(0, 256),  // Random red component (0 to 255)
-    (byte)Random.Range(0, 256),  // Random green component (0 to 255)
-    (byte)Random.Range(0, 256),  // Random blue component (0 to 255)
-    255                           // Fully opaque alpha component (255)
-);
-
-            // Check if the color is already in the list
-        } while (ColorHelper.ColorListContainsColor(colorList, randomColor) || ColorHelper.ColorListContainsColor(ColorHelper.ColorsUsedInTerrain, randomColor));
-
-        // Add the new color to the list if needed
-        colorList.Add(randomColor);
-
-        return randomColor;
+        return (terrain, generatedProvinces.provinces);
     }
 }

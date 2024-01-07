@@ -89,6 +89,29 @@ public static class ColorHelper
     {
         return color1.r == color2.r && color1.g == color2.g && color1.b == color2.b;
     }
+
+    public static Color32 AddNewRandomColorToList(List<Color32> colorList)
+    {
+        Color32 randomColor;
+
+        do
+        {
+            // Generate a random color
+            randomColor = new Color32(
+    (byte)Random.Range(0, 256),  // Random red component (0 to 255)
+    (byte)Random.Range(0, 256),  // Random green component (0 to 255)
+    (byte)Random.Range(0, 256),  // Random blue component (0 to 255)
+    255                           // Fully opaque alpha component (255)
+);
+
+            // Check if the color is already in the list
+        } while (ColorHelper.ColorListContainsColor(colorList, randomColor) || ColorHelper.ColorListContainsColor(ColorHelper.ColorsUsedInTerrain, randomColor));
+
+        // Add the new color to the list if needed
+        colorList.Add(randomColor);
+
+        return randomColor;
+    }
 }
 
 //private Color GetRGBA()
