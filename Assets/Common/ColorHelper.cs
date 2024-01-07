@@ -25,7 +25,7 @@ public static class ColorHelper
         return colorList.Contains(color);
     }
 
-    public static Color32 GetColor(Camera camera)
+    public static Color32 GetColor(Texture2D texture2D,Camera camera)
     {
         Vector2 clickPosition = camera.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
@@ -37,11 +37,6 @@ public static class ColorHelper
 
             if (spriteRenderer != null)
             {
-                // Get the texture from the sprite
-                Texture2D texture = spriteRenderer.sprite.texture;
-
-                texture = ImageHelper.LoadImageFromDisk(texture.width, texture.height, ImageHelper.ProvincesMapPath).texture;
-
                 // Calculate UV coordinates manually
                 Vector2 localPoint = hit.transform.InverseTransformPoint(hit.point);
                 Vector2 uv = new Vector2(
@@ -50,11 +45,11 @@ public static class ColorHelper
                 );
 
                 // Convert UV coordinates to pixel coordinates
-                int x = Mathf.RoundToInt(uv.x * texture.width);
-                int y = Mathf.RoundToInt(uv.y * texture.height);
+                int x = Mathf.RoundToInt(uv.x * texture2D.width);
+                int y = Mathf.RoundToInt(uv.y * texture2D.height);
 
                 // Get the color of the clicked pixel
-                Color32 pixelColor = texture.GetPixel(x, y);
+                Color32 pixelColor = texture2D.GetPixel(x, y);
 
                 // Print RGB values
                 Debug.Log("Clicked on RGB: (" + pixelColor.r + ", " + pixelColor.g + ", " + pixelColor.b + ")");

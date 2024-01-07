@@ -21,25 +21,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
     [SerializeField, Range(0, 300)] private int Statesize = 170;
 
-    private Camera mainCamera;
     private List<Color32> provinceColors = new List<Color32>();
-
-    void Start()
-    {
-        mainCamera = Camera.main;
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            var clickedProvince = ColorHelper.GetColor(mainCamera);
-            //Debug.Log(clickedProvince);
-            var isGray = clickedProvince.Equals(ColorHelper.gray);
-            Debug.Log(isGray);
-            Debug.Log(Color.gray);
-        }
-    }
 
     public void GenerateMap()
     {

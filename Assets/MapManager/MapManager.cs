@@ -18,21 +18,19 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
         this.ShowTerrain();
     }
 
-    void Update()
+    void FixedUpdate()
     {
         Hover();
     }
 
     private void Hover()
     {
-        var hoveredProvince = ProvincesMap.GetProvince();
+        var hoveredProvince = this.ProvincesMap.GetProvince();
 
         if (hoveredProvince == null)
         {
             if (this.ProvincesMap.hoveredProvince == null)
-            {
                 return;
-            }
 
             if (this.ProvincesMap.hoveredProvince != ProvincesMap.selectedProvince)
                 this.ProvincesMap.hoveredProvince.UnHighlightTerrain(this.TerrainSprite.texture, this.ProvincesSprite.texture);

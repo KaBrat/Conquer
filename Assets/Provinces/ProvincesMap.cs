@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Unity.VisualScripting;
 
 public class ProvincesMap : MonoBehaviour
 {
@@ -94,7 +95,7 @@ public class ProvincesMap : MonoBehaviour
 
     public Province GetProvince()
     {
-        var provinceColor = ColorHelper.GetColor(Camera.main);
+        var provinceColor = ColorHelper.GetColor(this.MapManager.ProvincesSprite.texture, Camera.main);
         return Provinces.Where(p => p.Color.Equals(provinceColor)).FirstOrDefault();
     }
 }
