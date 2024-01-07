@@ -9,6 +9,7 @@ public class ProvincesMap : MonoBehaviour
 
     public HashSet<Province> Provinces = new HashSet<Province>();
     public Province selectedProvince;
+    public Province hoveredProvince;
 
     void Start()
     {

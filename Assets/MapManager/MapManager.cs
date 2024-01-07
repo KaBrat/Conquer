@@ -18,6 +18,33 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
         this.ShowTerrain();
     }
 
+    void Update()
+    {
+        var hoveredProvince = ProvincesMap.GetProvince();
+
+        if (hoveredProvince == null)
+        {
+            if (this.ProvincesMap.hoveredProvince == null)
+            {
+                return;
+            }
+
+            if (this.ProvincesMap.hoveredProvince != ProvincesMap.selectedProvince)
+                this.ProvincesMap.hoveredProvince.UnHighlightTerrain(this.TerrainSprite.texture, this.ProvincesSprite.texture);
+            this.ProvincesMap.hoveredProvince = null;
+            return;
+        }
+
+        if (this.ProvincesMap.hoveredProvince != null)
+        {
+            if (this.ProvincesMap.hoveredProvince != ProvincesMap.selectedProvince)
+                this.ProvincesMap.hoveredProvince.UnHighlightTerrain(this.TerrainSprite.texture, this.ProvincesSprite.texture);
+        }
+        if (!hoveredProvince.highLighted)
+            hoveredProvince.HighlightTerrain(this.TerrainSprite.texture, this.ProvincesSprite.texture);
+        this.ProvincesMap.hoveredProvince = hoveredProvince;
+    }
+
     public Color32[] GetTerrainPixels()
     {
         return this.TerrainSprite.texture.GetPixels32();
