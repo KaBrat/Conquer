@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
-    [SerializeField, Range(0, 300)] private int Statesize = 170;
+    [SerializeField, Range(0, 300)] private int ProvincesMaxSize = 170;
 
     private List<Color32> provinceColors = new List<Color32>();
 
@@ -51,22 +51,22 @@ public class MapGenerator : MonoBehaviour
         var noiseMap = generator.GenerateNoiseMap();
         var terrain = generator.GenerateTerrain(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
-        var provinces = GenerateStates(terrain);
+        var provinces = GenerateProvinces(terrain);
 
         new BorderGenerator(this.mapWidth, this.mapHeight).AddStateBordersToTerrain(terrain, provinces, this.provinceColors);
 
         return (terrain, provinces);
     }
 
-    private Color32[] GenerateStates(Color32[] Terrain)
+    private Color32[] GenerateProvinces(Color32[] Terrain)
     {
-        var states = new Color32[Terrain.Length];
-        Array.Copy(Terrain, states, Terrain.Length);
+        var provinces = new Color32[Terrain.Length];
+        Array.Copy(Terrain, provinces, Terrain.Length);
 
         var found = true;
         var startingPosition = new Vector2();
 
-        provinceColors = new List<Color32>();
+        this.provinceColors = new List<Color32>();
 
         while (found)
         {
@@ -76,7 +76,7 @@ public class MapGenerator : MonoBehaviour
             {
                 for (var y = 0; y < this.mapHeight; y++)
                 {
-                    var pixelColor = states[y * this.mapWidth + x];
+                    var pixelColor = provinces[y * this.mapWidth + x];
                     if (pixelColor == Color.green || pixelColor == Color.yellow)
                     {
                         found = true;
@@ -88,14 +88,14 @@ public class MapGenerator : MonoBehaviour
 
             if (found)
             {
-                var size = UnityEngine.Random.Range(this.Statesize / 2, this.Statesize);
+                var size = UnityEngine.Random.Range(this.ProvincesMaxSize / 2, this.ProvincesMaxSize);
                 var colorsToReplace = new Color32[] { Color.green, Color.yellow };
                 var stateColor = AddNewRandomColorToList(provinceColors);
-                PaintHelper.FloodPaint(states, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, stateColor, size);
+                PaintHelper.FloodPaint(provinces, this.mapWidth, this.mapHeight, startingPosition, colorsToReplace, stateColor, size);
             }
         }
 
-        return states;
+        return provinces;
     }
 
     Color32 AddNewRandomColorToList(List<Color32> colorList)

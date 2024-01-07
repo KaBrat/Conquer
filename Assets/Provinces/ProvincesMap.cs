@@ -46,8 +46,10 @@ public class ProvincesMap : MonoBehaviour
 
                 provinceColors.Add(pixelColor);
                 var randomProvinceName = GetRandomProvinceName(provinceNames);
-                var province = new Province(randomProvinceName, pixelColor);
-                province.BorderPixels = borderPixels.Where(bp => ColorHelper.AreColorsEqualIgnoringAlpha(bp.Color, pixelColor)).ToList();
+                var province = new Province(randomProvinceName, pixelColor)
+                {
+                    BorderPixels = borderPixels.Where(bp => ColorHelper.AreColorsEqualIgnoringAlpha(bp.Color, pixelColor)).ToList()
+                };
                 this.Provinces.Add(province);
             }
         }
