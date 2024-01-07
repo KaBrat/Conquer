@@ -11,7 +11,8 @@ public static class ColorHelper
     public static Color32 snowWhite = new Color32(255, 255, 255, 255);
     public static Color32 grassGreen = Color.green; //new Color32(0, 128, 0, 255);
 
-    public static int borderAlpha = 200;
+    public static byte borderAlpha = 200;
+    public static byte highlightedAlpha = 200;
     public static Color32 borderColor = new Color32(59, 57, 43, 200);
     public static Color32 selectedBorderColor = new Color32(184, 78, 37, 200);
 
@@ -34,38 +35,37 @@ public static class ColorHelper
         return colorList.Contains(color);
     }
 
-    public static Color32 GetColor(Texture2D texture2D, Camera camera)
+    public static Color32 GetColor(Map map, Vector2 mousePosition)
     {
-        Vector2 clickPosition = camera.ScreenToWorldPoint(Input.mousePosition);
-        RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
+        RaycastHit2D hit = Physics2D.Raycast(mousePosition, Vector2.zero);
 
-        if (hit.collider != null)
-        {
-            // Check if the clicked object has a SpriteRenderer
-            SpriteRenderer spriteRenderer = hit.collider.GetComponent<SpriteRenderer>();
+        if (hit.collider == null)
+            return new Color32();
 
-            if (spriteRenderer != null)
-            {
-                // Calculate UV coordinates manually
-                Vector2 localPoint = hit.transform.InverseTransformPoint(hit.point);
-                Vector2 uv = new Vector2(
-                    Mathf.InverseLerp(hit.collider.bounds.min.x, hit.collider.bounds.max.x, localPoint.x),
-                    Mathf.InverseLerp(hit.collider.bounds.min.y, hit.collider.bounds.max.y, localPoint.y)
-                );
+        // Check if the clicked object has a SpriteRenderer
+        SpriteRenderer spriteRenderer = hit.collider.GetComponent<SpriteRenderer>();
 
-                // Convert UV coordinates to pixel coordinates
-                int x = Mathf.RoundToInt(uv.x * texture2D.width);
-                int y = Mathf.RoundToInt(uv.y * texture2D.height);
+        if (spriteRenderer == null)
+            return new Color32();
 
-                // Get the color of the clicked pixel
-                Color32 pixelColor = texture2D.GetPixel(x, y);
+        // Calculate UV coordinates manually
+        Vector2 localPoint = hit.transform.InverseTransformPoint(hit.point);
+        Vector2 uv = new Vector2(
+            Mathf.InverseLerp(hit.collider.bounds.min.x, hit.collider.bounds.max.x, localPoint.x),
+            Mathf.InverseLerp(hit.collider.bounds.min.y, hit.collider.bounds.max.y, localPoint.y)
+        );
 
-                // Print RGB values
-                Debug.Log("Clicked on RGB: (" + pixelColor.r + ", " + pixelColor.g + ", " + pixelColor.b + ")");
-                return pixelColor;
-            }
-        }
-        return new Color32();
+        // Convert UV coordinates to pixel coordinates
+        var mapSize = map.getMapSize();
+        int x = Mathf.RoundToInt(uv.x * mapSize.x);
+        int y = Mathf.RoundToInt(uv.y * mapSize.y);
+
+        // Get the color of the clicked pixel
+        Color32 pixelColor = map.GetPixel(x, y);
+
+        // Print RGB values
+        Debug.Log("Mouse over RGB: (" + pixelColor.r + ", " + pixelColor.g + ", " + pixelColor.b + ")");
+        return pixelColor;
     }
 
     static int GetIndex(int x, int y, int mapWidth)
@@ -97,6 +97,21 @@ public static class ColorHelper
     public static bool AreColorsEqualIgnoringAlpha(Color32 color1, Color32 color2)
     {
         return color1.r == color2.r && color1.g == color2.g && color1.b == color2.b;
+    }
+
+    public static Color32 GetBorderColor (Color32 color)
+    {
+        return new Color32(color.r,color.g,color.b, ColorHelper.borderAlpha);
+    }
+
+    public static Color32 GetHighlightedColor(Color32 color)
+    {
+        return new Color32(color.r, color.g, color.b, ColorHelper.highlightedAlpha);
+    }
+
+    public static Color32 GetOriginalProvinceColor(Color32 color)
+    {
+        return new Color32(color.r, color.g, color.b, 255);
     }
 
     public static Color32 AddNewRandomColorToList(List<Color32> colorList)

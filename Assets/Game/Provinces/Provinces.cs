@@ -7,10 +7,18 @@ public class Province
     public Player Owner { get; set; }
     public int FootmenCount { get; set; }
     public Color32 Color { get; internal set; }
-    public List<ColorWithPosition> BorderPixels { get; set; }
-    public List<ColorWithPosition> Pixels { get; set; }
+    public int[] pixelIndices { get; set; }
+    public int[] borderPixelIndices { get; set; }
 
     public bool highLighted = false;
+
+    public Province(string name, Color32 color, int[] pixelIndices, int[] borderPixelIndices)
+    {
+        this.Name = name;
+        this.Color = color;
+        this.pixelIndices = pixelIndices;
+        this.borderPixelIndices = borderPixelIndices;
+    }
 
     public Province(string name, Player owner, int footmenCount, Color32 color)
     {
@@ -26,73 +34,62 @@ public class Province
         Color = color;
     }
 
-    public void ChangeOwner(Player newOwner, Texture2D terrain)
+    public void ChangeOwnerOnMap(Player newOwner, Map map)
     {
         this.Owner = newOwner;
-        this.ColorBorderInPlayerColors(terrain);
+        this.ColorBorderInPlayerColors(map);
     }
 
-    public void ColorBorderInPlayerColors(Texture2D terrain)
+    public void ColorBorderInPlayerColors(Map map)
     {
         if (this.Owner != null)
         {
-            var terrainPixels = terrain.GetPixels32();
+            var terrainPixels = map.GetPixels32();
 
-            foreach (var borderPixel in this.BorderPixels)
+            foreach (var borderPixelIndice in this.borderPixelIndices)
             {
-                terrainPixels[borderPixel.Position.y * terrain.width + borderPixel.Position.x] = this.Owner.Color;
+                terrainPixels[borderPixelIndice] = this.Owner.Color;
             }
 
-            terrain.SetPixels32(terrainPixels);
-            terrain.Apply();
+            map.updateSprite(terrainPixels);
         }
     }
 
-    public void HighlightTerrain(Texture2D terrain, Texture2D provinces)
+    public void HighlightTerrain(Map terrain, Map provinces)
     {
         this.highLighted = true;
 
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        if (this.Pixels == null)
+        foreach (var pixelIndice in this.pixelIndices)
         {
-            this.Pixels = ColorHelper.ExtractColorsWithPositions(provincesPixels, provinces.width, provinces.height, (color) => color.Equals(this.Color));
-        }
-        foreach (var pixel in this.Pixels)
-        {
-            var normalTerrainColor = terrainPixels[pixel.Position.y * terrain.width + pixel.Position.x];
-            var highlightedTerrainColor = new Color32(normalTerrainColor.r, normalTerrainColor.g, normalTerrainColor.b, 180);
-            terrainPixels[pixel.Position.y * terrain.width + pixel.Position.x] = highlightedTerrainColor;
+            var normalTerrainColor = terrainPixels[pixelIndice];
+            var highlightedTerrainColor = ColorHelper.GetHighlightedColor(normalTerrainColor);
+            terrainPixels[pixelIndice] = highlightedTerrainColor;
         }
 
-        terrain.SetPixels32(terrainPixels);
-        terrain.Apply();
+        terrain.updateSprite(terrainPixels);
     }
 
-    public void UnHighlightTerrain(Texture2D terrain, Texture2D provinces)
+    public void UnHighlightTerrain(Map terrain, Map provinces)
     {
         this.highLighted = false;
 
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        if (this.Pixels == null)
+        foreach (var pixelIndice in this.pixelIndices)
         {
-            this.Pixels = ColorHelper.ExtractColorsWithPositions(terrainPixels, terrain.width, terrain.height, (color) => color.Equals(this.Color));
-        }
-        foreach (var pixel in this.Pixels)
-        {
-            var highlightedColor = terrainPixels[pixel.Position.y * terrain.width + pixel.Position.x];
-            var normalColor = new Color32(highlightedColor.r, highlightedColor.g, highlightedColor.b, 255);
-            terrainPixels[pixel.Position.y * terrain.width + pixel.Position.x] = normalColor;
+            var highlightedColor = terrainPixels[pixelIndice];
+            var normalColor = ColorHelper.GetOriginalProvinceColor(highlightedColor);
+            terrainPixels[pixelIndice] = normalColor;
         }
 
-        terrain.SetPixels32(terrainPixels);
-        terrain.Apply();
+        terrain.updateSprite(terrainPixels);
     }
 
-    public void Select(Texture2D terrain, Texture2D provinces)
+    public void Select(Map terrain, Map provinces)
     {
         if (!this.highLighted)
         {
@@ -102,25 +99,22 @@ public class Province
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        foreach (var borderPixel in this.BorderPixels)
+        foreach (var borderPixelIndice in this.borderPixelIndices)
         {
             if (this.Owner == null)
-                terrainPixels[borderPixel.Position.y * terrain.width + borderPixel.Position.x] = ColorHelper.selectedBorderColor;
+                terrainPixels[borderPixelIndice] = ColorHelper.selectedBorderColor;
             else
             {
-                var highlightedBorderColor = new Color32(this.Owner.Color.r, this.Owner.Color.g, this.Owner.Color.b, 180);
-                terrainPixels[borderPixel.Position.y * provinces.width + borderPixel.Position.x] = highlightedBorderColor;
+                var highlightedBorderColor = ColorHelper.GetHighlightedColor(this.Owner.Color);
+                terrainPixels[borderPixelIndice] = highlightedBorderColor;
             }
-            provincesPixels[borderPixel.Position.y * provinces.width + borderPixel.Position.x] = ColorHelper.selectedBorderColor;
+            provincesPixels[borderPixelIndice] = ColorHelper.selectedBorderColor;
         }
-        terrain.SetPixels32(terrainPixels);
-        terrain.Apply();
-
-        provinces.SetPixels32(provincesPixels);
-        provinces.Apply();
+        terrain.updateSprite(terrainPixels);
+        provinces.updateSprite(provincesPixels);
     }
 
-    public void Deselect(Texture2D terrain, Texture2D provinces)
+    public void Deselect(Map terrain, Map provinces)
     {
         if (this.highLighted)
         {
@@ -130,18 +124,15 @@ public class Province
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        foreach (var borderPixel in this.BorderPixels)
+        foreach (var borderPixelIndice in this.borderPixelIndices)
         {
-            provincesPixels[borderPixel.Position.y * terrain.width + borderPixel.Position.x] = ColorHelper.borderColor;
+            provincesPixels[borderPixelIndice] = ColorHelper.borderColor;
             if (this.Owner == null)
-                terrainPixels[borderPixel.Position.y * provinces.width + borderPixel.Position.x] = ColorHelper.borderColor;
+                terrainPixels[borderPixelIndice] = ColorHelper.borderColor;
             else
-                terrainPixels[borderPixel.Position.y * provinces.width + borderPixel.Position.x] = this.Owner.Color;
+                terrainPixels[borderPixelIndice] = this.Owner.Color;
         }
-        terrain.SetPixels32(terrainPixels);
-        terrain.Apply();
-
-        provinces.SetPixels32(provincesPixels);
-        provinces.Apply();
+        terrain.updateSprite(terrainPixels);
+        provinces.updateSprite(provincesPixels);
     }
 }

@@ -19,82 +19,53 @@ public class ProvincesMap : MonoBehaviour
 
     public void InitProvinces()
     {
-        var provincePixels = this.MapManager.ProvincesSprite.texture.GetPixels32();
+        var provinceNames = ProvinceNames.GetRandomProvinceNames();
+        var provinceAndBorderPixelsDict = GetProvinceAndBorderPixelsDict();
+        foreach (var entry in provinceAndBorderPixelsDict)
+        {
+            var provinceName = ProvinceNames.GetRandomProvinceNameAndRemove(provinceNames);
 
-        var provinceNames = GetRandomProvinceNames();
-        var provinceColors = new HashSet<Color32>();
-        var borderPixels = ColorHelper.ExtractColorsWithPositions(provincePixels, this.MapManager.mapSize.x, this.MapManager.mapSize.y, (color) => color.a == ColorHelper.borderAlpha);
+            var province = new Province(provinceName, entry.Key, entry.Value.provincePixels.ToArray(), entry.Value.borderPixels.ToArray());
+            this.Provinces.Add(province);
+        }
+    }
+
+    private Dictionary<Color32, (List<int> provincePixels, List<int> borderPixels)> GetProvinceAndBorderPixelsDict()
+    {
+        var provincePixels = this.MapManager.ProvinceMap.GetPixels32();
+        var tmpProvinces = new Dictionary<Color32, (List<int> provincePixels, List<int> borderPixelss)>();
 
         for (var x = 0; x < this.MapManager.mapSize.x; x++)
         {
             for (var y = 0; y < this.MapManager.mapSize.y; y++)
             {
-                var pixelColor = provincePixels[y * this.MapManager.mapSize.x + x];
+                var colorIndex = y * this.MapManager.mapSize.x + x;
+                var pixelColor = provincePixels[colorIndex];
 
                 var pixelIsUnselectableTerrain = ColorHelper.UnselectableTerrainColors.Any(tc => tc.Equals(pixelColor));
                 if (pixelIsUnselectableTerrain)
                     continue;
 
                 var pixelIsBorder = pixelColor.a == ColorHelper.borderAlpha;
+                var provinceColor = ColorHelper.GetOriginalProvinceColor(pixelColor);
+
+                var provinceNotAddedYet = !tmpProvinces.ContainsKey(provinceColor);
+                if (provinceNotAddedYet)
+                    tmpProvinces.Add(provinceColor, (new List<int>(), new List<int>()));
+
                 if (pixelIsBorder)
-                    continue;
-
-                var provinceAlreadyAdded = provinceColors.Contains(pixelColor);
-                if (provinceAlreadyAdded)
-                    continue;
-
-                provinceColors.Add(pixelColor);
-                var randomProvinceName = GetRandomProvinceName(provinceNames);
-                var province = new Province(randomProvinceName, pixelColor);
-                province.BorderPixels = borderPixels.Where(bp => ColorHelper.AreColorsEqualIgnoringAlpha(bp.Color, pixelColor)).ToList();
-                this.Provinces.Add(province);
+                    tmpProvinces[provinceColor].borderPixelss.Add(colorIndex);
+                else
+                    tmpProvinces[provinceColor].provincePixels.Add(colorIndex);
             }
         }
-
-    }
-
-    private List<string> GetRandomProvinceNames ()
-    {
-        return new List<string>
-        {
-            "Eldrathia",
-            "Silverholm",
-            "Misthaven",
-            "Emberwold",
-            "Frostspire",
-            "Celestial Reach",
-            "Shadowmere",
-            "Stormwatch",
-            "Crimson Valley",
-            "Ironpeak",
-            "Whispering Woods",
-            "Serpent's Coil",
-            "Golden Plains",
-            "Moonshroud",
-            "Thunderhelm",
-            "Starfallen Reach",
-            "Azure Haven",
-            "Wyrmguard",
-            "Obsidian Marches",
-            "Sylvanheart"
-        };
-    }
-
-    private string GetRandomProvinceName(List<string> provinceNames)
-    {
-        // Choose a random index
-        var random = Random.Range(0, provinceNames.Count());
-
-        // Get and remove the random fantasy province name
-        var randomProvince = provinceNames[random];
-        provinceNames.RemoveAt(random);
-
-        return randomProvince;
+        return tmpProvinces;
     }
 
     public Province GetProvince()
     {
-        var provinceColor = ColorHelper.GetColor(this.MapManager.ProvincesSprite.texture, Camera.main);
+        Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var provinceColor = ColorHelper.GetColor(this.MapManager.ProvinceMap, clickPosition);
         return Provinces.Where(p => p.Color.Equals(provinceColor)).FirstOrDefault();
     }
 }
