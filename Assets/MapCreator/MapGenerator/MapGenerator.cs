@@ -8,7 +8,8 @@ public class MapGenerator : MonoBehaviour
     // Noisescale is like a "zoom" on the perlin noise
     // high => far away, low => close
     [SerializeField, Range(0.1f, 50f)] private float noiseScale = 4f;
-    [SerializeField, Range(0f, 1f)] private float waterThreshold = 0.45f;
+    [SerializeField, Range(0f, 1f)] private float deepSeaThreshold = 0.40f;
+    [SerializeField, Range(0f, 1f)] private float shallowSeaThreshold = 0.45f;
     [SerializeField, Range(0f, 1f)] private float beachThreshold = 0.48f;
     [SerializeField, Range(0f, 1f)] private float grassThreshold = 0.8f;
     [SerializeField, Range(0f, 1f)] private float mountainThreshold = 0.9f;
@@ -23,8 +24,8 @@ public class MapGenerator : MonoBehaviour
     {
         var (Terrain, Provinces) = GeneratePixels();
 
-        ImageHelper.SaveTerrainPixels(Terrain);
-        ImageHelper.SaveProvincesPixels(Provinces);
+        ImageHelper.SaveTerrainPixels(Terrain, new Vector2Int(this.mapWidth, this.mapHeight));
+        ImageHelper.SaveProvincesPixels(Provinces, new Vector2Int(this.mapWidth, this.mapHeight));
 
         ShowTerrain();
     }
@@ -45,7 +46,7 @@ public class MapGenerator : MonoBehaviour
     {
         var generator = new TerrainGenerator(this.mapWidth, this.mapHeight, this.noiseScale, this.random, this.outerBoundaryXSize, this.outerBoundaryYSize);
         var noiseMap = generator.GenerateNoiseMap();
-        var terrain = generator.GenerateTerrain(noiseMap, this.waterThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
+        var terrain = generator.GenerateTerrain(noiseMap, this.deepSeaThreshold, this.shallowSeaThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
         var generatedProvinces = new ProvincesGenerator().GenerateProvinces(terrain, new Vector2Int(this.mapWidth, this.mapHeight), this.ProvincesMaxSize);
 

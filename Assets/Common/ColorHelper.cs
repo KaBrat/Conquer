@@ -34,7 +34,7 @@ public static class ColorHelper
         return colorList.Contains(color);
     }
 
-    public static Color32 GetColor(Texture2D texture2D,Camera camera)
+    public static Color32 GetColor(Texture2D texture2D, Camera camera)
     {
         Vector2 clickPosition = camera.ScreenToWorldPoint(Input.mousePosition);
         RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
