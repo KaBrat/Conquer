@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class Province
@@ -60,14 +60,13 @@ public class Province
         this.highLighted = true;
 
         var terrainPixels = terrain.GetPixels32();
-        var provincesPixels = provinces.GetPixels32();
 
-        foreach (var pixelIndice in this.PixelIndices)
+        Parallel.ForEach(this.PixelIndices, pixelIndex =>
         {
-            var normalTerrainColor = terrainPixels[pixelIndice];
+            var normalTerrainColor = terrainPixels[pixelIndex];
             var highlightedTerrainColor = ColorHelper.GetHighlightedColor(normalTerrainColor);
-            terrainPixels[pixelIndice] = highlightedTerrainColor;
-        }
+            terrainPixels[pixelIndex] = highlightedTerrainColor;
+        });
 
         terrain.updateSprite(terrainPixels);
     }
@@ -77,14 +76,13 @@ public class Province
         this.highLighted = false;
 
         var terrainPixels = terrain.GetPixels32();
-        var provincesPixels = provinces.GetPixels32();
 
-        foreach (var pixelIndice in this.PixelIndices)
+        Parallel.ForEach(this.PixelIndices, pixelIndex =>
         {
-            var highlightedColor = terrainPixels[pixelIndice];
+            var highlightedColor = terrainPixels[pixelIndex];
             var normalColor = ColorHelper.GetOriginalProvinceColor(highlightedColor);
-            terrainPixels[pixelIndice] = normalColor;
-        }
+            terrainPixels[pixelIndex] = normalColor;
+        });
 
         terrain.updateSprite(terrainPixels);
     }
