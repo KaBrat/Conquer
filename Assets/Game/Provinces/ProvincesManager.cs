@@ -48,14 +48,17 @@ public class ProvincesManager
                 var pixelIsBorder = pixelColor.a == ColorHelper.borderAlpha;
                 var provinceColor = ColorHelper.GetOriginalProvinceColor(pixelColor);
 
-                var provinceNotAddedYet = !tmpProvinces.ContainsKey(provinceColor);
-                if (provinceNotAddedYet)
-                    tmpProvinces.Add(provinceColor, (new List<int>(), new List<int>()));
+
+                if (!tmpProvinces.TryGetValue(provinceColor, out var provinceInfo))
+                {
+                    provinceInfo = (new List<int>(), new List<int>());
+                    tmpProvinces.Add(provinceColor, provinceInfo);
+                }
 
                 if (pixelIsBorder)
-                    tmpProvinces[provinceColor].borderPixelss.Add(colorIndex);
+                    provinceInfo.borderPixelss.Add(colorIndex);
                 else
-                    tmpProvinces[provinceColor].provincePixels.Add(colorIndex);
+                    provinceInfo.provincePixels.Add(colorIndex);
             }
         }
         return tmpProvinces;
