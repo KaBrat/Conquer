@@ -59,7 +59,7 @@ public class BorderGenerator
 
     public List<int> GetNeighbours(int pixelIndex)
     {
-        List<int> neighbours = new List<int>();
+        List<int> neighbours = new();
 
         int x = pixelIndex % mapWidth;
         int y = pixelIndex / mapWidth;

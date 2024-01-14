@@ -14,7 +14,7 @@ public class ImageHelper
 
     public static void SaveTerrainPixels(Color32[] pixels, Vector2Int mapSize)
     {
-        Texture2D texture = new Texture2D(mapSize.x, mapSize.y);
+        Texture2D texture = new(mapSize.x, mapSize.y);
         texture.SetPixels32(pixels);
         texture.Apply();
         SaveMap(texture, TerrainMapPath);
@@ -28,7 +28,7 @@ public class ImageHelper
 
     public static void SaveProvincesPixels(Color32[] pixels, Vector2Int mapSize)
     {
-        Texture2D texture = new Texture2D(mapSize.x, mapSize.y);
+        Texture2D texture = new(mapSize.x, mapSize.y);
         texture.SetPixels32(pixels);
         texture.Apply();
         SaveMap(texture, ProvincesMapPath);
@@ -49,7 +49,7 @@ public class ImageHelper
             byte[] fileData = System.IO.File.ReadAllBytes(path);
 
             // Create a new Texture2D and load the image data
-            Texture2D texture = new Texture2D(width, height); // Adjust the size as needed
+            Texture2D texture = new(width, height); // Adjust the size as needed
             texture.LoadImage(fileData);
 
             // Create a Sprite using the loaded texture

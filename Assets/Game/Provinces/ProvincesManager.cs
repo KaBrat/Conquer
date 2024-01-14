@@ -7,7 +7,7 @@ public class ProvincesManager
     public MapManager MapManager;
     public IProvinceDisplayer ProvinceDisplayer;
 
-    public HashSet<Province> Provinces = new HashSet<Province>();
+    public HashSet<Province> Provinces = new();
     public Province selectedProvince;
     public Province hoveredProvince;
 
