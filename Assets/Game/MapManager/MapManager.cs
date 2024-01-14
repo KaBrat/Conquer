@@ -83,8 +83,7 @@ public class MapManager : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        if (this.ProvincesManager.selectedProvince != null)
-            this.ProvincesManager.selectedProvince.Deselect(this.TerrainMap, this.ProvinceMap);
+        this.ProvincesManager.selectedProvince?.Deselect(this.TerrainMap, this.ProvinceMap);
 
         clickedProvince.Select(this.TerrainMap, this.ProvinceMap);
         this.ProvincesManager.selectedProvince = clickedProvince;
