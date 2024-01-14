@@ -3,8 +3,9 @@ using UnityEngine;
 public class Map
 {
     private readonly Sprite sprite;
-    private Color32[] pixels;
     private Vector2Int mapSize;
+
+    private Color32[] pixels;
     public readonly object lockObject = new(); // Lock object for synchronization
     public bool PixelsChanged;
 
@@ -35,10 +36,7 @@ public class Map
 
     public Vector2Int GetMapSize()
     {
-        lock (lockObject)
-        {
-            return this.mapSize;
-        }
+        return this.mapSize;
     }
 
     public Color32[] GetPixels32()
