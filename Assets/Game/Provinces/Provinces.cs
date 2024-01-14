@@ -51,7 +51,7 @@ public class Province
                 terrainPixels[borderPixelIndice] = this.Owner.Color;
             }
 
-            map.updateSprite(terrainPixels);
+            map.SetPixels(terrainPixels);
         }
     }
 
@@ -68,8 +68,9 @@ public class Province
             terrainPixels[pixelIndex] = highlightedTerrainColor;
         });
 
-        terrain.updateSprite(terrainPixels);
+        terrain.SetPixels(terrainPixels);
     }
+
 
     public void UnHighlightTerrain(Map terrain, Map provinces)
     {
@@ -77,14 +78,16 @@ public class Province
 
         var terrainPixels = terrain.GetPixels32();
 
-        Parallel.ForEach(this.PixelIndices, pixelIndex =>
+        lock (terrain.lockObject)
         {
-            var highlightedColor = terrainPixels[pixelIndex];
-            var normalColor = ColorHelper.GetOriginalProvinceColor(highlightedColor);
-            terrainPixels[pixelIndex] = normalColor;
-        });
-
-        terrain.updateSprite(terrainPixels);
+            Parallel.ForEach(this.PixelIndices, pixelIndex =>
+            {
+                var highlightedColor = terrainPixels[pixelIndex];
+                var normalColor = ColorHelper.GetOriginalProvinceColor(highlightedColor);
+                terrainPixels[pixelIndex] = normalColor;
+            });
+            terrain.SetPixels(terrainPixels);
+        }
     }
 
     public void Select(Map terrain, Map provinces)
@@ -97,22 +100,28 @@ public class Province
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        Parallel.ForEach(this.BorderPixelIndices, borderPixelIndex =>
+        lock (terrain.lockObject)
         {
-
-            if (this.Owner == null)
-                terrainPixels[borderPixelIndex] = ColorHelper.selectedBorderColor;
-            else
+            lock (provinces.lockObject)
             {
-                var highlightedBorderColor = ColorHelper.GetHighlightedColor(this.Owner.Color);
-                terrainPixels[borderPixelIndex] = highlightedBorderColor;
+                Parallel.ForEach(this.BorderPixelIndices, borderPixelIndex =>
+            {
+
+                if (this.Owner == null)
+                    terrainPixels[borderPixelIndex] = ColorHelper.selectedBorderColor;
+                else
+                {
+                    var highlightedBorderColor = ColorHelper.GetHighlightedColor(this.Owner.Color);
+                    terrainPixels[borderPixelIndex] = highlightedBorderColor;
+                }
+
+                provincesPixels[borderPixelIndex] = ColorHelper.selectedBorderColor;
+            });
             }
+        }
 
-            provincesPixels[borderPixelIndex] = ColorHelper.selectedBorderColor;
-        });
-
-        terrain.updateSprite(terrainPixels);
-        provinces.updateSprite(provincesPixels);
+        terrain.SetPixels(terrainPixels);
+        provinces.SetPixels(provincesPixels);
     }
 
     public void Deselect(Map terrain, Map provinces)
@@ -125,16 +134,22 @@ public class Province
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        Parallel.ForEach(this.BorderPixelIndices, borderPixelIndex =>
+        lock (terrain.lockObject)
         {
-            provincesPixels[borderPixelIndex] = ColorHelper.borderColor;
-            if (this.Owner == null)
-                terrainPixels[borderPixelIndex] = ColorHelper.borderColor;
-            else
-                terrainPixels[borderPixelIndex] = this.Owner.Color;
-        });
+            lock (provinces.lockObject)
+            {
+                Parallel.ForEach(this.BorderPixelIndices, borderPixelIndex =>
+            {
+                provincesPixels[borderPixelIndex] = ColorHelper.borderColor;
+                if (this.Owner == null)
+                    terrainPixels[borderPixelIndex] = ColorHelper.borderColor;
+                else
+                    terrainPixels[borderPixelIndex] = this.Owner.Color;
+            });
+            }
+        }
 
-        terrain.updateSprite(terrainPixels);
-        provinces.updateSprite(provincesPixels);
+        terrain.SetPixels(terrainPixels);
+        provinces.SetPixels(provincesPixels);
     }
 }

@@ -5,6 +5,8 @@ public class Map
     private readonly Sprite sprite;
     private Color32[] pixels;
     private Vector2Int mapSize;
+    public readonly object lockObject = new(); // Lock object for synchronization
+    public bool PixelsChanged;
 
     public Map(Sprite sprite)
     {
@@ -13,16 +15,62 @@ public class Map
         this.mapSize = new Vector2Int(this.sprite.texture.width, this.sprite.texture.height);
     }
 
-    public void updateSprite(Color32[] pixels)
+    public void UpdateTextureIfPixelsChanged()
     {
-        this.pixels = pixels;
+        lock (lockObject)
+        {
+            if (!this.PixelsChanged)
+                return;
+
+            this.ApplyChanges();
+            this.PixelsChanged = false;
+        }
+    }
+
+    private void ApplyChanges()
+    {
         this.sprite.texture.SetPixels32(this.pixels);
         this.sprite.texture.Apply();
     }
 
-    public Vector2Int GetMapSize() => this.mapSize;
-    public Color32[] GetPixels32() => this.pixels;
-    public Color32 GetPixel(int x, int y) => this.pixels[y * this.mapSize.x + x];
-    public void SetPixels(Color32[] pixels) => this.pixels = pixels;
-    public Sprite GetSprite() => this.sprite;
+    public Vector2Int GetMapSize()
+    {
+        lock (lockObject)
+        {
+            return this.mapSize;
+        }
+    }
+
+    public Color32[] GetPixels32()
+    {
+        lock (lockObject)
+        {
+            return this.pixels;
+        }
+    }
+
+    public Color32 GetPixel(int x, int y)
+    {
+        lock (lockObject)
+        {
+            return this.pixels[y * this.mapSize.x + x];
+        }
+    }
+
+    public void SetPixels(Color32[] pixels)
+    {
+        lock (lockObject)
+        {
+            this.pixels = pixels;
+            this.PixelsChanged = true;
+        }
+    }
+
+    public Sprite GetSprite()
+    {
+        lock (lockObject)
+        {
+            return this.sprite;
+        }
+    }
 }
