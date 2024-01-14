@@ -32,7 +32,7 @@ public class ProvincesManager
     private Dictionary<Color32, (HashSet<int> provincePixels, HashSet<int> borderPixels)> GetProvinceAndBorderPixelsDict()
     {
         var provincePixels = this.MapManager.ProvinceMap.GetPixels32();
-        var tmpProvinces = new Dictionary<Color32, (HashSet<int> provincePixels, HashSet<int> borderPixelss)>();
+        var tmpProvinces = new Dictionary<Color32, (HashSet<int> provincePixels, HashSet<int> borderPixels)>();
 
         for (var x = 0; x < this.MapManager.mapSize.x; x++)
         {
@@ -41,8 +41,7 @@ public class ProvincesManager
                 var colorIndex = y * this.MapManager.mapSize.x + x;
                 var pixelColor = provincePixels[colorIndex];
 
-                var pixelIsUnselectableTerrain = ColorHelper.UnselectableTerrainColors.Any(tc => tc.Equals(pixelColor));
-                if (pixelIsUnselectableTerrain)
+                if (ColorHelper.UnselectableTerrainColors.Contains(pixelColor))
                     continue;
 
                 var pixelIsBorder = pixelColor.a == ColorHelper.borderAlpha;
@@ -56,7 +55,7 @@ public class ProvincesManager
                 }
 
                 if (pixelIsBorder)
-                    provinceInfo.borderPixelss.Add(colorIndex);
+                    provinceInfo.borderPixels.Add(colorIndex);
                 else
                     provinceInfo.provincePixels.Add(colorIndex);
             }
