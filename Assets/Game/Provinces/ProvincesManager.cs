@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System.Threading.Tasks;
 
 public class ProvincesManager
 {
@@ -34,7 +35,9 @@ public class ProvincesManager
         var provincePixels = this.MapManager.ProvinceMap.GetPixels32();
         var tmpProvinces = new Dictionary<Color32, (HashSet<int> provincePixels, HashSet<int> borderPixels)>();
 
-        for (var x = 0; x < this.MapManager.mapSize.x; x++)
+        var lockObject = new object();
+
+        Parallel.For(0, this.MapManager.mapSize.x, x =>
         {
             for (var y = 0; y < this.MapManager.mapSize.y; y++)
             {
@@ -48,18 +51,22 @@ public class ProvincesManager
                 var provinceColor = ColorHelper.GetOriginalProvinceColor(pixelColor);
 
 
-                if (!tmpProvinces.TryGetValue(provinceColor, out var provinceInfo))
+                lock (lockObject)
                 {
-                    provinceInfo = (new HashSet<int>(), new HashSet<int>());
-                    tmpProvinces.Add(provinceColor, provinceInfo);
-                }
+                    if (!tmpProvinces.TryGetValue(provinceColor, out var provinceInfo))
+                    {
+                        provinceInfo = (new HashSet<int>(), new HashSet<int>());
+                        tmpProvinces.Add(provinceColor, provinceInfo);
+                    }
 
-                if (pixelIsBorder)
-                    provinceInfo.borderPixels.Add(colorIndex);
-                else
-                    provinceInfo.provincePixels.Add(colorIndex);
+                    if (pixelIsBorder)
+                        provinceInfo.borderPixels.Add(colorIndex);
+                    else
+                        provinceInfo.provincePixels.Add(colorIndex);
+                }
             }
-        }
+        });
+
         return tmpProvinces;
     }
 
