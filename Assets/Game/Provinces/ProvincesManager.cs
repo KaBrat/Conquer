@@ -29,10 +29,10 @@ public class ProvincesManager
         }
     }
 
-    private Dictionary<Color32, (List<int> provincePixels, List<int> borderPixels)> GetProvinceAndBorderPixelsDict()
+    private Dictionary<Color32, (HashSet<int> provincePixels, HashSet<int> borderPixels)> GetProvinceAndBorderPixelsDict()
     {
         var provincePixels = this.MapManager.ProvinceMap.GetPixels32();
-        var tmpProvinces = new Dictionary<Color32, (List<int> provincePixels, List<int> borderPixelss)>();
+        var tmpProvinces = new Dictionary<Color32, (HashSet<int> provincePixels, HashSet<int> borderPixelss)>();
 
         for (var x = 0; x < this.MapManager.mapSize.x; x++)
         {
@@ -51,7 +51,7 @@ public class ProvincesManager
 
                 if (!tmpProvinces.TryGetValue(provinceColor, out var provinceInfo))
                 {
-                    provinceInfo = (new List<int>(), new List<int>());
+                    provinceInfo = (new HashSet<int>(), new HashSet<int>());
                     tmpProvinces.Add(provinceColor, provinceInfo);
                 }
 
