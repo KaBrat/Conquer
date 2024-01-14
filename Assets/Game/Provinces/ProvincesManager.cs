@@ -74,6 +74,6 @@ public class ProvincesManager
     {
         Vector2 clickPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         var provinceColor = ColorHelper.GetColor(this.MapManager.ProvinceMap, clickPosition);
-        return Provinces.Where(p => p.Color.Equals(provinceColor)).FirstOrDefault();
+        return Provinces.FirstOrDefault(p => p.Color.Equals(provinceColor));
     }
 }
