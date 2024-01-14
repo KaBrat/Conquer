@@ -56,7 +56,7 @@ public static class ColorHelper
         );
 
         // Convert UV coordinates to pixel coordinates
-        var mapSize = map.getMapSize();
+        var mapSize = map.GetMapSize();
         int x = Mathf.RoundToInt(uv.x * mapSize.x);
         int y = Mathf.RoundToInt(uv.y * mapSize.y);
 

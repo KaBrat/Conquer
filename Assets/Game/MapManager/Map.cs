@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Map
 {
-    private Sprite sprite;
+    private readonly Sprite sprite;
     private Color32[] pixels;
     private Vector2Int mapSize;
 
@@ -20,7 +20,7 @@ public class Map
         this.sprite.texture.Apply();
     }
 
-    public Vector2Int getMapSize() => this.mapSize;
+    public Vector2Int GetMapSize() => this.mapSize;
     public Color32[] GetPixels32() => this.pixels;
     public Color32 GetPixel(int x, int y) => this.pixels[y * this.mapSize.x + x];
     public void SetPixels(Color32[] pixels) => this.pixels = pixels;
