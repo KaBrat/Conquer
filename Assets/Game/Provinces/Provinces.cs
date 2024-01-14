@@ -7,8 +7,8 @@ public class Province
     public Player Owner { get; set; }
     public int FootmenCount { get; set; }
     public Color32 Color { get; internal set; }
-    public int[] pixelIndices { get; set; }
-    public int[] borderPixelIndices { get; set; }
+    public int[] PixelIndices { get; set; }
+    public int[] BorderPixelIndices { get; set; }
 
     public bool highLighted = false;
 
@@ -16,8 +16,8 @@ public class Province
     {
         this.Name = name;
         this.Color = color;
-        this.pixelIndices = pixelIndices;
-        this.borderPixelIndices = borderPixelIndices;
+        this.PixelIndices = pixelIndices;
+        this.BorderPixelIndices = borderPixelIndices;
     }
 
     public Province(string name, Player owner, int footmenCount, Color32 color)
@@ -46,7 +46,7 @@ public class Province
         {
             var terrainPixels = map.GetPixels32();
 
-            foreach (var borderPixelIndice in this.borderPixelIndices)
+            foreach (var borderPixelIndice in this.BorderPixelIndices)
             {
                 terrainPixels[borderPixelIndice] = this.Owner.Color;
             }
@@ -62,7 +62,7 @@ public class Province
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        foreach (var pixelIndice in this.pixelIndices)
+        foreach (var pixelIndice in this.PixelIndices)
         {
             var normalTerrainColor = terrainPixels[pixelIndice];
             var highlightedTerrainColor = ColorHelper.GetHighlightedColor(normalTerrainColor);
@@ -79,7 +79,7 @@ public class Province
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        foreach (var pixelIndice in this.pixelIndices)
+        foreach (var pixelIndice in this.PixelIndices)
         {
             var highlightedColor = terrainPixels[pixelIndice];
             var normalColor = ColorHelper.GetOriginalProvinceColor(highlightedColor);
@@ -99,7 +99,7 @@ public class Province
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        foreach (var borderPixelIndice in this.borderPixelIndices)
+        foreach (var borderPixelIndice in this.BorderPixelIndices)
         {
             if (this.Owner == null)
                 terrainPixels[borderPixelIndice] = ColorHelper.selectedBorderColor;
@@ -124,7 +124,7 @@ public class Province
         var terrainPixels = terrain.GetPixels32();
         var provincesPixels = provinces.GetPixels32();
 
-        foreach (var borderPixelIndice in this.borderPixelIndices)
+        foreach (var borderPixelIndice in this.BorderPixelIndices)
         {
             provincesPixels[borderPixelIndice] = ColorHelper.borderColor;
             if (this.Owner == null)
