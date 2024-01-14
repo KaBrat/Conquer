@@ -16,11 +16,6 @@ public class ProvincesManager
         this.MapManager = mapManager;
     }
 
-    void Start()
-    {
-        
-    }
-
     public void LoadAndSetProvincesByPixelColor()
     {
         var provinceNames = ProvinceNames.GetRandomProvinceNames();
