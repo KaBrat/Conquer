@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using System.Linq;
 
 public class ProvincesGenerator
 {
@@ -10,7 +11,7 @@ public class ProvincesGenerator
 
     }
 
-    public (Color32[] provinces, List<Color32> provinceColors) GenerateProvinces(Color32[] Terrain, Vector2Int mapSize, int provincesMaxSize)
+    public (Color32[] provinces, HashSet<Color32> provinceColors) GenerateProvinces(Color32[] Terrain, Vector2Int mapSize, int provincesMaxSize)
     {
         var provinces = new Color32[Terrain.Length];
         Array.Copy(Terrain, provinces, Terrain.Length);
@@ -18,7 +19,7 @@ public class ProvincesGenerator
         var found = true;
         var startingPosition = new Vector2();
 
-        var provinceColors = new List<Color32>();
+        var provinceColors = new HashSet<Color32>();
 
         while (found)
         {

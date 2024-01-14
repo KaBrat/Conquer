@@ -13,7 +13,7 @@ public class BorderGenerator
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
     }
-    public void AddStateBordersToTerrain(Color32[] terrain, Color32[] provinces, List<Color32> provinceColors)
+    public void AddStateBordersToTerrain(Color32[] terrain, Color32[] provinces, HashSet<Color32> provinceColors)
     {
         foreach (var provinceColor in provinceColors)
         {
