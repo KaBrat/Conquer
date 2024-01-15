@@ -6,6 +6,7 @@ public static class ColorHelper
 {
     public static Color32 mountainGray = new(169, 169, 169, 255);
     public static Color32 deepSeaBlue = new(0, 128, 255, 255);
+    public static Color32 seaBlue = new(59, 154, 247, 255);
     public static Color32 shallowSeaBlue = new(119, 183, 247, 255);
     public static Color32 sandYellow = new(240, 230, 140, 255);
     public static Color32 snowWhite = new(255, 255, 255, 255);
@@ -22,7 +23,7 @@ public static class ColorHelper
         new Color32(25, 79, 30, 255), // Dark Forest Green
     };
 
-    public static HashSet<Color32> SeaColors = new() { ColorHelper.deepSeaBlue, ColorHelper.shallowSeaBlue };
+    public static HashSet<Color32> SeaColors = new() { ColorHelper.deepSeaBlue, ColorHelper.seaBlue, ColorHelper.shallowSeaBlue };
     public static HashSet<Color32> MountainColors = new() { ColorHelper.mountainGray, ColorHelper.snowWhite };
     public static HashSet<Color32> LandColors = new() { ColorHelper.grassGreen, ColorHelper.sandYellow };
 

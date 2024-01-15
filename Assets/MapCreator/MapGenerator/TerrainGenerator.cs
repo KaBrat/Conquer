@@ -39,7 +39,7 @@ public class TerrainGenerator
         return noiseMap;
     }
 
-    public Color32[] GenerateTerrain(float[,] noiseMap, float deepSeaThreshold, float shallowSeaThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
+    public Color32[] GenerateTerrain(float[,] noiseMap, float deepSeaThreshold, float seaThreshold, float shallowSeaThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
     {
         var pixels = new Color32[mapWidth * mapHeight];
 
@@ -50,14 +50,20 @@ public class TerrainGenerator
                 ;
                 var noiseValue = noiseMap[x, y];
 
-                // sea
+                // deep sea
                 if (noiseValue <= deepSeaThreshold)
                 {
                     pixels[y * mapWidth + x] = ColorHelper.deepSeaBlue;
                 }
 
-                // shore
+                // sea
                 if (noiseValue > deepSeaThreshold && noiseValue <= shallowSeaThreshold)
+                {
+                    pixels[y * mapWidth + x] = ColorHelper.seaBlue;
+                }
+
+                // shore
+                if (noiseValue > seaThreshold && noiseValue <= beachThreshold)
                 {
                     pixels[y * mapWidth + x] = ColorHelper.shallowSeaBlue;
                 }
