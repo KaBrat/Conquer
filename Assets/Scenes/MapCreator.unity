@@ -155,7 +155,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseScale: 4
-  deepSeaThreshold: 0.4
+  deepSeaThreshold: 0.38
+  seaThreshold: 0.4
   shallowSeaThreshold: 0.45
   beachThreshold: 0.48
   grassThreshold: 0.8

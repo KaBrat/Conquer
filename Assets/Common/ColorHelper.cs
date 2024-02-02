@@ -5,6 +5,7 @@ using UnityEngine;
 public static class ColorHelper
 {
     public static Color32 mountainGray = new(169, 169, 169, 255);
+    public static Color32 riverBlue = new(41, 105, 255, 255);
     public static Color32 deepSeaBlue = new(0, 128, 255, 255);
     public static Color32 seaBlue = new(59, 154, 247, 255);
     public static Color32 shallowSeaBlue = new(119, 183, 247, 255);
@@ -23,13 +24,13 @@ public static class ColorHelper
         new Color32(25, 79, 30, 255), // Dark Forest Green
     };
 
-    public static HashSet<Color32> SeaColors = new() { ColorHelper.deepSeaBlue, ColorHelper.seaBlue, ColorHelper.shallowSeaBlue };
+    public static HashSet<Color32> WaterColors = new() { ColorHelper.deepSeaBlue, ColorHelper.seaBlue, ColorHelper.shallowSeaBlue, ColorHelper.riverBlue };
     public static HashSet<Color32> MountainColors = new() { ColorHelper.mountainGray, ColorHelper.snowWhite };
     public static HashSet<Color32> LandColors = new() { ColorHelper.grassGreen, ColorHelper.sandYellow };
 
-    public static HashSet<Color32> ColorsUsedInTerrain = new(ColorHelper.LandColors.Concat(ColorHelper.SeaColors).Concat(ColorHelper.MountainColors));
-    public static HashSet<Color32> UnselectableTerrainColors = new(ColorHelper.MountainColors.Concat(ColorHelper.SeaColors));
-    public static HashSet<Color32> TerrainObstacleColors = new(ColorHelper.MountainColors.Concat(ColorHelper.SeaColors));
+    public static HashSet<Color32> ColorsUsedInTerrain = new(ColorHelper.LandColors.Concat(ColorHelper.WaterColors).Concat(ColorHelper.MountainColors));
+    public static HashSet<Color32> UnselectableTerrainColors = new(ColorHelper.MountainColors.Concat(ColorHelper.WaterColors));
+    public static HashSet<Color32> TerrainObstacleColors = new(ColorHelper.MountainColors.Concat(ColorHelper.WaterColors));
     public static bool ColorListContainsColor(HashSet<Color32> colorList, Color32 color)
     {
         // Check if the color is in the list (exact comparison)

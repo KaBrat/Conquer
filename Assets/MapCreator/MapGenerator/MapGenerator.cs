@@ -49,6 +49,9 @@ public class MapGenerator : MonoBehaviour
         var noiseMap = generator.GenerateNoiseMap();
         var terrain = generator.GenerateTerrain(noiseMap, this.deepSeaThreshold, this.seaThreshold, this.shallowSeaThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
+        //var terrainWithRivers = 
+        new RiverGenerator(noiseMap, terrain, new Vector2Int(this.mapWidth, this.mapHeight)).DrawRivers();
+
         var generatedProvinces = new ProvincesGenerator().GenerateProvinces(terrain, new Vector2Int(this.mapWidth, this.mapHeight), this.ProvincesMaxSize);
 
         new BorderGenerator(this.mapWidth, this.mapHeight).AddStateBordersToTerrain(terrain, generatedProvinces.provinces, generatedProvinces.provinceColors);
