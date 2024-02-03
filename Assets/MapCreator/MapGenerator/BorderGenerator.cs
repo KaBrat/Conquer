@@ -13,7 +13,7 @@ public class BorderGenerator
         this.mapWidth = mapWidth;
         this.mapHeight = mapHeight;
     }
-    public void AddStateBordersToTerrain(Color32[] terrain, Color32[] provinces, List<Color32> provinceColors)
+    public void AddStateBordersToTerrain(Color32[] terrain, Color32[] provinces, HashSet<Color32> provinceColors)
     {
         foreach (var provinceColor in provinceColors)
         {
@@ -59,7 +59,7 @@ public class BorderGenerator
 
     public List<int> GetNeighbours(int pixelIndex)
     {
-        List<int> neighbours = new List<int>();
+        List<int> neighbours = new();
 
         int x = pixelIndex % mapWidth;
         int y = pixelIndex / mapWidth;

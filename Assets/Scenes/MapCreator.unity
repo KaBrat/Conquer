@@ -155,7 +155,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseScale: 4
-  waterThreshold: 0.45
+  deepSeaThreshold: 0.38
+  seaThreshold: 0.4
+  shallowSeaThreshold: 0.45
   beachThreshold: 0.48
   grassThreshold: 0.8
   mountainThreshold: 0.9
@@ -164,7 +166,7 @@ MonoBehaviour:
   mapHeight: 300
   outerBoundaryXSize: 10
   outerBoundaryYSize: 10
-  Statesize: 170
+  ProvincesMaxSize: 170
 --- !u!4 &1405176770
 Transform:
   m_ObjectHideFlags: 0
@@ -221,7 +223,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 94b1b3d05ac2ca643a1a8e53507b3594, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 138d224b71b951a4c9729645e0b3b67a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -304,7 +306,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1766679781}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68efb12139862a644b88b5dd9f91b69a, type: 3}
+  m_Script: {fileID: 11500000, guid: 78169ea758bedd148bfc7969782858ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mapGenerator: {fileID: 1405176769}
@@ -322,7 +324,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PanelSettings: {fileID: 11400000, guid: 6d47a81deba239b4c88024e31058e68d, type: 2}
   m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 22a0c3c2219b1024ca81aae37bfd8203, type: 3}
+  sourceAsset: {fileID: 9197481963319205126, guid: c8c95376aaf482946ba4bfda79c995a0, type: 3}
   m_SortingOrder: 0
 --- !u!4 &1766679784
 Transform:

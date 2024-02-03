@@ -39,7 +39,7 @@ public class TerrainGenerator
         return noiseMap;
     }
 
-    public Color32[] GenerateTerrain(float[,] noiseMap, float waterThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
+    public Color32[] GenerateTerrain(float[,] noiseMap, float deepSeaThreshold, float seaThreshold, float shallowSeaThreshold, float beachThreshold, float grassThreshold, float mountainThreshold)
     {
         var pixels = new Color32[mapWidth * mapHeight];
 
@@ -50,28 +50,40 @@ public class TerrainGenerator
                 ;
                 var noiseValue = noiseMap[x, y];
 
-                // sea
-                if (noiseValue <= waterThreshold)
+                // deep sea
+                if (noiseValue <= deepSeaThreshold)
                 {
-                    pixels[y * mapWidth + x] = ColorHelper.blue;
+                    pixels[y * mapWidth + x] = ColorHelper.deepSeaBlue;
+                }
+
+                // sea
+                if (noiseValue > deepSeaThreshold && noiseValue <= shallowSeaThreshold)
+                {
+                    pixels[y * mapWidth + x] = ColorHelper.seaBlue;
+                }
+
+                // shore
+                if (noiseValue > seaThreshold && noiseValue <= beachThreshold)
+                {
+                    pixels[y * mapWidth + x] = ColorHelper.shallowSeaBlue;
                 }
 
                 // beach
-                if (noiseValue > waterThreshold && noiseValue <= beachThreshold)
+                if (noiseValue > shallowSeaThreshold && noiseValue <= beachThreshold)
                 {
-                    pixels[y * mapWidth + x] = Color.yellow;
+                    pixels[y * mapWidth + x] = ColorHelper.sandYellow;
                 }
 
                 // land
                 if (noiseValue > beachThreshold && noiseValue <= grassThreshold)
                 {
-                    pixels[y * mapWidth + x] = Color.green;
+                    pixels[y * mapWidth + x] = ColorHelper.grassGreen;
                 }
 
                 // mountain
                 if (noiseValue > grassThreshold && noiseValue <= mountainThreshold)
                 {
-                    pixels[y * mapWidth + x] = ColorHelper.gray;
+                    pixels[y * mapWidth + x] = ColorHelper.mountainGray;
                 }
 
                 // snow
