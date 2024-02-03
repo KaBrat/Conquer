@@ -7,11 +7,11 @@ public class MapGenerator : MonoBehaviour
     [Header("Map Generation Settings")]
     // Noisescale is like a "zoom" on the perlin noise
     // high => far away, low => close
-    [SerializeField, Range(0.1f, 50f)] private float noiseScale = 4f;
-    [SerializeField, Range(0f, 1f)] private float deepSeaThreshold = 0.15f;
-    [SerializeField, Range(0f, 1f)] private float seaThreshold = 0.40f;
-    [SerializeField, Range(0f, 1f)] private float shallowSeaThreshold = 0.45f;
-    [SerializeField, Range(0f, 1f)] private float beachThreshold = 0.48f;
+    [SerializeField, Range(0.1f, 50f)] private float noiseScale = 12f;
+    [SerializeField, Range(0f, 1f)] private float deepSeaThreshold = 0.05f;
+    [SerializeField, Range(0f, 1f)] private float seaThreshold = 0.06f;
+    [SerializeField, Range(0f, 1f)] private float shallowSeaThreshold = 0.08f;
+    [SerializeField, Range(0f, 1f)] private float beachThreshold = 0.1f;
     [SerializeField, Range(0f, 1f)] private float grassThreshold = 0.8f;
     [SerializeField, Range(0f, 1f)] private float mountainThreshold = 0.9f;
     [SerializeField, Range(0f, 500f)] private float random = 50f;
@@ -20,6 +20,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
     [SerializeField, Range(0, 300)] private int ProvincesMaxSize = 170;
+    [SerializeField, Range(0, 300)] private int AmountOfRivers = 2;
 
     public void GenerateMap()
     {
@@ -50,7 +51,7 @@ public class MapGenerator : MonoBehaviour
         var terrain = generator.GenerateTerrain(noiseMap, this.deepSeaThreshold, this.seaThreshold, this.shallowSeaThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
         //var terrainWithRivers = 
-        new RiverGenerator(noiseMap, terrain, new Vector2Int(this.mapWidth, this.mapHeight)).DrawRivers();
+        new RiverGenerator(noiseMap, terrain, new Vector2Int(this.mapWidth, this.mapHeight)).DrawRivers(AmountOfRivers);
 
         var generatedProvinces = new ProvincesGenerator().GenerateProvinces(terrain, new Vector2Int(this.mapWidth, this.mapHeight), this.ProvincesMaxSize);
 

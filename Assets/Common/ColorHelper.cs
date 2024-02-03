@@ -24,7 +24,9 @@ public static class ColorHelper
         new Color32(25, 79, 30, 255), // Dark Forest Green
     };
 
-    public static HashSet<Color32> WaterColors = new() { ColorHelper.deepSeaBlue, ColorHelper.seaBlue, ColorHelper.shallowSeaBlue, ColorHelper.riverBlue };
+    public static HashSet<Color32> RiverColors = new() { ColorHelper.riverBlue };
+    public static HashSet<Color32> SeaColors = new() { ColorHelper.deepSeaBlue, ColorHelper.seaBlue, ColorHelper.shallowSeaBlue };
+    public static HashSet<Color32> WaterColors = new(ColorHelper.SeaColors.Concat(ColorHelper.RiverColors));
     public static HashSet<Color32> MountainColors = new() { ColorHelper.mountainGray, ColorHelper.snowWhite };
     public static HashSet<Color32> LandColors = new() { ColorHelper.grassGreen, ColorHelper.sandYellow };
 

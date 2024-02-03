@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
@@ -17,19 +16,19 @@ public class RiverGenerator
         this.riverHeightMap = CopyHeightMap(this.heightMap);
     }
 
-    public void DrawRivers()
+    public void DrawRivers(int amount)
     {
         var highTerrain = this.mapPixels
             .Select((color, index) => new ColorWithPosition(color, ColorArrayHelper.GetPosition(index, this.mapSize.x)))
             .Where(cp => cp.Color.Equals(ColorHelper.mountainGray))
             .ToList();
-        if (highTerrain.Count < 0)
+        if (highTerrain.Count <= 0)
             return;
 
         int randomHighPixelRandom;
         ColorWithPosition randomHighPixel;
 
-        for (int i = 1; i <= 30; i++)
+        for (int i = 1; i <= amount; i++)
         {
             randomHighPixelRandom = UnityEngine.Random.Range(0, highTerrain.Count - 1);
             randomHighPixel = highTerrain[randomHighPixelRandom];
@@ -37,83 +36,76 @@ public class RiverGenerator
         }
     }
 
-    private void DrawRiver(Vector2Int StartingPoint)
+    public void DrawRiver(Vector2Int startPosition)
     {
-        this.mapPixels[ColorArrayHelper.GetIndex(StartingPoint, this.mapSize.x)] = ColorHelper.riverBlue;
+        mapPixels[ColorArrayHelper.GetIndex(startPosition, this.mapSize.x)] = ColorHelper.riverBlue;
+        var currentPosition = startPosition;
 
-        var lowestNeighbor = FindWeightedRandomLowestNeighbor(StartingPoint);
-        this.mapPixels[ColorArrayHelper.GetIndex(lowestNeighbor, this.mapSize.x)] = ColorHelper.riverBlue;
+        var endCondition = false;
+        bool lowerNeighbourFound;
 
-        var reachedEnd = false;
-        while (!reachedEnd)
+        while (!endCondition)
         {
-            lowestNeighbor = FindWeightedRandomLowestNeighbor(lowestNeighbor);
-            if (lowestNeighbor == Vector2Int.zero)
-                reachedEnd = true;
 
-            if (ColorHelper.WaterColors.Contains(this.mapPixels[ColorArrayHelper.GetIndex(lowestNeighbor, this.mapSize.x)]))
-                reachedEnd = true;
-            this.mapPixels[ColorArrayHelper.GetIndex(lowestNeighbor, this.mapSize.x)] = ColorHelper.riverBlue;
+            (lowerNeighbourFound, currentPosition) = TryFindLowestNeighborPosition(currentPosition);
+
+            if (!lowerNeighbourFound)
+            {
+                endCondition = true;
+                break;
+            }
+
+            var pixelColor = mapPixels[ColorArrayHelper.GetIndex(currentPosition, this.mapSize.x)];
+            var isSeaPixel = ColorHelper.SeaColors.Contains(pixelColor);
+
+            if (isSeaPixel)
+            {
+                endCondition = true;
+                break;
+            }
+
+            mapPixels[ColorArrayHelper.GetIndex(currentPosition, this.mapSize.x)] = ColorHelper.riverBlue;
         }
     }
 
-    public Vector2Int FindWeightedRandomLowestNeighbor(Vector2Int position)
+    public (bool found, Vector2Int position) TryFindLowestNeighborPosition(Vector2Int position)
     {
-        int mapWidth = this.heightMap.GetLength(0);
-        int mapHeight = this.heightMap.GetLength(1);
+        int x = position.x;
+        int y = position.y;
 
-        float currentHeight = this.heightMap[position.x, position.y];
-        List<Vector2Int> lowerNeighbors = new List<Vector2Int>();
-        List<float> weights = new List<float>();
+        int sizeX = heightMap.GetLength(0);
+        int sizeY = heightMap.GetLength(1);
 
-        for (int xOffset = -1; xOffset <= 1; xOffset++)
+        float lowestHeight = float.MaxValue;
+        Vector2Int lowestNeighborPosition = Vector2Int.zero;
+        bool lowerNeighborFound = false;
+
+        for (int i = x - 1; i <= x + 1; i++)
         {
-            for (int yOffset = -1; yOffset <= 1; yOffset++)
+            for (int j = y - 1; j <= y + 1; j++)
             {
-                // Skip the center position (current position)
-                if (xOffset == 0 && yOffset == 0)
-                    continue;
-
-                int neighborX = position.x + xOffset;
-                int neighborY = position.y + yOffset;
-
-                // Check if the neighbor is within bounds
-                if (neighborX >= 0 && neighborX < mapWidth && neighborY >= 0 && neighborY < mapHeight)
+                // Check if the neighbor is within the heightmap bounds
+                if (i >= 0 && i < sizeX && j >= 0 && j < sizeY)
                 {
-                    float neighborHeight = this.heightMap[neighborX, neighborY];
+                    // Skip the center point (the original point)
+                    if (i == x && j == y)
+                        continue;
 
-                    // Check if the neighbor is lower than the current position
-                    if (neighborHeight < currentHeight)
+                    float neighborHeight = heightMap[i, j];
+
+                    // Update lowestHeight and lowestNeighborPosition if the current neighbor is lower
+                    if (neighborHeight < lowestHeight)
                     {
-                        float weight = Mathf.Pow(currentHeight - neighborHeight, 2); // You can adjust the exponent for different weighting
-                        lowerNeighbors.Add(new Vector2Int(neighborX, neighborY));
-                        weights.Add(weight);
+                        lowestHeight = neighborHeight;
+                        lowestNeighborPosition = new Vector2Int(i, j);
+                        lowerNeighborFound = true;
                     }
                 }
             }
         }
 
-        // Randomly choose one neighbor from the list of lower neighbors based on weights
-        if (lowerNeighbors.Count > 0)
-        {
-            float totalWeight = weights.Sum();
-            float randomValue = UnityEngine.Random.Range(0f, totalWeight);
-
-            float cumulativeWeight = 0f;
-            for (int i = 0; i < lowerNeighbors.Count; i++)
-            {
-                cumulativeWeight += weights[i];
-                if (randomValue <= cumulativeWeight)
-                {
-                    return lowerNeighbors[i];
-                }
-            }
-        }
-
-        // If no lower neighbors are found, return the current position
-        return position;
+        return (lowerNeighborFound, lowestNeighborPosition);
     }
-
     public float[,] CopyHeightMap(float[,] source)
     {
         int width = source.GetLength(0);
