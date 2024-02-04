@@ -134,6 +134,7 @@ public class TerrainGenerator
     {
         var maxDistance = (1f / outerRange) * max;
         var relation = distanceToMaxInner / maxDistance;
-        return 1f - relation;
+        var smoothMore = 0.5f;
+        return (1f - relation) * smoothMore;
     }
 }
