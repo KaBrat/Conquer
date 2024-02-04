@@ -154,19 +154,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11817213737fa074a9d41cb46eeeae84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseScale: 4
-  deepSeaThreshold: 0.38
-  seaThreshold: 0.4
-  shallowSeaThreshold: 0.45
-  beachThreshold: 0.48
-  grassThreshold: 0.8
+  noiseScale: 13
+  deepSeaThreshold: 0.1
+  seaThreshold: 0.12
+  shallowSeaThreshold: 0.13
+  beachThreshold: 0.145
+  grassThreshold: 0.7
   mountainThreshold: 0.9
   random: 50
   mapWidth: 500
   mapHeight: 300
   outerBoundaryXSize: 10
   outerBoundaryYSize: 10
-  ProvincesMaxSize: 170
+  ProvincesMaxSize: 7000
+  AmountOfRivers: 0
 --- !u!4 &1405176770
 Transform:
   m_ObjectHideFlags: 0
