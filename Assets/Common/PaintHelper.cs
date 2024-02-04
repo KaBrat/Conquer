@@ -24,7 +24,7 @@ public static class PaintHelper
         floodSpiller.SpillFlood(floodParameters, _positionMarkMatrix);
     }
 
-    public static void FloodPaint(Color32[] image, int imageWidth, int imageHeight, Vector2Int startPosition, Color32[] replacedColors, Color32 targetColor, int size)
+    public static void PaintProvince(Color32[] image, int imageWidth, int imageHeight, Vector2Int startPosition, Color32[] replacedColors, Color32 targetColor, int size)
     {
         var _positionMarkMatrix = new int[imageWidth, imageHeight];
 
@@ -36,65 +36,49 @@ public static class PaintHelper
             return replacedColors.Any(c => c.Equals(positionColor));
         };
 
-        Predicate<int, int> neighbourStopCondition = (x, y) =>
+        Predicate<int, int> stopCondition = (x, y) =>
         {
+            var distance = CalculateDistance(startPosition.x, startPosition.y, x, y);
             if (pixelsLeft <= 0)
             {
-                Debug.Log($"{x}, {y} causing stop!");
                 return true;
             }
             return false;
         };
 
-        System.Action<int, int, int> neighbourProcessor = (x, y, mark) =>
+        Func<Position, Position, int> comparer = (pos1, pos2) =>
+        {
+            int value1 = _positionMarkMatrix[pos1.X, pos1.Y];
+            int value2 = _positionMarkMatrix[pos2.X, pos2.Y];
+
+            return value1.CompareTo(value2);
+        };
+
+        Action<int, int> positionVisitor = (x, y) =>
         {
             SetColor(image, imageWidth, x, y, targetColor);
             pixelsLeft--;
         };
 
-        Func<Position, Position, int> comparer = (pos1, pos2) =>
-        {
-            int randomValue = UnityEngine.Random.Range(1, 3); // 1-3
-            if (randomValue <= 1)
-            {
-                int value1 = _positionMarkMatrix[pos1.X, pos1.Y];
-                int value2 = _positionMarkMatrix[pos2.X, pos2.Y];
-
-                return value1.CompareTo(value2);
-            }
-            if (randomValue <= 2)
-            {
-                var distance1 = CalculateDistance(pos1.X, pos1.Y, startPosition.x, startPosition.y);
-                var distance2 = CalculateDistance(pos2.X, pos2.Y, startPosition.x, startPosition.y);
-
-                return distance1.CompareTo(distance2); // Compare based on distance to start position
-            }
-            else
-            {
-                return 0;
-            }
-        };
-
-        static double CalculateDistance(int x1, int y1, int x2, int y2)
-        {
-            return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
-        }
-
         var floodSpiller = new FloodSpiller();
         var floodParameters = new FloodParameters((int)startPosition.x, (int)startPosition.y)
         {
+            SpreadingPositionStopCondition = stopCondition,
             PositionsToVisitQueue = new PriorityPositionQueue(comparer),
+            SpreadingPositionVisitor = positionVisitor,
             BoundsRestriction = new FloodBounds(imageWidth, imageHeight),
             NeighbourhoodType = NeighbourhoodType.Four,
             Qualifier = positionQualifier,
-            NeighbourProcessor = neighbourProcessor,
-            NeighbourStopCondition = neighbourStopCondition,
-            ProcessStartAsFirstNeighbour = true,
         };
         floodSpiller.SpillFlood(floodParameters, _positionMarkMatrix);
         //string representation = MarkMatrixVisualiser.Visualise(_positionMarkMatrix);
         //var filePath = "C:\\Entwicklung\\Conquer\\markmatrix.txt";
         //File.WriteAllText(filePath, representation);
+    }
+
+    static double CalculateDistance(int x1, int y1, int x2, int y2)
+    {
+        return Math.Sqrt(Math.Pow(x2 - x1, 2) + Math.Pow(y2 - y1, 2));
     }
 
     private static void SetColor(Color32[] image, int imageWidth, int x, int y, Color32 targetColor)
