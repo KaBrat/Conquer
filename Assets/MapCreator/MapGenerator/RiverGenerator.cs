@@ -46,7 +46,6 @@ public class RiverGenerator
 
         while (!endCondition)
         {
-
             (lowerNeighbourFound, currentPosition) = TryFindLowestNeighborPosition(currentPosition);
 
             if (!lowerNeighbourFound)

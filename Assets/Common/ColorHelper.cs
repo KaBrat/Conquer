@@ -28,9 +28,9 @@ public static class ColorHelper
     public static HashSet<Color32> SeaColors = new() { ColorHelper.deepSeaBlue, ColorHelper.seaBlue, ColorHelper.shallowSeaBlue };
     public static HashSet<Color32> WaterColors = new(ColorHelper.SeaColors.Concat(ColorHelper.RiverColors));
     public static HashSet<Color32> MountainColors = new() { ColorHelper.mountainGray, ColorHelper.snowWhite };
-    public static HashSet<Color32> LandColors = new() { ColorHelper.grassGreen, ColorHelper.sandYellow };
+    public static HashSet<Color32> SelectableTerrainColors = new() { ColorHelper.grassGreen, ColorHelper.sandYellow };
 
-    public static HashSet<Color32> ColorsUsedInTerrain = new(ColorHelper.LandColors.Concat(ColorHelper.WaterColors).Concat(ColorHelper.MountainColors));
+    public static HashSet<Color32> ColorsUsedInTerrain = new(ColorHelper.SelectableTerrainColors.Concat(ColorHelper.WaterColors).Concat(ColorHelper.MountainColors));
     public static HashSet<Color32> UnselectableTerrainColors = new(ColorHelper.MountainColors.Concat(ColorHelper.WaterColors));
     public static HashSet<Color32> TerrainObstacleColors = new(ColorHelper.MountainColors.Concat(ColorHelper.WaterColors));
     public static bool ColorListContainsColor(HashSet<Color32> colorList, Color32 color)

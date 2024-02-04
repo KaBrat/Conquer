@@ -19,7 +19,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField, Range(100, 3000)] private int mapHeight = 300;
     [SerializeField, Range(0, 50)] private int outerBoundaryXSize = 10;
     [SerializeField, Range(0, 50)] private int outerBoundaryYSize = 10;
-    [SerializeField, Range(0, 300)] private int ProvincesMaxSize = 170;
+    [SerializeField, Range(0, 50000)] private int ProvincesMaxSize = 3000;
     [SerializeField, Range(0, 300)] private int AmountOfRivers = 2;
 
     public void GenerateMap()
@@ -51,9 +51,10 @@ public class MapGenerator : MonoBehaviour
         var terrain = generator.GenerateTerrain(noiseMap, this.deepSeaThreshold, this.seaThreshold, this.shallowSeaThreshold, this.beachThreshold, this.grassThreshold, this.mountainThreshold);
 
         //var terrainWithRivers = 
-        new RiverGenerator(noiseMap, terrain, new Vector2Int(this.mapWidth, this.mapHeight)).DrawRivers(AmountOfRivers);
+        var mapSize = new Vector2Int(this.mapWidth, this.mapHeight);
+        new RiverGenerator(noiseMap, terrain, mapSize).DrawRivers(AmountOfRivers);
 
-        var generatedProvinces = new ProvincesGenerator().GenerateProvinces(terrain, new Vector2Int(this.mapWidth, this.mapHeight), this.ProvincesMaxSize);
+        var generatedProvinces = new ProvincesGenerator(terrain, mapSize).GenerateProvinces(this.ProvincesMaxSize);
 
         new BorderGenerator(this.mapWidth, this.mapHeight).AddStateBordersToTerrain(terrain, generatedProvinces.provinces, generatedProvinces.provinceColors);
 
