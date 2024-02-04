@@ -19,9 +19,12 @@ public class ProvincesGenerator
         {
             found = false;
 
-            for (var x = 0; x < mapSize.x; x++)
+            var randomStartX = UnityEngine.Random.Range(0, mapSize.x - 1);
+            var randomStartY = UnityEngine.Random.Range(0, mapSize.y - 1);
+
+            for (var x = randomStartX; x < mapSize.x; x++)
             {
-                for (var y = 0; y < mapSize.y; y++)
+                for (var y = randomStartY; y < mapSize.y; y++)
                 {
                     var pixelColor = provincesMap[y * mapSize.x + x];
                     if (ColorHelper.SelectableTerrainColors.Contains(pixelColor))
@@ -29,8 +32,54 @@ public class ProvincesGenerator
                         found = true;
                         startingPosition.x = x;
                         startingPosition.y = y;
+                        break;
                     }
                 }
+                if (found)
+                    break;
+                for (var y = 0; y < randomStartY; y++)
+                {
+                    var pixelColor = provincesMap[y * mapSize.x + x];
+                    if (ColorHelper.SelectableTerrainColors.Contains(pixelColor))
+                    {
+                        found = true;
+                        startingPosition.x = x;
+                        startingPosition.y = y;
+                        break;
+                    }
+                }
+                if (found)
+                    break;
+            }
+
+            for (var x = 0; x < randomStartX; x++)
+            {
+                for (var y = randomStartY; y < mapSize.y; y++)
+                {
+                    var pixelColor = provincesMap[y * mapSize.x + x];
+                    if (ColorHelper.SelectableTerrainColors.Contains(pixelColor))
+                    {
+                        found = true;
+                        startingPosition.x = x;
+                        startingPosition.y = y;
+                        break;
+                    }
+                }
+                if (found)
+                    break;
+                for (var y = 0; y < randomStartY; y++)
+                {
+                    var pixelColor = provincesMap[y * mapSize.x + x];
+                    if (ColorHelper.SelectableTerrainColors.Contains(pixelColor))
+                    {
+                        found = true;
+                        startingPosition.x = x;
+                        startingPosition.y = y;
+                        break;
+                    }
+                }
+                if (found)
+                    break;
             }
 
             if (found)
