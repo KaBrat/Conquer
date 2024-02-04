@@ -2,8 +2,6 @@ using FloodSpill;
 using FloodSpill.Queues;
 using FloodSpill.Utilities;
 using System;
-using System.IO;
-using System.Linq;
 using UnityEngine;
 
 public static class PaintHelper
@@ -24,22 +22,22 @@ public static class PaintHelper
         floodSpiller.SpillFlood(floodParameters, _positionMarkMatrix);
     }
 
-    public static void PaintProvince(Color32[] image, int imageWidth, int imageHeight, Vector2Int startPosition, Color32[] replacedColors, Color32 targetColor, int size)
+    public static void PaintProvince(Color32[] image, int imageWidth, int imageHeight, Vector2Int startPosition, Color32[] replacedColors, Color32 targetColor, int provinceMaxPixels, out int pixelsPainted)
     {
         var _positionMarkMatrix = new int[imageWidth, imageHeight];
 
-        var pixelsLeft = size;
+        var pixelsVisited = 0;
 
         Predicate<int, int> positionQualifier = (x, y) =>
         {
-            var positionColor = GetColor(image, imageWidth, x, y);
-            return replacedColors.Any(c => c.Equals(positionColor));
+            var positionColor = ColorArrayHelper.GetColor(image, x, y, imageWidth);
+            return ColorHelper.SelectableTerrainColors.Contains(positionColor);
         };
 
         Predicate<int, int> stopCondition = (x, y) =>
         {
             var distance = CalculateDistance(startPosition.x, startPosition.y, x, y);
-            if (pixelsLeft <= 0)
+            if (pixelsVisited >= provinceMaxPixels)
             {
                 return true;
             }
@@ -57,7 +55,7 @@ public static class PaintHelper
         Action<int, int> positionVisitor = (x, y) =>
         {
             SetColor(image, imageWidth, x, y, targetColor);
-            pixelsLeft--;
+            pixelsVisited++;
         };
 
         var floodSpiller = new FloodSpiller();
@@ -74,6 +72,8 @@ public static class PaintHelper
         //string representation = MarkMatrixVisualiser.Visualise(_positionMarkMatrix);
         //var filePath = "C:\\Entwicklung\\Conquer\\markmatrix.txt";
         //File.WriteAllText(filePath, representation);
+
+        pixelsPainted = pixelsVisited;
     }
 
     static double CalculateDistance(int x1, int y1, int x2, int y2)
