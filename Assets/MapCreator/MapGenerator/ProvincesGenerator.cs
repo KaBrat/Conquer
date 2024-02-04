@@ -23,7 +23,7 @@ public class ProvincesGenerator
             var size = UnityEngine.Random.Range(provincesMaxSize / 4, provincesMaxSize);
             var colorsToReplace = ColorHelper.SelectableTerrainColors.ToArray();
             var stateColor = ColorHelper.AddNewRandomColorToList(provinceColors);
-            PaintHelper.FloodPaint(provincesMap, mapSize.x, mapSize.y, startingPosition, colorsToReplace, stateColor, size);
+            PaintHelper.PaintProvince(provincesMap, mapSize.x, mapSize.y, startingPosition, colorsToReplace, stateColor, size);
         }
 
         return (provincesMap, provinceColors);
