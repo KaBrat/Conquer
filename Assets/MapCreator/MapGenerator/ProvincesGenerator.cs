@@ -5,13 +5,13 @@ using System.Linq;
 
 public class ProvincesGenerator
 {
-    public (Color32[] provinces, HashSet<Color32> provinceColors) GenerateProvinces(Color32[] Terrain, Vector2Int mapSize, int provincesMaxSize)
+    public (Color32[] provinces, HashSet<Color32> provinceColors) GenerateProvinces(Color32[] terrainMap, Vector2Int mapSize, int provincesMaxSize)
     {
-        var provinces = new Color32[Terrain.Length];
-        Array.Copy(Terrain, provinces, Terrain.Length);
+        var provincesMap = new Color32[terrainMap.Length];
+        Array.Copy(terrainMap, provincesMap, terrainMap.Length);
 
         var found = true;
-        var startingPosition = new Vector2();
+        var startingPosition = new Vector2Int();
 
         var provinceColors = new HashSet<Color32>();
 
@@ -23,8 +23,8 @@ public class ProvincesGenerator
             {
                 for (var y = 0; y < mapSize.y; y++)
                 {
-                    var pixelColor = provinces[y * mapSize.x + x];
-                    if (pixelColor.Equals(ColorHelper.grassGreen) || pixelColor.Equals(ColorHelper.sandYellow))
+                    var pixelColor = provincesMap[y * mapSize.x + x];
+                    if (ColorHelper.SelectableTerrainColors.Contains(pixelColor))
                     {
                         found = true;
                         startingPosition.x = x;
@@ -35,13 +35,13 @@ public class ProvincesGenerator
 
             if (found)
             {
-                var size = UnityEngine.Random.Range(provincesMaxSize / 2, provincesMaxSize);
-                var colorsToReplace = ColorHelper.LandColors.ToArray();
+                var size = UnityEngine.Random.Range(provincesMaxSize / 4, provincesMaxSize);
+                var colorsToReplace = ColorHelper.SelectableTerrainColors.ToArray();
                 var stateColor = ColorHelper.AddNewRandomColorToList(provinceColors);
-                PaintHelper.FloodPaint(provinces, mapSize.x, mapSize.y, startingPosition, colorsToReplace, stateColor, size);
+                PaintHelper.FloodPaint(provincesMap, mapSize.x, mapSize.y, startingPosition, colorsToReplace, stateColor, size);
             }
         }
 
-        return (provinces, provinceColors);
+        return (provincesMap, provinceColors);
     }
 }
